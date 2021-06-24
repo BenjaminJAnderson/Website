@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: pageA
 title: Style Guide
 permalink: /styleguide/
 image: 11.jpg

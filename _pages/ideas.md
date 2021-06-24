@@ -1,11 +1,36 @@
 ---
 layout: pageA
-title: Ideas
+title: Ideas Archive
 permalink: /ideas/
 image: 11.jpg
 ---
 
-A paragraph looks like this — dolor amet cray stumptown fingerstache neutra food truck seitan poke cardigan waistcoat VHS snackwave celiac hella. Godard seitan shoreditch flexitarian next level trust fund man braid vegan listicle keytar bitters. Disrupt cray fashion axe unicorn lomo shaman poke glossier keffiyeh snackwave austin tattooed seitan hexagon lo-fi. Lumbersexual irony vaporware, butcher shaman church-key iceland.
+This page aims to consolidate all the ideas I would like to work on. There is no guarantee the ideas listed will be completed or even started, however I find it useful to have a place to put these ideas and get me thinking creatively.
+
+***
+
+### OLED Cube <span style="color:green">[In Development]</span>
+
+This project aims to design a cube which faces are comprised of 128x128 RGB OLED displays. These 6 displays and an IMU will be connected to an SoC, resulting in a device which is controlled via it's rotation and or acceleration.
+
+This is not a unique idea, I have seen numerous LED devices that encorporate multiple faces into design, most notibly [Greg Davill](https://gregdavill.com/). However, most of these designs use individual LEDs soldered onto a board to make up one display, this lowers the resolution and increases the size of the design. My design will hopefully shink the device and have a higher resolution, with the tradeoff being larger bezels.
+
+***
+
+### Analogue Keyboard <span style="color:orange">[Researching]</span>
+
+***
+
+### ~~Roundworm Robot~~ <span style="color:red">[Abandoned]</span>
+
+***
+
+### Health Datalogger <span style="color:orange">[Researching]</span>
+
+***
+
+### OpenStreetMaps Sandbox <span style="color:orange">[Researching]</span>
+
 
 ### Headings by default:
 

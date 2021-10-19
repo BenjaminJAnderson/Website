@@ -17,7 +17,7 @@ social-linkedin: engiebenji # add your Linkedin handle
 social-email: thebenjaminjanderson@gmail.com # add your Email address
 
 # Disqus
-discus-identifier: disqus_9W6nxPA4Q2 # add your discus identifier
+discus-identifier: disqus_9W6nxPA4Q2 # add your discus identifier (NOT WORKING TRY ENABLING JS AND LOOK AT DISQUS HTML)
 
 # Tracker
 analytics: # Google Analytics

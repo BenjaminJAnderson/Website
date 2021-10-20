@@ -773,9 +773,9 @@ html {
 }
 
 body {
-  font-family: 'Lato', sans-serif;
-  color: #515151;
-  background-color: #fbfbfb;
+  font-family: 'Nunito', sans-serif;
+  color: #5f6368;/* White Theme #515151*/
+  background-color: #202124;/* White Theme #fbfbfb */
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -889,11 +889,11 @@ table tfoot td {
 }
 
 .post, .article-page {
-  background-color: #fff;
+  background-color: #303134; /* Posts Bubble Colour, White Theme #fff */
 }
 
 ::-moz-selection {
-  background: rgba(38, 57, 89, 0.8);
+  background: rgba(38, 89, 46, 0.8);
   color: #ffffff;
 }
 
@@ -933,7 +933,7 @@ table tfoot td {
   width: 240px;
   height: 100%;
   padding: 20px 10px;
-  background-color: #ffffff;
+  background-color: #303134; /* White Theme #ffffff*/
 }
 
 .about {
@@ -969,13 +969,13 @@ table tfoot td {
 }
 
 .about .author-name {
-  font-family: 'PT Serif', serif;
+  font-family: 'Nunito', sans-serif;
   margin: 0 0 10px;
   position: relative;
   padding-bottom: 15px;
   font-size: 16px;
   text-transform: uppercase;
-  color: #333030;
+  color: #ebebec;  /* White Theme #333030*/
   font-weight: 700;
 }
 
@@ -992,7 +992,7 @@ table tfoot td {
   height: 7px;
   -webkit-border-radius: 100%;
           border-radius: 100%;
-  background-color: #515151;
+  background-color: #ebebec;
 }
 
 .about p {
@@ -1023,7 +1023,7 @@ table tfoot td {
 
 .contact .contact-title {
   position: relative;
-  color: #333030;
+  color: #ebebec;
   font-weight: 400;
   font-size: 12px;
   margin: 0 0 5px;
@@ -1043,7 +1043,7 @@ table tfoot td {
   position: absolute;
   top: 50%;
   left: 0;
-  background-color: #515151;
+  background-color: #5f6368;
 }
 
 .contact .contact-title::after {
@@ -1058,7 +1058,7 @@ table tfoot td {
   position: absolute;
   top: 50%;
   right: 0;
-  background-color: #515151;
+  background-color: #5f6368;
 }
 
 .contact ul {
@@ -1078,7 +1078,7 @@ table tfoot td {
 }
 
 .contact ul li a {
-  color: #515151;
+  color: #5f6368;
   display: block;
   padding: 5px;
   font-size: 18px;
@@ -1088,7 +1088,7 @@ table tfoot td {
 }
 
 .contact ul li a:hover {
-  color: #333030;
+  color: #ebebec;
   -webkit-transform: scale(1.2);
       -ms-transform: scale(1.2);
           transform: scale(1.2);
@@ -1162,9 +1162,9 @@ footer .copyright {
 }
 
 .post .post-content .post-title a {
-  font-family: 'PT Serif', serif;
+  font-family: 'Nunito', sans-serif;
   text-decoration: none;
-  color: #263959;
+  color: #89b4f8;
 }
 
 .post .post-content p {

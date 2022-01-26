@@ -1,0 +1,51 @@
+---
+layout: post
+title: Project CUBE
+date: 2022-01-26 13:32:20 +0300
+description: My first major project I have worked on, helping me understand KiCAD, 3D Modelling and product design in general.  # Add post description (optional)
+img: CUBE_Render.jpg # Add image post (optional)
+fig-caption: # Add figcaption (optional)
+tags: [KiCAD, Blender, ESP32, SSD1351, OLED]
+comments: true #Used to add discus comments
+---
+## Origin of idea
+During my year in industry at Huawei, it dawned on me how little practicle experience I had on actual engineering projects. Ive always been into tech and being creative, yet I hadnt ever taken the dive into trying to build something from scratch. I started by surrounding everything I saw online with other engineers and creators to help inspire ideas. Months went past with me silently browsing and finding new creators, when I found a post by [Greg Davill](https://gregdavill.com/blog/2020/6/13/miniature-3456x-led-cube). This colourful cube was exactly the sort of thing I was looking for. It was flashy and "simple enough" to get started. I realised early on that playing with FPGAs was probably a bit too much for a first time project so I looked into ways of working with microcontrollers. I also wanted to miniturise what he had done. So I looked around and found other projects of a similar theme. When I found Pol Pla's paper on [Display Blocks](https://dam-prod.media.mit.edu/x/files/sites/default/files/TEI_DisplayBlocks_CameraReady_lite.pdf). 
+
+>Display Blocks are designed to be a series of handheld
+devices, enabling easy manipulation. Holding a device in
+their hands, users are able to easily rotate it and reveal its
+different sides. Thus, creating a self-enclosed, autonomous
+device was crucial to offering unencumbered exploration of
+content. The final design supports not only single device
+manipulation but also holding multiple devices at once. For
+this purpose, the devices must be easy to manipulate using
+only one hand; this way, users can compare cubes side-byside, adding even more richness to the navigation of data.
+
+After reading this, I knew this was the project I had to work on, no matter how difficult it might be. Not only would it be a great engineering challenge, but it provided a tangible and satisfying object at the end of it.
+
+Details were sparse as to the actual circuitry and design of the 3D printed enclosure, so I assembled a rough BOM for the project using readily available hardware.
+
+1. 4DOLED-282815 (128x128 RGB OLED Display)
+2. ICM20602 (Inertial Measurement Unit)
+3. ESP32-S2-Mini-1U (Microcontroller)
+4. Battery
+
+The hardest part about the project was using Fusion360 and KiCAD in tandem with eachother. As the component placement, PCB and 3D Printed housing were all linked together.
+
+
+![First Design]({{site.baseurl}}/assets/img/MB_Render.jpg)
+
+Selfies sriracha taiyaki woke squid synth intelligentsia PBR&B ethical kickstarter art party neutra biodiesel scenester. Health goth kogi VHS fashion axe glossier disrupt, vegan quinoa. Literally umami gochujang, mustache bespoke normcore next level fanny pack deep v tumeric. Shaman vegan affogato chambray. Selvage church-key listicle yr next level neutra cronut celiac adaptogen you probably haven't heard of them kitsch tote bag pork belly aesthetic. Succulents wolf stumptown art party poutine. Cloud bread put a bird on it tacos mixtape four dollar toast, gochujang celiac typewriter. Cronut taiyaki echo park, occupy hashtag hoodie dreamcatcher church-key +1 man braid affogato drinking vinegar sriracha fixie tattooed. Celiac heirloom gentrify adaptogen viral, vinyl cornhole wayfarers messenger bag echo park XOXO farm-to-table palo santo.
+
+>Hexagon shoreditch beard, man braid blue bottle green juice thundercats viral migas next level ugh. Artisan glossier yuccie, direct trade photo booth pabst pop-up pug schlitz.
+
+Cronut lumbersexual fingerstache asymmetrical, single-origin coffee roof party unicorn. Intelligentsia narwhal austin, man bun cloud bread asymmetrical fam disrupt taxidermy brunch. Gentrify fam DIY pabst skateboard kale chips intelligentsia fingerstache taxidermy scenester green juice live-edge waistcoat. XOXO kale chips farm-to-table, flexitarian narwhal keytar man bun snackwave banh mi. Semiotics pickled taiyaki cliche cold-pressed. Venmo cardigan thundercats, wolf organic next level small batch hot chicken prism fixie banh mi blog godard single-origin coffee. Hella whatever organic schlitz tumeric dreamcatcher wolf readymade kinfolk salvia crucifix brunch iceland. Literally meditation four loko trust fund. Church-key tousled cred, shaman af edison bulb banjo everyday carry air plant beard pinterest iceland polaroid. Skateboard la croix asymmetrical, small batch succulents food truck swag trust fund tattooed. Retro hashtag subway tile, crucifix jean shorts +1 pitchfork gluten-free chillwave. Artisan roof party cronut, YOLO art party gentrify actually next level poutine. Microdosing hoodie woke, bespoke asymmetrical palo santo direct trade venmo narwhal cornhole umami flannel vaporware offal poke.
+
+* Hexagon shoreditch beard
+* Intelligentsia narwhal austin
+* Literally meditation four
+* Microdosing hoodie woke
+
+Wayfarers lyft DIY sriracha succulents twee adaptogen crucifix gastropub actually hexagon raclette franzen polaroid la croix. Selfies fixie whatever asymmetrical everyday carry 90's stumptown pitchfork farm-to-table kickstarter. Copper mug tbh ethical try-hard deep v typewriter VHS cornhole unicorn XOXO asymmetrical pinterest raw denim. Skateboard small batch man bun polaroid neutra. Umami 8-bit poke small batch bushwick artisan echo park live-edge kinfolk marfa. Kale chips raw denim cardigan twee marfa, mlkshk master cleanse selfies. Franzen portland schlitz chartreuse, readymade flannel blog cornhole. Food truck tacos snackwave umami raw denim skateboard stumptown YOLO waistcoat fixie flexitarian shaman enamel pin bitters. Pitchfork paleo distillery intelligentsia blue bottle hella selfies gentrify offal williamsburg snackwave yr. Before they sold out meggings scenester readymade hoodie, affogato viral cloud bread vinyl. Thundercats man bun sriracha, neutra swag knausgaard jean shorts. Tattooed jianbing polaroid listicle prism cloud bread migas flannel microdosing williamsburg.
+
+Echo park try-hard irony tbh vegan pok pok. Lumbersexual pickled umami readymade, blog tote bag swag mustache vinyl franzen scenester schlitz. Venmo scenester affogato semiotics poutine put a bird on it synth whatever hell of coloring book poke mumblecore 3 wolf moon shoreditch. Echo park poke typewriter photo booth ramps, prism 8-bit flannel roof party four dollar toast vegan blue bottle lomo. Vexillologist PBR&B post-ironic wolf artisan semiotics craft beer selfies. Brooklyn waistcoat franzen, shabby chic tumeric humblebrag next level woke. Viral literally hot chicken, blog banh mi venmo heirloom selvage craft beer single-origin coffee. Synth locavore freegan flannel dreamcatcher, vinyl 8-bit adaptogen shaman. Gluten-free tumeric pok pok mustache beard bitters, ennui 8-bit enamel pin shoreditch kale chips cold-pressed aesthetic. Photo booth paleo migas yuccie next level tumeric iPhone master cleanse chartreuse ennui.

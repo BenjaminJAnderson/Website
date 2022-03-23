@@ -67,7 +67,29 @@
   }
 }
 
-@media only screen and (max-width: 1200px) {
+
+// @media only screen and (max-width: 1500px) {
+//   .c-post {
+//     width: 48%;
+//     max-width: 100%;
+//     margin: 0 1% 20px;
+//     flex-direction: column;
+//     .c-post-thumbnail {
+//       width: 100%;
+//       border-radius: 10px 10px 0 0;
+//     }
+//     .c-post-content {
+//       width: 100%;
+//       .c-post-title {
+//         font-size: 21px;
+//         margin: 15px 0;
+//       }
+//     }
+//   }
+// }
+
+
+@media only screen and (max-width: $monitor-width) {
   .c-post {
     width: 48%;
     max-width: 100%;
@@ -87,7 +109,7 @@
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: $phone-width) {
   .c-post {
     width: 100%;
     max-width: 100%;

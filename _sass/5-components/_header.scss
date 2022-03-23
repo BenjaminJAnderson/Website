@@ -22,7 +22,7 @@
 }
 
 .c-search {
-  width: 80%;
+  width: 100%;
   .c-search__box {
     display: flex;
     align-items: center;
@@ -31,15 +31,17 @@
     position: relative;
     width: 100%;
     padding: 10px 10px 10px 40px;
-    border: 1px solid $blue-lighter;
-    border-radius: 30px;
+    border: 1px solid $border-night;
+    background-color: $background-night;
+    border-radius: $global-radius;
     outline: none;
-    color: $gray;
+    color: $text-night;
     &::placeholder {
-      color: $gray-lighter;
+      color: $text-night;
     }
     &:hover {
-      box-shadow: 0 1px 0px rgba(132, 135, 138, 0.1);
+      // box-shadow: 0 1px 0px rgba(132, 135, 138, 0.1);
+      background-color: $selected-night;
       transition: $global-transition;
     }
   }
@@ -47,8 +49,9 @@
     position: absolute;
     width: 100%;
     margin: 10px 0 0;
+    border-radius: $global-radius;
     list-style-type: none;
-    background-color: $white-color;
+    background-color: $background-night;
     z-index: 1;
     li {
       display: flex;
@@ -56,20 +59,20 @@
       align-items: center;
       margin: 0;
       padding: 20px 25px 0;
-      background-color: $white-color;
+      background-color: $background-night;
       line-height: 1.4;
-      border-left: solid 1px $gray-lighten;
-      border-right: solid 1px $gray-lighten;
+      border-left: solid 1px $border-night;
+      border-right: solid 1px $border-night;
       &:first-child {
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-        border-top: solid 1px $gray-lighten;
+        border-top-left-radius: $global-radius;
+        border-top-right-radius: $global-radius;
+        border-top: solid 1px $border-night;
       }
       &:last-child {
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: $global-radius;
+        border-bottom-right-radius: $global-radius;
         padding-bottom: 25px;
-        border-bottom: solid 1px $gray-lighten;
+        border-bottom: solid 1px $border-night;
       }
       a {
         font-size: 16px;
@@ -92,28 +95,26 @@
       font-size: 10px;
       text-transform: uppercase;
       white-space: nowrap;
-      border: 1px solid $blue-lighter;
-      box-shadow: 0 1px 0px rgba(132, 135, 138, 0.4);
-      will-change: transform;
-      transform: translateY(0px);
+      border: 1px solid $border-night;
+      // box-shadow: 0 1px 0px rgba(132, 135, 138, 0.4);
+      // will-change: transform;
+      // transform: translateY(0px);
       cursor: pointer;
       &:hover {
-        color: $dark;
-        background-color: $white-color;
+        color: $text-night;
+        background-color: $selected-night;
+        transform: $global-transition;
       }
       &.is-active {
-        box-shadow: 0 0 0 rgba(132, 135, 138, 0.5);
-        transform: translateY(1px);
-        color: $secondary-color;
-        &:hover {
-          background-color: $background-night;
-        }
+        // box-shadow: 0 0 0 rgba(132, 135, 138, 0.5);
+        color: $border-day;
+        background-color: $background-day;
       }
       &:first-child {
-        border-radius: 10px 0 0 10px;
+        border-radius: $global-radius 0 0 $global-radius;
       }
       &:last-child {
-        border-radius: 0 10px 10px 0;
+        border-radius: 0 $global-radius $global-radius 0;
       }
       .icon {
         width: 18px;

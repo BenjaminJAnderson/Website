@@ -1,25 +1,25 @@
-title: Welcome to Flexton
-description: Flexton is a responsive and ultra-minimal theme for Jekyll.
+title: Welcome to my portfolio website
+description: Benjamin's portfolio website documenting the different projects he's working on and the lessons he learnt along the way. 
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "flexton.netlify.com" # the base hostname & protocol for your site, e.g. http://example.com
+url: "engiebeni.com" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Author
-author-name:    Clayton Hanson
+author-name:    Benjamin Anderson
 author-image:   1.jpg
-author-job:     Web Developer
-author-email:   your-email@domain.com # Add your email for contant form.
-author-twitter: artemsheludko_ # Add your twitter account
-about-author:   I am a web developer focusing on front-end development. Always hungry to keep learning.
+author-job:     Hardware Engineer
+author-email:   thebenjaminjanderson@gmail.com # Add your email for contant form.
+author-twitter: engiebenji1999 # Add your twitter account
+about-author:   I'm a graduate electronic engineer interested in hardware design, using this blog website to document my projects.
 
 # Social settings
-social-twitter:   artemsheludko_
+social-twitter:   engiebenji1999
 social-facebook:
-social-github:    artemsheludko
-social-pinterest: artemsheludko
-social-instagram: artemsheludko_
+social-github:    BenjaminJAnderson
+social-pinterest:
+social-instagram:
 social-youtube:
 social-vk:   
-social-linkedin:
+social-linkedin:  engiebenji
 
 # Newsletter
 mailchimp: # Add your MailChimp form identifier. For example - blogenjoyfreedom.us16.list-manage.com/subscribe/post?u=cd56155d76ddeeb4c0bc4d080&amp;id=7a526cd13e

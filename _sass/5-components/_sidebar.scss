@@ -14,21 +14,22 @@
   padding: 40px 20px 20px;
   text-align: center;
   box-shadow: 1px 1px 0 rgba(31, 35, 46, 0.15);
-  background-color: $white-color;
+  background-color: $background-night;
+  border-right: 1px solid #5f6368;
 }
 
 .c-sidebar-author {
   .c-author__cover {
-    width: 100px;
-    height: 100px;
+    width: 128px;
+    height: 128px;
     margin: 0 auto 10px;
-    border-radius: 50%;
+    // border-radius: 50%;
     overflow: hidden;
-    background-color: $secondary-color;
+    // background-color: $secondary-color;
     img {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
+      // border-radius: 50%;
       transition: $global-transition;
       &:hover {
         transform: scale3d(0.90,0.90,1);
@@ -42,7 +43,7 @@
         width: 18px;
         height: 18px;
         vertical-align: text-bottom;
-        fill: $white-color;
+        fill: $background-night;
       }
     }
   }
@@ -132,7 +133,7 @@
   }
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: $tablet-width) {
   .c-sidebar {
     position: relative;
     width: 100%;
@@ -156,7 +157,7 @@
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: $phone-width) {
   .c-sidebar-author {
     .c-author__cover {
       width: 80px;

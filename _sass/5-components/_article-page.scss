@@ -134,7 +134,7 @@
   }
 }
 
-@media only screen and (max-width: 1200px) {
+@media only screen and (max-width: $monitor-width) {
   .c-recent-post {
     .c-recent__item {
       max-width: 48%;
@@ -143,13 +143,13 @@
   }
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: $tablet-width) {
   .c-article {
     margin: 15px 0;
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: $phone-width) {
   .c-wrap-content {
     padding: 15px;
   }

@@ -14,19 +14,19 @@
   transition: $global-transition;
 
   &--primary {
-    color: $white-color;
-    background-color: $primary-color;
-    background: linear-gradient(135deg, #33aaff 0%, #62d5ff 100%);
+    color: $text-day;
+    background-color: $text-day;
+    background: $buttons-night;
   }
 
   &--secondary {
-    color: $white-color;
-    background-color: $secondary-color;
-    background: linear-gradient(135deg, #a2a2bd 0%,#cfcfdd 100%);
+    color: $text-day;
+    background-color: $text-day;
+    background: $buttons-night;
   }
 
   &--round {
-    border-radius: 30px;
+    border-radius: 10px;
   }
 
   &--shadow {

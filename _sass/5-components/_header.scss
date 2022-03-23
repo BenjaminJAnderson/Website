@@ -106,7 +106,7 @@
         transform: translateY(1px);
         color: $secondary-color;
         &:hover {
-          background-color: $background;
+          background-color: $background-night;
         }
       }
       &:first-child {
@@ -124,13 +124,13 @@
   }
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: $tablet-width) {
   .c-header {
     margin: 15px 0;
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: $phone-width) {
   .c-header {
     .c-header__box {
       flex-direction: column;

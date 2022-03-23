@@ -26,12 +26,20 @@ $blue-lighter: #dce4ea;
 $blue-dark: #263959;
 
 // Background Colors
-$background: #fbfbfb;
-$alternate-background: #fafafa;
+$background-night: #202124;
+$alternate-background: #e8eaed;
+$background-day: #e8eaed;
 
 
 // Body Color
-$text-color: #404040;
+$text-night: #e8eaed;
+$text-day: #202124;
+$text-color: #515151;
+
+// Button Color
+$buttons-night: #e8eaed;
+
+$buttons-day: #515151;
 
 
 // Headings

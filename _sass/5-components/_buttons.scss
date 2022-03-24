@@ -14,27 +14,29 @@
   transition: $global-transition;
 
   &--primary {
-    color: $text-day;
-    background-color: $text-day;
-    background: $buttons-night;
+    color: $text-night;
+    $border-color: $red-color;
+    background-color: $selected-night;
+    background: $background-night;
   }
 
   &--secondary {
-    color: $text-day;
-    background-color: $text-day;
-    background: $buttons-night;
+    color: $text-night;
+    background-color: $selected-night;
+    background: $background-night;
   }
+
 
   &--round {
     border-radius: 10px;
   }
 
-  &--shadow {
-    box-shadow: 8px 10px 20px 0 rgba(46, 61, 73, .15);
-    &:hover {
-      box-shadow: 2px 4px 8px 0px rgba(46, 61, 73, 0.2);
-    }
-  }
+  // &--shadow {
+  //   box-shadow: 8px 10px 20px 0 rgba(46, 61, 73, .15);
+  //   &:hover {
+  //     box-shadow: 2px 4px 8px 0px rgba(46, 61, 73, 0.2);
+  //   }
+  // }
 
   &--middle {
     display: block;
@@ -48,11 +50,13 @@
   }
 
   &:hover {
-    color: $white-color;
-    transition: $global-transition;
+    color: $text-night;
+    background-color: $selected-night;
+    transform: $global-transition;
   }
 
   &:active {
-    transform: translateY(2px);
+    color: $border-day;
+    background-color: $background-day;
   }
 }

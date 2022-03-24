@@ -15,7 +15,7 @@
   text-align: center;
   box-shadow: 1px 1px 0 rgba(31, 35, 46, 0.15);
   background-color: $background-night;
-  border-right: 1px solid #5f6368;
+  // border-right: 1px solid #5f6368;
 }
 
 .c-sidebar-author {
@@ -43,7 +43,7 @@
         width: 18px;
         height: 18px;
         vertical-align: text-bottom;
-        fill: $background-night;
+        fill: $text-night;
       }
     }
   }
@@ -51,13 +51,14 @@
     font-family: 'Volkhov', serif;
   }
   .c-author__name {
+    color: $text-night;
     font-size: 18px;
     font-weight: 700;
     line-height: 21px;
   }
   .c-author__job {
     font-size: 12px;
-    color: $gray;
+    color: darken($text-night, 40%);
     margin: 5px 0 0;
   }
   .c-contact-menu {

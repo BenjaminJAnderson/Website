@@ -1,10 +1,10 @@
-title: Welcome to my portfolio website
+title: Benjamin Andersons Engineering Blog
 description: Benjamin's portfolio website documenting the different projects he's working on and the lessons he learnt along the way. 
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "engiebeni.com" # the base hostname & protocol for your site, e.g. http://example.com
+url: "engiebenji.com" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Author
-author-name:    Benjamin Anderson
+author-name:    BENJAMIN ANDERSON
 author-image:   1.jpg
 author-job:     Hardware Engineer
 author-email:   thebenjaminjanderson@gmail.com # Add your email for contant form.

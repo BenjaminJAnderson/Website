@@ -16,7 +16,7 @@
   flex-direction: row;
   align-items: stretch;
   min-height: 180px;
-  border-radius: 10px;
+  border-radius: 0px;
   overflow: hidden;
   transition: $global-transition;
   background-color: $white-color;
@@ -30,7 +30,7 @@
     width: 30%;
     max-width: 100%;
     min-height: 180px;
-    border-radius: 10px 0 0 10px;
+    border-radius: 0px;
     background-color: rgba(220,235,245,0.2);
     background-size: cover;
     background-position: 50% 50%;
@@ -97,7 +97,7 @@
     flex-direction: column;
     .c-post-thumbnail {
       width: 100%;
-      border-radius: 10px 10px 0 0;
+      border-radius: 0px;
     }
     .c-post-content {
       width: 100%;

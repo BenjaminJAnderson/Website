@@ -17,7 +17,7 @@
     position: absolute;
     top: 7px;
     left: 15px;
-    fill: $gray-lighter;
+    fill: $text-day;
   }
 }
 
@@ -40,8 +40,7 @@
       color: $text-day;
     }
     &:hover {
-      // box-shadow: 0 1px 0px rgba(132, 135, 138, 0.1);
-      background-color: $selected-day;
+      // filter: invert(95%);
       transition: $global-transition;
     }
   }

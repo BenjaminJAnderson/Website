@@ -9,8 +9,8 @@ layout: default
       </a>
     </div>
     <div class="c-author__info">
-      <div class="c-author__name">{{site.author-name}}</div>
-      <span class="c-author__job">{{site.author-job}}</span>
+      <div class="c-author__name"><mark>&nbsp;{{site.author-name}}&nbsp;</mark></div>
+      <span class="c-author__job"><mark>&nbsp;{{site.author-job}}&nbsp;</mark></span>
     </div>
     <div class="c-contact-menu">
       {% if site.author-email %}
@@ -27,7 +27,7 @@ layout: default
 
   <div class="c-sidebar-footer">
     <div class="c-social">
-      <div class="c-social__title">Social</div>
+      <div class="c-social__title"><mark>&nbsp;SOCIAL&nbsp;</mark></div>
       <ul class="c-social__list u-lists-reset">
         {% if site.social-twitter %}
           <li class="c-social__item"><a href="https://twitter.com/{{ site.social-twitter }}" target="_blank"><div data-icon='ei-sc-twitter' data-size='s'></div></a></li>

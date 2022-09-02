@@ -4,7 +4,6 @@
 
 $primary-color: #33aaff;
 $secondary-color: #cfcfdd;
-$alternate-color: #404040;
 $red-color: #ee6c6c;
 $green-color: #55bf55;
 $white-color: #ffffff;
@@ -25,28 +24,25 @@ $blue-light: #cfcfdd;
 $blue-lighter: #dce4ea;
 $blue-dark: #263959;
 
-// Background Colors
+// Night Colors
 $background-night: #202124;
-$alternate-background: #e8eaed;
-$background-day: #e8eaed;
-$selected-night: #303134;
-
-// Border Colours
 $border-night: #46494d;
-$border-day: #202124;
-
-// Body Color
 $text-night: #e8eaed;
-$text-day: #202124;
+$selected-night: #303134;
+$search-night: #e8eaed;
+$buttons-night: #e8eaed;
+
+// Day Colors
+$background-day: #f0f0f0;
+$border-day: #000000;
+$text-day: #000000;
+$selected-day: #303134;
+$search-day: #000000;
+$buttons-day: #515151;
+
+
 $text-color: #515151;
 
-// Search Color
-$search-night: #e8eaed;
-$search-day: #202124;
-
-// Button Color
-$buttons-night: #e8eaed;
-$buttons-day: #515151;
 
 
 // Headings

@@ -14,16 +14,16 @@
   transition: $global-transition;
 
   &--primary {
-    color: $text-night;
+    color: $text-day;
     $border-color: $red-color;
-    background-color: $selected-night;
-    background: $background-night;
+    background-color: $selected-day;
+    background: $background-day;
   }
 
   &--secondary {
-    color: $text-night;
-    background-color: $selected-night;
-    background: $background-night;
+    color: $text-day;
+    background-color: $selected-day;
+    background: $background-day;
   }
 
 

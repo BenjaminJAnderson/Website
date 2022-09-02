@@ -14,8 +14,12 @@
   padding: 40px 20px 20px;
   text-align: center;
   box-shadow: 1px 1px 0 rgba(31, 35, 46, 0.15);
-  background-color: $background-night;
+  background-color: $background-day;
   // border-right: 1px solid #5f6368;
+}
+
+::selection {
+  background: #000000; /* WebKit/Blink Browsers */
 }
 
 .c-sidebar-author {
@@ -43,7 +47,7 @@
         width: 18px;
         height: 18px;
         vertical-align: text-bottom;
-        fill: $text-night;
+        fill: $text-day;
       }
     }
   }
@@ -51,14 +55,15 @@
     font-family: 'Roboto', serif;
   }
   .c-author__name {
-    color: $text-night;
+    color: $text-day;
     font-size: 24px;
     font-weight: 700;
     line-height: 21px;
+    word-break: break-all;
   }
   .c-author__job {
     font-size: 12px;
-    color: darken($text-night, 40%);
+    color: darken($text-day, 40%);
     margin: 5px 0 0;
   }
   .c-contact-menu {

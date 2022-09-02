@@ -31,17 +31,17 @@
     position: relative;
     width: 100%;
     padding: 10px 10px 10px 40px;
-    border: 1px solid $border-night;
-    background-color: $background-night;
+    border: 1px solid $border-day;
+    background-color: $background-day;
     border-radius: $global-radius;
     outline: none;
-    color: $text-night;
+    color: $text-day;
     &::placeholder {
-      color: $text-night;
+      color: $text-day;
     }
     &:hover {
       // box-shadow: 0 1px 0px rgba(132, 135, 138, 0.1);
-      background-color: $selected-night;
+      background-color: $selected-day;
       transition: $global-transition;
     }
   }
@@ -51,7 +51,7 @@
     margin: 10px 0 0;
     border-radius: $global-radius;
     list-style-type: none;
-    background-color: $background-night;
+    background-color: $background-day;
     z-index: 1;
     li {
       display: flex;
@@ -59,20 +59,20 @@
       align-items: center;
       margin: 0;
       padding: 20px 25px 0;
-      background-color: $background-night;
+      background-color: $background-day;
       line-height: 1.4;
-      border-left: solid 1px $border-night;
-      border-right: solid 1px $border-night;
+      border-left: solid 1px $border-day;
+      border-right: solid 1px $border-day;
       &:first-child {
         border-top-left-radius: $global-radius;
         border-top-right-radius: $global-radius;
-        border-top: solid 1px $border-night;
+        border-top: solid 1px $border-day;
       }
       &:last-child {
         border-bottom-left-radius: $global-radius;
         border-bottom-right-radius: $global-radius;
         padding-bottom: 25px;
-        border-bottom: solid 1px $border-night;
+        border-bottom: solid 1px $border-day;
       }
       a {
         font-size: 16px;
@@ -95,14 +95,14 @@
       font-size: 10px;
       text-transform: uppercase;
       white-space: nowrap;
-      border: 1px solid $border-night;
+      border: 1px solid $border-day;
       // box-shadow: 0 1px 0px rgba(132, 135, 138, 0.4);
       // will-change: transform;
       // transform: translateY(0px);
       cursor: pointer;
       &:hover {
-        color: $text-night;
-        background-color: $selected-night;
+        color: $text-day;
+        background-color: $selected-day;
         transform: $global-transition;
       }
       &.is-active {

@@ -44,3 +44,7 @@
 
 // 6 TRUMPS
 @import '6-trumps/helpers';
+
+::selection {
+    background: #000000; /* WebKit/Blink Browsers */
+  }

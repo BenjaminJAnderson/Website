@@ -4,32 +4,24 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "engiebenji.com" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Author
-author-first:   BENJAMIN 
-author-last:    ANDERSON
+# author-first:   BENJAMIN 
+# author-last:    ANDERSON
 author-image:   1.webp
-author-job:     ELECTRONIC ENGINEER
-author-email:   thebenjaminjanderson@gmail.com # Add your email for contant form.
-author-twitter: engiebenji1999 # Add your twitter account
+# author-job:     ELECTRONIC ENGINEER
+author-email:   thebenjaminjanderson@gmail.com
+author-twitter: engiebenji1999
 about-author:   I'm a graduate electronic engineer interested in hardware design, using this blog website to document my projects.
 
 # Social settings
 social-twitter:   engiebenji1999
-social-facebook:
 social-github:    BenjaminJAnderson
-social-pinterest:
-social-instagram:
-social-youtube:
-social-vk:   
 social-linkedin:  engiebenji
-
-# Newsletter
-mailchimp: # Add your MailChimp form identifier. For example - blogenjoyfreedom.us16.list-manage.com/subscribe/post?u=cd56155d76ddeeb4c0bc4d080&amp;id=7a526cd13e
 
 # Google Analytics
 google-analytics: # Add your identifier. For example UA-99631805-1
 
 # Comment Section (Disqus)
-disqus-identifier: mr-brown # Add your shortname for Disqus Comment. For example mr-brown
+disqus-identifier: EngieBenji # Add your shortname for Disqus Comment. For example mr-brown
 
 # Build settings
 markdown: kramdown

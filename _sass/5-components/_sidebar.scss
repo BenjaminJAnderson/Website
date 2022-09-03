@@ -10,12 +10,11 @@
   top: 0;
   left: 0;
   bottom: 0;
-  width: 220px;
+  width: $sidebar-width;
   padding: 40px 20px 20px;
   text-align: center;
   box-shadow:1px 1px 0px 0px invert($border-day,80%);
   background-color: $background-day;
-  // border-right: 1px solid #5f6368;
 }
 
 .c-sidebar-author {

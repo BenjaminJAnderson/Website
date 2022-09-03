@@ -37,7 +37,7 @@
   span {
     font-size: 13px;
     text-transform: uppercase;
-    color: $gray;
+    color: $text-day;
   }
 }
 
@@ -47,14 +47,11 @@
   text-align: center;
   border-bottom: 1px solid $border-color;
   .c-article__share {
-    transition: $global-transition;
     a {
       .icon {
         vertical-align: middle;
-        transition: $global-transition;
         &:hover {
           opacity: .7;
-          transition: $global-transition;
         }
       }
     }
@@ -65,14 +62,17 @@
       display: inline-block;
       vertical-align: middle;
       padding: 5px 10px;
-      font-family: 'Roboto', 'Times New Roman', Times, serif;
+      font-family: Roboto;
+      font-weight: 700;
       font-size: 10px;
       line-height: 10px;
       text-transform: uppercase;
-      background-color: rgba(115, 138, 160, 0.60);
-      color: $white-color;
+      background-color: $background-day;
+      box-shadow:0px 0px 0px 1px $border-day;
+      color: $text-day;
       &:hover {
-        background-color: darken(rgba(115, 138, 160, 0.60), 15%);
+        background-color: $background-night;
+        color: $text-night;
       }
       &:last-child {
         margin-right: 0;
@@ -129,7 +129,7 @@
     background-repeat: no-repeat;
   }
   .c-recent__date {
-    color: $gray;
+    color: $text-day;
     font-size: 12px;
   }
 }

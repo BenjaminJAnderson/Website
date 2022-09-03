@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Where I rest after work
+title: WHERE I REST AFTER WORK
 image: 3.jpg
 date: 2018-02-07 18:23:20 +0200
 tags: [rest, work]

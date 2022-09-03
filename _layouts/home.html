@@ -9,10 +9,12 @@ layout: default
       </a>
     </div>
     <div class="c-author__info">
-      <div class="c-author__name"><mark>&nbsp;{{site.author-name}}&nbsp;</mark></div>
-      <span class="c-author__job"><mark>&nbsp;{{site.author-job}}&nbsp;</mark></span>
+      <div class="c-author__first"><mark>&nbsp;{{site.author-first}}&nbsp;</mark></div>
+      <div class="c-author__last"><mark>&nbsp;{{site.author-last}}&nbsp;</mark></div>
+      <span class="c-author__job">{{site.author-job}}</span>
     </div>
-    <div class="c-contact-menu">
+    <p class="c-author__about">{{site.about-author | strip_html | truncatewords: 50}}</p>
+    <div class="c-menu">
       {% if site.author-email %}
       <a href="/contact" class="c-contact-btn c-btn c-btn--secondary c-btn--round c-btn--shadow"><span data-icon='ei-envelope' data-size='s'></span> Send me</a>
       {% else %}
@@ -22,7 +24,6 @@ layout: default
       {% else %}
       {% endif %}
     </div>
-    <p class="c-author__about">{{site.about-author | strip_html | truncatewords: 50}}</p>
   </div>
 
   <div class="c-sidebar-footer">

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: The best way to decorate your desktop
+title: THE BEST WAY TO DECORATE YOUR DESKTOP
 image: 10.jpg
 date: 2018-02-06 10:05:20 +0200
 tags: [workflow, decoration]

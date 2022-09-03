@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Must read books for programmers
+title: MUST READ BOOKS FOR PROGRAMMERS
 image: 6.jpg
 date: 2018-02-06 10:23:20 +0200
 tags: [books, rest]

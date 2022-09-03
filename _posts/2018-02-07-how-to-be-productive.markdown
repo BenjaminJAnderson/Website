@@ -1,6 +1,6 @@
 ---
 layout: post
-title: How to be productive?
+title: HOW TO BE PRODUCTIVE?
 image: 9.jpg
 date: 2018-02-07 17:50:18 +0200
 tags: [workflow, programming]

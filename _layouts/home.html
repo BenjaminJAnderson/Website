@@ -8,21 +8,11 @@ layout: default
         <img src="{{site.baseurl}}/images/{% if site.author-image %}{{site.author-image}}{% endif %}" alt="{{site.author-name}}">
       </a>
     </div>
-    <div class="c-author__info">
-      <!-- <div class="c-author__first"><mark>&nbsp;{{site.author-first}}&nbsp;</mark></div>
-      <div class="c-author__last"><mark>&nbsp;{{site.author-last}}&nbsp;</mark></div>
-      <span class="c-author__job">{{site.author-job}}</span> -->
-    </div>
-    <!-- <p class="c-author__about">{{site.about-author | strip_html | truncatewords: 50}}</p> -->
     <div class="c-menu">
-      {% if site.author-email %}
-      <a href="/contact" class="c-contact-btn c-btn c-btn--secondary c-btn--round c-btn--shadow"><span data-icon='ei-envelope' data-size='s'></span> Send me</a>
-      {% else %}
-      {% endif %}
-      {% if site.author-twitter %}
-      <a href="https://twitter.com/intent/user?screen_name={{ site.social-twitter }}" class="c-btn c-btn--primary c-btn--round c-btn--shadow"><span data-icon='ei-sc-twitter' data-size='s'></span> Follow me</a>
-      {% else %}
-      {% endif %}
+      <a href="/about" class="c-btn c-btn--primary">ABOUT ME</a>
+      <a href="/ideas" class="c-btn c-btn--primary">IDEAS</a>
+      <a href="/cv" class="c-btn c-btn--primary">CV</a>
+      <a href="/contact" class="c-btn c-btn--primary">CONTACT</a>
     </div>
   </div>
 
@@ -65,7 +55,7 @@ layout: default
       </ul>
     </div>
     <div class="c-copyright">
-      <p>{{site.time | date: '%Y'}} &copy; {{site.author-name}}</p>
+      <p>{{site.time | date: '%Y'}} &copy; {{site.author-first}}</p>
     </div>
   </div>
 </aside> <!-- /.c-sidebar -->

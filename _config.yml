@@ -4,10 +4,10 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "engiebenji.com" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Author
-# author-first:   BENJAMIN 
-# author-last:    ANDERSON
+author-first:   BENJAMIN 
+author-last:    ANDERSON
 author-image:   1.webp
-# author-job:     ELECTRONIC ENGINEER
+author-job:     ELECTRONIC ENGINEER
 author-email:   thebenjaminjanderson@gmail.com
 author-twitter: engiebenji1999
 about-author:   I'm a graduate electronic engineer interested in hardware design, using this blog website to document my projects.

@@ -24,22 +24,19 @@ $blue-light: #cfcfdd;
 $blue-lighter: #dce4ea;
 $blue-dark: #263959;
 
-// Night Colors
-$background-night: #202124;
-$border-night: #46494d;
-$text-night: #e8eaed;
-$selected-night: #303134;
-$buttons-night: #e8eaed;
-
-// Day Colors
+// Day Color
 $background-day: #f0f0f0;
 $border-day: #000000;
 $text-day: #000000;
 $selected-day: #000000;
 $buttons-day: #515151;
 
-
-$text-color: #515151;
+// Night Color
+$background-night: invert($background-day, 90%);
+$border-night:	invert($border-day, 90%);
+$text-night: invert($text-day, 90%);
+$selected-night:  invert($selected-day, 90%);
+$buttons-night:  invert($buttons-day, 90%);
 
 
 

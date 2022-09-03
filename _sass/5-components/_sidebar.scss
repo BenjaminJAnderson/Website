@@ -113,13 +113,10 @@
     .icon {
       width: 27px;
       height: 27px;
-      fill: $darkest;
+      fill: $buttons-day;
       vertical-align: middle;
-      transition: $global-transition;
       &:hover {
-        fill: $primary-color;
         transform: scale(1.2);
-        transition: $global-transition;
       }
     }
   }

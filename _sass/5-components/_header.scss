@@ -34,7 +34,6 @@
     border: 1px solid $border-day;
     background-color: $background-day;
     outline: none;
-    // box-shadow:0px 0px 0px 1px $border-day;
     color: $text-day;
     &::placeholder {
       color: $text-day;
@@ -89,8 +88,10 @@
       display: flex;
       align-items: center;
       float: left;
-      padding: 4px 10px;
-      font-size: 10px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: Roboto;
       text-transform: uppercase;
       white-space: nowrap;
       box-shadow:0px 0px 0px 1px $border-day;

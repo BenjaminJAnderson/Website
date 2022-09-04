@@ -28,7 +28,10 @@
 .c-article__header {
   margin-bottom: 20px;
   text-align: center;
+  text-transform: uppercase;
+  font-family: Roboto;
   .c-article__title {
+    font-weight: 700;
     margin-bottom: 10px;
   }
 }

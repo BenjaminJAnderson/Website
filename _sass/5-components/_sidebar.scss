@@ -32,7 +32,6 @@
   }
   .c-menu {
     .c-btn {
-      // min-width: 0px;
       min-width: $sidebar-width;
     }
   }
@@ -49,22 +48,20 @@
       content: "";
       display: block;
       height: 2px;
-      width: calc(50% - 40px);
-      transform: translateY(-50%);
+      width: 20%;
       position: absolute;
       top: 50%;
-      left: 0;
+      left: 10%;
       background-color: $darkest;
     }
     &::after {
       content: "";
       display: block;
       height: 2px;
-      width: calc(50% - 40px);
-      transform: translateY(-50%);
+      width: 20%;
       position: absolute;
       top: 50%;
-      right: 0;
+      right: 10%;
       background-color: $darkest;
     }
   }

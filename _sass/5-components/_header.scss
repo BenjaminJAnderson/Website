@@ -142,18 +142,15 @@
     }
     .c-search {
       width: 100%;
-      .c-search__text {
-        padding: 8px 8px 8px 40px;
-      }
     }
     .c-nav {
       margin-top: 15px;
       .c-nav__list {
-        justify-content: center;
+        justify-content: left;
       }
-      .c-nav__item {
-        padding: 4px 8px;
-      }
+      // .c-nav__item {
+      //   padding: 4px 8px;
+      // }
     }
   }
 }

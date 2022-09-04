@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: about
 title: "about me"
 permalink: /about/
 image: 12.jpg

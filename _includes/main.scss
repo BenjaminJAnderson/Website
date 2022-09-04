@@ -45,7 +45,7 @@
 // 6 TRUMPS
 @import '6-trumps/helpers';
 
-*::selection {
+::selection {
   color: $text-night;
   background-color: $selected-day;
 }

@@ -23,6 +23,9 @@ google-analytics: # Add your identifier. For example UA-99631805-1
 # Comment Section (Disqus)
 disqus-identifier: EngieBenji # Add your shortname for Disqus Comment. For example mr-brown
 
+# Formspree
+formspree-identifier: mlevgdzp
+
 # Build settings
 markdown: kramdown
 permalink: /:year/:month/:day/:title/

@@ -26,7 +26,7 @@
   padding: 20px 10px;
   border-radius: $global-radius;
   box-shadow: 5px 5px 25px rgba(46, 61, 73, .15);
-  background-color: $white-color;
+  background-color: $background-day;
   transition: $global-transition;
   &:hover {
     box-shadow: 2px 4px 8px 0px rgba(46, 61, 73, 0.2);
@@ -84,7 +84,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: 700;
-    color: $white-color;
+    color: $background-day;
     text-transform: uppercase;
     text-shadow: 0 1px 0 rgba(104, 172, 191, 0.3);
     opacity: 0;
@@ -114,8 +114,8 @@
       vertical-align: baseline;
       margin-right: 5px;
       border-radius: 50%;
-      color: $white-color;
-      background-color: $red-color;
+      color: $text-day;
+      background-color: $background-day;
     }
   }
 }

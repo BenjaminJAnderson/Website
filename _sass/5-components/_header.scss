@@ -17,7 +17,7 @@
   .icon--ei-search {
     position: absolute;
     top: 7px;
-    left: 15px;
+    left: 7px;
     fill: $text-day;
   }
 }
@@ -43,12 +43,12 @@
     &:focus {
       color: $text-night;
       background-color: $background-night;
-      .c-header__box {
-        .icon--ei-search {
-          fill: $text-night;
-        }
-      }
+      fill: $text-night;
     }
+    &:focus+.icon {
+      fill: $text-night;
+    }
+    
   }
   .c-search-results-list {
     position: absolute;

@@ -72,8 +72,12 @@
 @media only screen and (max-width: $phone-width) {
   .c-post {
     width: 100%;
+    flex-direction: column;
     max-width: 100%;
     margin: 0 0 20px;
+    .c-post-thumbnail {
+      width: 100%;
+    }
     .c-post-content {
       width: 100%;
       .c-post-title {

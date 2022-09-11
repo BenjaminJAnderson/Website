@@ -4,11 +4,8 @@
 
 a {
     text-decoration: none;
-    color: $link-color;
+    font-family: Roboto;
+    text-transform: uppercase;
+    color: $text-day;
     transition: $global-transition;
-
-    &:hover {
-        color: $link-color-hover;
-    }
-
 }

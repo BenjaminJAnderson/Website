@@ -53,7 +53,7 @@
   .c-search-results-list {
     position: absolute;
     width: 100%;
-    margin: 10px 0 0;
+    margin: 20px 0 0;
     border-radius: $global-radius;
     list-style-type: none;
     background-color: $background-day;
@@ -68,19 +68,15 @@
       line-height: 1.4;
       border-left: solid 1px $border-day;
       border-right: solid 1px $border-day;
-      &:first-child {
-        border-top-left-radius: $global-radius;
-        border-top-right-radius: $global-radius;
-        border-top: solid 1px $border-day;
-      }
       &:last-child {
-        border-bottom-left-radius: $global-radius;
-        border-bottom-right-radius: $global-radius;
         padding-bottom: 25px;
-        border-bottom: solid 1px $border-day;
+
       }
       a {
         font-size: 16px;
+        &:hover {
+          transform: scale(0.99);
+        }
       }
     }
   }

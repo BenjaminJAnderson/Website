@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.26456658"
-     inkscape:cx="2281.6577"
-     inkscape:cy="1909.941"
+     inkscape:zoom="0.13228329"
+     inkscape:cx="-129.73673"
+     inkscape:cy="1203.3945"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -165,6 +165,20 @@
        inkscape:locked="false"
        inkscape:label=""
        inkscape:color="rgb(0,0,255)" />
+    <sodipodi:guide
+       position="0,450.00002"
+       orientation="0,1"
+       id="guide913"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,0,255)" />
+    <sodipodi:guide
+       position="0,50.000002"
+       orientation="0,1"
+       id="guide915"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,0,255)" />
   </sodipodi:namedview>
   <metadata
      id="metadata5">
@@ -185,8 +199,8 @@
      transform="translate(0,403)">
     <path
        style="fill:#000000;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
-       d="M 699.99999,-403.00003 H 0 v 700 H 699.99999 V 96.999973 l -50,-50.000006 50,-50.0000047 V -203.00003 H 200 v 99.99998 H 599.99998 V -3.0000377 H 200 V 96.999973 H 599.99998 V 196.99996 H 99.999995 V -303.00002 H 699.99999 Z"
-       id="path81"
+       d="M 699.99999,-403.00003 H 0 v 700 h 649.99999 l 50,-50.00001 V 96.999973 l -50,-50.000006 50,-50.0000047 V -153.00003 l -50,-50 H 200 v 99.99998 H 599.99998 V -3.0000377 H 200 V 96.999973 H 599.99998 V 196.99996 H 99.999995 V -303.00002 H 699.99999 Z"
+       id="path917"
        inkscape:connector-curvature="0" />
   </g>
 </svg>

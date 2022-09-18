@@ -40,10 +40,13 @@
     background-color: $background-day;
     outline: none;
     color: $text-day;
+    // font-size: 12px;
+    font-weight: 700;
+    font-family: Roboto;
+    text-transform: uppercase;
     &:focus {
       color: $text-night;
       background-color: $background-night;
-      fill: $text-night;
     }
     &:focus+.icon {
       fill: $text-night;
@@ -56,6 +59,9 @@
     margin: 20px 0 0;
     border-radius: $global-radius;
     list-style-type: none;
+    font-weight: 700;
+    font-family: Roboto;
+    text-transform: uppercase;
     background-color: $background-day;
     z-index: 1;
     li {
@@ -63,13 +69,12 @@
       flex-wrap: wrap;
       align-items: center;
       margin: 0;
-      padding: 20px 25px 0;
+      padding: 12px 15px 0;
       background-color: $background-day;
       line-height: 1.4;
-      border-left: solid 1px $border-day;
-      border-right: solid 1px $border-day;
+
       &:last-child {
-        padding-bottom: 25px;
+        padding-bottom: 8px;
 
       }
       a {

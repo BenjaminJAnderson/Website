@@ -11,7 +11,8 @@ $(document).ready(function () {
     resultsContainer: document.getElementById('js-results-container'),
     json: '/search.json',
     searchResultTemplate: '<li><a href="{url}">{title}</a></li>',
-    noResultsText: '<li>NO RESULTS FOUND</li>'
+    noResultsText: '<li>NO RESULTS FOUND</li>',
+    limit: 5
   })
 
   /* =======================

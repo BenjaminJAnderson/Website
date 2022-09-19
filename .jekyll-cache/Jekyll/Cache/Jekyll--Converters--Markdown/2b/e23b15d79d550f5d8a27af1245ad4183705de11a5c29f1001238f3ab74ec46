@@ -1,0 +1,46 @@
+I"�<p>During my year in industry at Huawei, it dawned on me how little practical experience I had on engineering projects. I’ve always been into tech and being creative, yet I hadn’t ever taken the dive into trying to build something from scratch. I started by surrounding everything I saw online with other engineers and creators to help inspire ideas. Months went past with me silently browsing and finding new creators, when I found a post by <a href="https://gregdavill.com/blog/2020/6/13/miniature-3456x-led-cube">Greg Davill</a>. This colourful cube was exactly the sort of thing I was looking for. It was flashy and “simple enough” to get started. I realised early on that playing with FPGAs was probably a bit too much for a first time project so I looked into ways of working with microcontrollers. I also wanted to miniaturise what he had done. So I looked around and found other projects of a similar theme. When I found Pol Pla’s paper on <a href="https://dam-prod.media.mit.edu/x/files/sites/default/files/TEI_DisplayBlocks_CameraReady_lite.pdf">Display Blocks</a>.</p>
+
+<blockquote>
+  <p>Display Blocks are designed to be a series of handheld
+devices, enabling easy manipulation. Holding a device in
+their hands, users are able to easily rotate it and reveal its
+different sides. Thus, creating a self-enclosed, autonomous
+device was crucial to offering unencumbered exploration of
+content. The final design supports not only single device
+manipulation but also holding multiple devices at once. For
+this purpose, the devices must be easy to manipulate using
+only one hand; this way, users can compare cubes side by side, adding even more richness to the navigation of data.</p>
+</blockquote>
+
+<p>After reading this, I knew this was the project I had to work on, no matter how difficult it might be. Not only would it be a great engineering challenge, but it provided a tangible and satisfying object at the end of it..</p>
+
+<h2 id="circuit-design">Circuit Design</h2>
+
+<p>A fully assembled cube uses 6 PCBs. The first PCB is the motherboard, containing all the necessary circuitry to manage the power to different chips, these chips include:</p>
+<ol>
+  <li>SSD1351 (128x128 RGB OLED Display IC)</li>
+  <li><a href="https://invensense.tdk.com/products/motion-tracking/6-axis/icm-20602/">ICM20602</a>(Inertial Measurement Unit)</li>
+  <li><a href="https://www.espressif.com/en/producttype/esp32-s2-mini-1u">ESP32-S2-Mini-1U</a> (Microcontroller)</li>
+</ol>
+
+<p><a href="https://www.espressif.com/en/producttype/esp32-s2-mini-1u">ESP32-S2-Mini-1U</a>, this chip is powerful enough to drive all 6 displays as well as a IMU, with enough processing power for applications on top. It provides an amazingly small form factor for the power it can deliver.
+<img src="/images/motherboard.webp" alt="Motherboard" /></p>
+
+<h2 id="frame-design">Frame Design</h2>
+
+<h2 id="software-design">Software Design</h2>
+
+<h2 id="final-notes">Final Notes</h2>
+
+<p>Details were sparse as to the actual circuitry and design of the 3D printed enclosure, so I assembled a rough BOM for the project using readily available hardware.</p>
+
+<ol>
+  <li>4DOLED-282815 (128x128 RGB OLED Display)</li>
+  <li>ICM20602 (Inertial Measurement Unit)</li>
+  <li>ESP32-S2-Mini-1U (Microcontroller)</li>
+  <li>Battery</li>
+</ol>
+
+<p>The hardest part about the project was using Fusion360 and KiCAD in tandem with eachother. As the component placement, PCB and 3D Printed housing were all linked together
+<img src="/images/about.webp" alt="First Design" /></p>
+:ET

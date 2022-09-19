@@ -1,4 +1,4 @@
-I"�<p>During my year in industry at Huawei, it dawned on me how little practical experience I had on engineering projects. I’ve always been into tech and being creative, yet I hadn’t ever taken the dive into trying to build something from scratch. I started by surrounding everything I saw online with other engineers and creators to help inspire ideas. Months went past with me silently browsing and finding new creators, when I found a post by <a href="https://gregdavill.com/blog/2020/6/13/miniature-3456x-led-cube">Greg Davill</a>. This colourful cube was exactly the sort of thing I was looking for. It was flashy and “simple enough” to get started. I realised early on that playing with FPGAs was probably a bit too much for a first time project so I looked into ways of working with microcontrollers. I also wanted to miniturise what he had done. So I looked around and found other projects of a similar theme. When I found Pol Pla’s paper on <a href="https://dam-prod.media.mit.edu/x/files/sites/default/files/TEI_DisplayBlocks_CameraReady_lite.pdf">Display Blocks</a>.</p>
+I"�<p>During my year in industry at Huawei, it dawned on me how little practical experience I had on engineering projects. I’ve always been into tech and being creative, yet I hadn’t ever taken the dive into trying to build something from scratch. I started by surrounding everything I saw online with other engineers and creators to help inspire ideas. Months went past with me silently browsing and finding new creators, when I found a post by <a href="https://gregdavill.com/blog/2020/6/13/miniature-3456x-led-cube">Greg Davill</a>. This colourful cube was exactly the sort of thing I was looking for. It was flashy and “simple enough” to get started. I realised early on that playing with FPGAs was probably a bit too much for a first time project so I looked into ways of working with microcontrollers. I also wanted to miniturise what he had done. So I looked around and found other projects of a similar theme. When I found Pol Pla’s paper on <a href="https://dam-prod.media.mit.edu/x/files/sites/default/files/TEI_DisplayBlocks_CameraReady_lite.pdf">Display Blocks</a>.</p>
 
 <blockquote>
   <p>Display Blocks are designed to be a series of handheld
@@ -12,8 +12,9 @@ this purpose, the devices must be easy to manipulate using
 only one hand; this way, users can compare cubes side-byside, adding even more richness to the navigation of data.</p>
 </blockquote>
 
-<p>After reading this, I knew this was the project I had to work on, no matter how difficult it might be. Not only would it be a great engineering challenge, but it provided a tangible and satisfying object at the end of it.</p>
+<p>After reading this, I knew this was the project I had to work on, no matter how difficult it might be. Not only would it be a great engineering challenge, but it provided a tangible and satisfying object at the end of it..</p>
 
+<h2 id="hardware-design">Hardware Design</h2>
 <p>Details were sparse as to the actual circuitry and design of the 3D printed enclosure, so I assembled a rough BOM for the project using readily available hardware.</p>
 
 <ol>
@@ -23,9 +24,8 @@ only one hand; this way, users can compare cubes side-byside, adding even more r
   <li>Battery</li>
 </ol>
 
-<p>The hardest part about the project was using Fusion360 and KiCAD in tandem with eachother. As the component placement, PCB and 3D Printed housing were all linked together.</p>
-
-<p><img src="/assets/img/MB_Render.jpg" alt="First Design" /></p>
+<p>The hardest part about the project was using Fusion360 and KiCAD in tandem with eachother. As the component placement, PCB and 3D Printed housing were all linked together
+<img src="/images/about.webp" alt="First Design" /></p>
 
 <p>Selfies sriracha taiyaki woke squid synth intelligentsia PBR&amp;B ethical kickstarter art party neutra biodiesel scenester. Health goth kogi VHS fashion axe glossier disrupt, vegan quinoa. Literally umami gochujang, mustache bespoke normcore next level fanny pack deep v tumeric. Shaman vegan affogato chambray. Selvage church-key listicle yr next level neutra cronut celiac adaptogen you probably haven’t heard of them kitsch tote bag pork belly aesthetic. Succulents wolf stumptown art party poutine. Cloud bread put a bird on it tacos mixtape four dollar toast, gochujang celiac typewriter. Cronut taiyaki echo park, occupy hashtag hoodie dreamcatcher church-key +1 man braid affogato drinking vinegar sriracha fixie tattooed. Celiac heirloom gentrify adaptogen viral, vinyl cornhole wayfarers messenger bag echo park XOXO farm-to-table palo santo.</p>
 

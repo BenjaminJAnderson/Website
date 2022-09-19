@@ -2,7 +2,7 @@
 layout: about
 title: "about me"
 permalink: /about/
-image: 12.jpg
+image: about.webp
 tags: [jekyll, docs]
 categories: jekyll
 ---

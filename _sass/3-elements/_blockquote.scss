@@ -4,11 +4,11 @@
 
 blockquote {
   padding-left: $base-spacing-unit;
-  border-left: 3px solid $primary-color;
+  border-left: 3px solid $border-day;
   font-family: 'Roboto', 'Times New Roman', Times, serif;
   font-style: normal;
   font-size: 18px;
-  background-color: rgba(220, 235, 245, 0.2);
+  background-color: darken($background-day, 5%);
   p {
     padding: 10px;
   }

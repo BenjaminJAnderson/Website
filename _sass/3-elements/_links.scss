@@ -5,7 +5,9 @@
 a {
     text-decoration: none;
     font-family: Roboto;
+    font-weight: 700;
     text-transform: uppercase;
+    text-decoration: underline;
     color: $text-day;
     transition: $global-transition;
 }

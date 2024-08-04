@@ -25,7 +25,7 @@ only one hand; this way, users can compare cubes side by side, adding even more 
 
 <p><strong>SSD1351</strong><br />
 This is the IC used by every display in this design, it allows for SPI control of a 128×128 RGB OLED display. Unfortunately there isn’t a massive market for square OLED displays, so it’s hard to find ones that are small and high resolution. As a result the best display I could find has rather large bezels, hopefully with the growth of the VR market, small OLED screens might become a cheap as phone screens are today. 
-<img src="cube/images/display.webp" alt="Display" /></p>
+<img src="/images/display.webp" alt="Display" /></p>
 
 <p><strong>ICM20602</strong><br />
 The ICM20602 is an <strong>I</strong>nertial <strong>M</strong>easurement <strong>U</strong>nit <strong>(IMU)</strong>, housing an accelerometer and gyroscope. IMUs open up the possibility of using simple gestures to control the device, for example shaking the device can be used to wake the device from sleep or tilting the device to control the movement of a cursor. I chose this chip for its small size and SPI port, meaning only one more chip select line needs to be added to the SPI bus used by the displays.</p>
@@ -33,8 +33,8 @@ The ICM20602 is an <strong>I</strong>nertial <strong>M</strong>easurement <stron
 <p><strong>ESP32-S2-Mini-1U</strong><br />
 Finally, the star of the show. The ESP32 is an amazing chip for its size, the benefit of using the newer/slightly slower chip is its simplicity. The ESP32-S2 has its own native USB interface, this means I don’t have to add a CP2102 and a bunch of other circuity to my design. Fewer parts, fewer problems.</p>
 
-<p><img src="cube/images/motherboard.webp" alt="Motherboard" />
-<img src="cube/images/pcb.webp" alt="PCB" />
+<p><img src="/images/motherboard.webp" alt="Motherboard" />
+<img src="/images/pcb.webp" alt="PCB" />
  </p>
 <h4 id="daughterboards-pcb-2-6"><strong>Daughterboards (PCB 2-6)</strong></h4>
 <p>The other 5 PCBs have almost identical schematics, providing the passive components and connectors for the displays. These displays will all be daisy-chained together with the motherboard to provide a 6 display device.</p>
@@ -45,21 +45,21 @@ Finally, the star of the show. The ESP32 is an amazing chip for its size, the be
 <p>One design idea was to build the frame from two 3 sided pieces which would be joined via 3 mm neodymium magnets. By attaching two halves together the design is easy to charge/fix.
 I prototyped this frame using ABS on an FDM printer, by printing the pieces flat, I can avoid overhangs and give the outside of the frame a smooth texture. This print can then be folded like origami. The downside of FDM is it’s not very pretty and the tolerances are a bit too high for a print of this scale, so whilst the origami method works well, it makes the frame look amateurish.</p>
 
-<p><img src="cube/images/unfolded_frame.webp" alt="Unfold" />
-<img src="cube/images/unfolded_frame2.webp" alt="Unfold2" />
-<img src="cube/images/inside_cube.webp" alt="Inside cube" /></p>
+<p><img src="/images/unfolded_frame.webp" alt="Unfold" />
+<img src="/images/unfolded_frame2.webp" alt="Unfold2" />
+<img src="/images/inside_cube.webp" alt="Inside cube" /></p>
 
 <p> </p>
 
 <p>I also tried a lid design, where the design would be printed as a single piece, with one panel being attached with the 3 mm magnets. Whilst I liked the speed and quality of the SLA print, it was very brittle, leading to parts chipping during clean-up of the supports. Another issue with the design is it would be hard to place PCBs with 5 panels connected.</p>
 
-<p><img src="cube/images/pcb_frame.webp" alt="pcbframe" /></p>
+<p><img src="/images/pcb_frame.webp" alt="pcbframe" /></p>
 
 <p> </p>
 
 <p>Finally, I experimented with printing the frames as individual panels, allowing for PCBs and screens to be easily attached. The parts were sent to JLCPCBs new 3D printing service, removing a lot of the hassle and ensuring an amazing quality print. This design was the highest quality I have made so far, however using magnets for each frame resulted in a much more fragile design. The magnets hold extremely well until pressure on opposite corners of the cube is applied, resulting in a pealing motion which separates the magnets with ease. The other issue is the amount of magnets that have to be placed and the difficulty of gluing them to the frame.</p>
 
-<p><img src="cube/images/mag_frame.webp" alt="magframe" /></p>
+<p><img src="/images/mag_frame.webp" alt="magframe" /></p>
 
 <p>I came up with multiple designs for the frame, but what I ultimately decided was the frame should be made of at least two evenly sized pieces in order to separate easily for charging/fixing the device. If any frame piece has more than 3 sides, it becomes hard to assemble.</p>
 

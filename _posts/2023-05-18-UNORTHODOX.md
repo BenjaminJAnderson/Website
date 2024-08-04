@@ -75,9 +75,40 @@ Discuss your initial ideas and inspirations for the keyboard design. Include ske
 
 ### PCB Design
 
-Detail the process of designing the PCB. Mention any software you used and the challenges you faced.
+The heart of any custom keyboard project lies in the design of its PCB (printed circuit board). Below is the schematic diagram of my custom ortholinear keyboard, designed using KICAD.
 
-![PCB Design Screenshot](path_to_your_image)
+![Schematic Diagram](path_to_your_image)
+
+The schematic can be broken down into several key sections:
+
+#### Microcontroller Unit (MCU)
+
+At the core of the design is the **ATmega32U4** microcontroller (U1), which serves as the brain of the keyboard. This microcontroller is chosen for its compatibility with USB HID (Human Interface Device) and its ability to handle multiple input/output operations. Key connections include:
+- **Power Pins**: VCC, AVCC, and GND are connected to ensure the MCU is properly powered.
+- **Reset**: A reset circuit is included to restart the MCU when needed.
+- **Crystal Oscillator**: The XTAL1 and XTAL2 pins are connected to a crystal oscillator (Y1) and capacitors (C2, C3) to provide the necessary clock signal for the MCU's operation.
+- **USB Data Lines**: The D+ and D- lines are connected through resistors (R3, R4) for proper USB communication.
+
+#### USB Connection
+
+The USB interface (J1) is crucial for connecting the keyboard to a computer. This section includes:
+- **USB Type-C Receptacle**: The schematic shows a USB Type-C connector (X1) wired for USB 2.0 functionality.
+- **Power Lines**: VBUS and GND provide power from the USB connection.
+- **Data Lines**: The D+ and D- lines are routed to the MCU for data transmission.
+
+#### Key Matrix
+
+The key matrix configuration is a crucial part of the schematic:
+- **Rows and Columns**: The MCU's GPIO (General-Purpose Input/Output) pins are connected to the rows (ROW0, ROW1, ROW2, ROW3) and columns (COL0, COL1, COL2, etc.) of the key matrix.
+- **Pull-up Resistors**: Internal or external pull-up resistors are used on the rows or columns to ensure reliable key press detection.
+
+#### Reset and Other Components
+
+Other essential components include:
+- **Reset Button (SW1)**: Connected to the reset pin through a pull-down resistor (R1) and capacitor (C1) to debounce the reset signal.
+- **Decoupling Capacitors (C4, C5, C6, C7)**: These capacitors are placed close to the power pins of the MCU to stabilize the power supply and reduce noise.
+
+This schematic lays the foundation for the physical PCB layout, where these connections will be translated into copper traces and pads. Designing this schematic required careful planning to ensure all components interact correctly and the keyboard functions as intended.
 
 ### Case Design
 

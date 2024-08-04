@@ -1,3 +1,0 @@
-{"rule":"PASSIVE_VOICE","sentence":"^\\QDisplay Blocks are designed to be a series of handheld devices, enabling easy manipulation.\\E$"}
-{"rule":"WHITESPACE_RULE","sentence":"^\\QMotherboard PCB  \nDaughterboards (PCB 2-6)\nThe other 5 PCBs have almost identical schematics, providing the passive components and connectors for the displays.\\E$"}
-{"rule":"PASSIVE_VOICE","sentence":"^\\QFreeCAD was used for designing the outer case, providing detailed modelling and parametric features.\\E$"}

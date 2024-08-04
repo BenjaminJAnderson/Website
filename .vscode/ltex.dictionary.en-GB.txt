@@ -1,7 +1,0 @@
-FPGAs
-Pol
-Pla
-Davill
-IMUs
-ICs
-JLCPCBs

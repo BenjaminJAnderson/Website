@@ -1,0 +1,116 @@
+I"�<h2 id="introduction"><strong>Introduction</strong></h2>
+
+<p>In this post, I’ll share the journey of building my custom ortholinear keyboard, from initial design to final assembly. The project incorporates analog switches for the WASD and arrow keys for precise control, and quarter-size switches that fit four buttons into a single keycap, significantly expanding the keyboard’s functionality and versatility.</p>
+
+<h2 id="why-ortholinear"><strong>Why Ortholinear?</strong></h2>
+
+<p>Ortholinear keyboards feature a grid-like layout where keys are aligned in straight columns and rows, creating a clean and simple look. This design simplifies the PCB layout and can improve typing accuracy and speed for some users. Unlike traditional staggered keyboards, which were designed to prevent mechanical jams in typewriters, ortholinear keyboards have no such constraints and offer a modern, efficient alternative.</p>
+
+<h2 id="project-overview"><strong>Project Overview</strong></h2>
+
+<h3 id="kicad-for-motherboard-design"><strong>KICAD for Motherboard Design</strong></h3>
+
+<p>I used <strong>KICAD</strong>, an open-source electronic design automation (EDA) software, for designing the keyboard’s PCB. KICAD’s comprehensive tools allowed for intricate and precise design, including:</p>
+
+<ul>
+  <li><strong>Schematic Capture</strong>: Detailed and organized schematic diagrams.</li>
+  <li><strong>PCB Layout</strong>: Precise physical layout of the PCB.</li>
+  <li><strong>3D Visualization</strong>: Preview of the design in 3D.</li>
+  <li><strong>Gerber File Generation</strong>: Files ready for PCB fabrication.</li>
+</ul>
+
+<h3 id="openscad-for-custom-keycaps">OpenSCAD for Custom Keycaps</h3>
+
+<p>For creating custom keycaps, I used <strong>OpenSCAD</strong>, a script-based 3D CAD modeler ideal for parametric design. OpenSCAD allowed for:</p>
+
+<ul>
+  <li><strong>Custom Shapes</strong>: Designing keycaps with specific shapes and profiles.</li>
+  <li><strong>Parametric Design</strong>: Quick adjustments by changing script parameters.</li>
+  <li><strong>3D Printing</strong>: Generating STL files for rapid prototyping.</li>
+</ul>
+
+<h2 id="design-and-development-process">Design and Development Process</h2>
+
+<h3 id="schematic-design">Schematic Design</h3>
+
+<p>The heart of any custom keyboard project lies in the PCB design. Below is the schematic diagram of my custom ortholinear keyboard, designed using KICAD.</p>
+
+<p><img src="/images/keyboardmotherboard.webp" alt="Initial Design Sketch" /></p>
+
+<h4 id="microcontroller-unit-mcu">Microcontroller Unit (MCU)</h4>
+
+<p>At the core of the design is the <strong>ATmega32U4</strong> microcontroller, chosen for its USB HID compatibility and multiple input/output operations.</p>
+
+<h4 id="usb-connection">USB Connection</h4>
+
+<p>The USB interface includes a USB Type-C connector wired for USB 2.0 functionality, providing power and data lines.</p>
+
+<h4 id="key-matrix">Key Matrix</h4>
+
+<p>The key matrix configuration is crucial for detecting key presses reliably.</p>
+
+<p><img src="/images/keyswitchmatrix.webp" alt="Schematic Diagram" /></p>
+
+<h4 id="reset-and-other-components">Reset and Other Components</h4>
+
+<p>Includes a reset button, decoupling capacitors, and other essential components to ensure stable operation.</p>
+
+<p><img src="/images/keyboardlayout.webp" alt="Schematic Diagram" /></p>
+
+<h2 id="pcb-design">PCB Design</h2>
+
+<p>The PCB design focused on integrating Kailh Choc low-profile keyswitches and implementing a novel method for measuring analog keypresses using copper coil traces and the LDC1614 from Texas Instruments.</p>
+
+<h3 id="kailh-choc-low-profile-keyswitches">Kailh Choc Low-Profile Keyswitches</h3>
+
+<ul>
+  <li><strong>Slim Design</strong>: Allows for a thinner, more portable keyboard.</li>
+  <li><strong>Durability</strong>: Ensures a long lifespan.</li>
+  <li><strong>Ease of Integration</strong>: Simplifies the design and manufacturing process.</li>
+</ul>
+
+<h3 id="analog-keypress-measurement">Analog Keypress Measurement</h3>
+
+<ul>
+  <li><strong>Copper Coil Traces</strong>: Inductive sensors detect changes in the magnetic field caused by the metal spring in the switch.</li>
+  <li><strong>LDC1614 Integration</strong>: Converts analog signals from the coils into digital data for precise keypress measurement.</li>
+</ul>
+
+<h3 id="design-process">Design Process</h3>
+
+<ul>
+  <li><strong>Schematic Capture</strong>: Detailed connections between components.</li>
+  <li><strong>PCB Layout</strong>: Optimized placement and routing of traces.</li>
+  <li><strong>3D Visualization</strong>: Ensures components fit together.</li>
+  <li><strong>Gerber File Generation</strong>: Files for manufacturing the PCB.</li>
+</ul>
+
+<h3 id="manufacturing-and-testing">Manufacturing and Testing</h3>
+
+<ul>
+  <li><strong>Prototyping</strong>: Testing the fit and function of the PCB.</li>
+  <li><strong>Testing</strong>: Fine-tuning the analog keypress measurement system.</li>
+</ul>
+
+<h2 id="case-design">Case Design</h2>
+
+<h3 id="parametric-design-with-openscad">Parametric Design with OpenSCAD</h3>
+
+<p>OpenSCAD was used for designing key switches, enabling quick iterations and adjustments through parametric design.</p>
+
+<h3 id="creating-the-outer-case-with-freecad">Creating the Outer Case with FreeCAD</h3>
+
+<p>FreeCAD was used for designing the outer case, providing detailed modeling and parametric features.</p>
+
+<h3 id="material-selection-and-manufacturing">Material Selection and Manufacturing</h3>
+
+<p>The case was 3D printed using durable PLA filament for prototypes, with plans for aluminum or acrylic for the final version.</p>
+
+<h3 id="assembly">Assembly</h3>
+
+<p>Designed for easy assembly with snap-fit mechanisms, cable management, and access points.</p>
+
+<p>In summary, the combination of KICAD and OpenSCAD provided a powerful toolkit for designing a custom, functional, and aesthetically pleasing keyboard. The parametric design capabilities ensured precision and flexibility, allowing for efficient prototyping and final production.</p>
+
+<hr />
+:ET

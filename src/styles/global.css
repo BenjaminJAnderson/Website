@@ -415,11 +415,31 @@ button {
   opacity: 0.28;
 }
 
+.terminal-boot__mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: min(82vw, 900px);
+  height: clamp(140px, 28vh, 260px);
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+}
+
 .terminal-boot__hint {
   position: absolute;
   right: var(--gutter);
   bottom: max(1.2rem, env(safe-area-inset-bottom));
   left: var(--gutter);
+  z-index: 2;
   color: var(--text);
   font-size: 0.72rem;
   letter-spacing: 0.04em;

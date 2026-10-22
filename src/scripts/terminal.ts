@@ -8,6 +8,7 @@ import {
   resolveCommand,
 } from "../lib/commands";
 import { startBootBackground } from "./boot-background";
+import { startBootWordmark } from "./boot-wordmark";
 
 const HISTORY_KEY = "engiebenji.terminal-history";
 const HISTORY_LIMIT = 30;
@@ -25,6 +26,9 @@ const commandData =
 const boot = document.querySelector<HTMLElement>("[data-terminal-boot]");
 const bootCanvas = document.querySelector<HTMLCanvasElement>(
   "[data-terminal-boot-canvas]",
+);
+const bootMark = document.querySelector<HTMLElement>(
+  "[data-terminal-boot-mark]",
 );
 
 let commands: SiteCommand[] = [];
@@ -447,12 +451,21 @@ function runBoot(): void {
   }
 
   let stopBackground = (): void => undefined;
+  let stopWordmark = (): void => undefined;
 
   if (bootCanvas) {
     try {
       stopBackground = startBootBackground(bootCanvas);
     } catch {
       stopBackground = () => undefined;
+    }
+  }
+
+  if (bootMark) {
+    try {
+      stopWordmark = startBootWordmark(bootMark);
+    } catch {
+      stopWordmark = () => undefined;
     }
   }
 
@@ -467,8 +480,9 @@ function runBoot(): void {
     event.preventDefault();
     event.stopPropagation();
     stopBackground();
+    stopWordmark();
     document.removeEventListener("keydown", handleKey, true);
-    boot.removeEventListener("pointerdown", handlePointer);
+    boot.removeEventListener("pointerdown", handlePointer, true);
     finishBoot();
   };
 
@@ -481,7 +495,10 @@ function runBoot(): void {
   };
 
   document.addEventListener("keydown", handleKey, true);
-  boot.addEventListener("pointerdown", handlePointer, { passive: false });
+  boot.addEventListener("pointerdown", handlePointer, {
+    capture: true,
+    passive: false,
+  });
 }
 
 function finishBoot(): void {

@@ -37,7 +37,8 @@ Project commands are generated from the content collection.
 
 Project images are linked as plain text rather than displayed inline. ASCII
 image previews are a future exploration. The boot-screen spiral is a port of
-Chroma Spiral by ertdfgcvb; see `THIRD_PARTY_NOTICES.md`.
+Chroma Spiral by ertdfgcvb; see `THIRD_PARTY_NOTICES.md`. The boot also mounts an
+Asciify `wordmark` for the BENJI identity through `asciify-engine/kit`.
 
 ## Adding a project
 
@@ -59,6 +60,7 @@ Set `featured: true` to include a project on the homepage.
 - `src/components/` — terminal boot and redirects
 - `src/layouts/TerminalLayout.astro` — full-screen terminal shell
 - `src/scripts/terminal.ts` — prompt, history, completion and output
+- `src/scripts/boot-background.ts` / `boot-wordmark.ts` — boot spiral and Asciify wordmark
 - `src/styles/` — terminal typography and layout
 - `src/data/` — commands, site profile and ASCII identity
 - `src/lib/` — command parser and project collection helpers

@@ -1,0 +1,21 @@
+---
+import Redirect from "../components/Redirect.astro";
+
+export function getStaticPaths() {
+  const redirects: Record<string, string> = {
+    "2022/02/01/ORIGIN": "/projects/engiebenji/",
+    "2022/09/18/CUBE": "/projects/cube/",
+    "2022/09/18/ORTHODOX": "/projects/orthodox/",
+    ideas: "/contact/",
+  };
+
+  return Object.entries(redirects).map(([legacy, to]) => ({
+    params: { legacy },
+    props: { to },
+  }));
+}
+
+const { to } = Astro.props;
+---
+
+<Redirect to={to} />

@@ -1,0 +1,205 @@
+import { describe, expect, it } from "vitest";
+import {
+  buildProjectCommands,
+  staticCommands,
+  type SiteCommand,
+} from "../../src/data/commands";
+import {
+  filterCommands,
+  findExactCommand,
+  getCanonicalInput,
+  groupCommands,
+  normalizeInput,
+  parseCommand,
+  resolveCommand,
+  suggestCommands,
+} from "../../src/lib/commands";
+
+const projectCommands = buildProjectCommands([
+  {
+    slug: "cube",
+    title: "CUBE",
+    summary: "A miniature six-PCB LED cube.",
+  },
+  {
+    slug: "orthodox",
+    title: "ORTHODOX",
+    summary: "A custom ortholinear keyboard.",
+  },
+]);
+
+const commands: SiteCommand[] = [...staticCommands, ...projectCommands];
+
+describe("normalizeInput", () => {
+  it("trims, lowercases and collapses whitespace", () => {
+    expect(normalizeInput("  OPEN   Cube  ")).toBe("open cube");
+  });
+});
+
+describe("parseCommand", () => {
+  it("parses open with a project argument", () => {
+    expect(parseCommand("open cube")).toEqual({
+      name: "open",
+      args: ["cube"],
+    });
+  });
+
+  it("maps cd and go to the target command", () => {
+    expect(parseCommand("cd about")).toEqual({ name: "about", args: [] });
+    expect(parseCommand("go projects")).toEqual({
+      name: "projects",
+      args: [],
+    });
+  });
+
+  it("returns an empty parse for blank input", () => {
+    expect(parseCommand("   ")).toEqual({ name: "", args: [] });
+  });
+});
+
+describe("findExactCommand", () => {
+  it("finds commands by id and alias", () => {
+    expect(findExactCommand("projects", commands)?.id).toBe("projects");
+    expect(findExactCommand("work", commands)?.id).toBe("projects");
+    expect(findExactCommand("?", commands)?.id).toBe("help");
+  });
+});
+
+describe("resolveCommand", () => {
+  it("resolves a direct command", () => {
+    const result = resolveCommand("about", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({
+        type: "navigate",
+        href: "/about/",
+      });
+    }
+  });
+
+  it("resolves uninstall to the uninstall action", () => {
+    const result = resolveCommand("uninstall", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({ type: "uninstall" });
+    }
+  });
+
+  it("resolves pwd to the path action", () => {
+    const result = resolveCommand("pwd", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({ type: "path" });
+    }
+  });
+
+  it("resolves open with no argument to the project list", () => {
+    const result = resolveCommand("open", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({ type: "list-projects" });
+    }
+  });
+
+  it("resolves open cube to the CUBE project", () => {
+    const result = resolveCommand("open cube", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({
+        type: "navigate",
+        href: "/projects/cube/",
+      });
+    }
+  });
+
+  it("resolves cd cube through the project alias", () => {
+    const result = resolveCommand("cd cube", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.id).toBe("open-cube");
+    }
+  });
+
+  it("returns an empty result for blank input", () => {
+    expect(resolveCommand("  ", commands)).toEqual({ kind: "empty" });
+  });
+
+  it("returns suggestions for unknown commands", () => {
+    const result = resolveCommand("projets", commands);
+
+    expect(result.kind).toBe("error");
+    if (result.kind === "error") {
+      expect(
+        result.suggestions.some((command) => command.id === "projects"),
+      ).toBe(true);
+    }
+  });
+
+  it("returns an error for an unknown project", () => {
+    const result = resolveCommand("open nope", commands);
+
+    expect(result.kind).toBe("error");
+    if (result.kind === "error") {
+      expect(result.message).toContain("nope");
+    }
+  });
+});
+
+describe("filterCommands", () => {
+  it("returns grouped defaults for an empty query", () => {
+    const results = filterCommands(commands, "");
+    const groups = groupCommands(results).map((group) => group.group);
+
+    expect(groups).toEqual(["navigate", "projects", "utility"]);
+  });
+
+  it("matches project titles and aliases", () => {
+    expect(filterCommands(commands, "cube")[0]?.id).toBe("open-cube");
+    expect(filterCommands(commands, "open orthodox")[0]?.id).toBe(
+      "open-orthodox",
+    );
+  });
+
+  it("matches aliases such as work and mail", () => {
+    expect(filterCommands(commands, "work")[0]?.id).toBe("projects");
+    expect(filterCommands(commands, "mail")[0]?.id).toBe("contact");
+  });
+
+  it("returns no matches for unrelated text", () => {
+    expect(filterCommands(commands, "zzzzzz")).toEqual([]);
+  });
+});
+
+describe("suggestCommands", () => {
+  it("suggests projects for a close misspelling", () => {
+    const suggestions = suggestCommands("projets", commands);
+
+    expect(suggestions[0]?.id).toBe("projects");
+  });
+});
+
+describe("getCanonicalInput", () => {
+  it("returns the shell form for project commands", () => {
+    const cube = commands.find((command) => command.id === "open-cube");
+
+    expect(cube).toBeDefined();
+    if (cube) {
+      expect(getCanonicalInput(cube)).toBe("open cube");
+    }
+  });
+
+  it("returns the command id for static commands", () => {
+    const about = commands.find((command) => command.id === "about");
+
+    expect(about).toBeDefined();
+    if (about) {
+      expect(getCanonicalInput(about)).toBe("about");
+    }
+  });
+});

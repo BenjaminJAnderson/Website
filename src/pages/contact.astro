@@ -1,0 +1,47 @@
+---
+import { site } from "../data/site";
+import TerminalLayout from "../layouts/TerminalLayout.astro";
+---
+
+<TerminalLayout
+  title="Contact"
+  description="Contact Benjamin Anderson by email, GitHub or LinkedIn."
+  path="~/contact"
+  command="contact"
+>
+  <h1 class="term-heading">Contact</h1>
+  <p class="term-line term-muted">Email is the best way to reach me.</p>
+
+  <dl class="term-facts">
+    <dt>email</dt>
+    <dd>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+    </dd>
+
+    <dt>github</dt>
+    <dd>
+      <a href={site.github} rel="me">
+        github.com/BenjaminJAnderson
+      </a>
+    </dd>
+
+    <dt>linkedin</dt>
+    <dd>
+      <a href={site.linkedin} rel="me">
+        linkedin.com/in/engiebenji
+      </a>
+    </dd>
+
+    <dt>twitter</dt>
+    <dd>
+      <a href={site.twitter} rel="me">
+        @engiebenji1999
+      </a>
+    </dd>
+
+    <dt>cv</dt>
+    <dd>
+      <a href={site.cv}>BenjaminAnderson-CV.pdf</a>
+    </dd>
+  </dl>
+</TerminalLayout>

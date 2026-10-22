@@ -1,0 +1,28 @@
+---
+interface Props {
+  to: string;
+}
+
+const { to } = Astro.props;
+const target = new URL(to, Astro.site ?? Astro.url).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redirecting…</title>
+    <link rel="canonical" href={target} />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+  </head>
+  <body style="margin:0;background:#050505;color:#e6e6e1;font:14px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:1.5rem;">
+    <p>
+      $ redirecting to{" "}
+      <a href={to} style="color:inherit;">
+        {to}
+      </a>
+    </p>
+  </body>
+</html>

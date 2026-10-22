@@ -1,0 +1,137 @@
+---
+import "@fontsource-variable/jetbrains-mono";
+import "../styles/global.css";
+import TerminalBoot from "../components/TerminalBoot.astro";
+import { buildProjectCommands, staticCommands } from "../data/commands";
+import { site } from "../data/site";
+import { getPublishedProjects } from "../lib/projects";
+
+interface Props {
+  title?: string;
+  description?: string;
+  path: string;
+  command?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = site.name,
+  description = site.description,
+  path,
+  command,
+  noindex = false,
+} = Astro.props;
+
+const pageTitle = title === site.name ? title : `${title} · ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const handle = site.shortName.toLowerCase();
+
+const projects = await getPublishedProjects();
+const commands = [
+  ...staticCommands,
+  ...buildProjectCommands(
+    projects.map((project) => ({
+      slug: project.id,
+      title: project.data.title,
+      summary: project.data.summary,
+    })),
+  ),
+];
+const commandData = JSON.stringify(commands).replace(/</g, "\\u003c");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+
+    <meta name="theme-color" content="#050505" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  </head>
+  <body class="terminal-body">
+    <noscript>
+      <style>
+        .terminal-boot,
+        .terminal-prompt {
+          display: none !important;
+        }
+      </style>
+    </noscript>
+
+    <a class="skip-link" href="#terminal-input">
+      skip to terminal input
+    </a>
+
+    <div class="terminal-app" data-terminal-app data-path={path}>
+      <div class="terminal-status">
+        <span>
+          {handle}@engiebenji:{path}
+        </span>
+        <span class="terminal-status__right">engiebenji.com</span>
+      </div>
+
+      <main id="main" class="terminal-screen" aria-label="Terminal output">
+        <div class="terminal-output" data-terminal-output>
+          {command && (
+            <div class="terminal-echo">
+              <span class="terminal-echo__prompt">$</span> {command}
+            </div>
+          )}
+          <slot />
+        </div>
+        <p
+          id="terminal-status"
+          class="sr-only"
+          role="status"
+          aria-live="polite"
+        ></p>
+      </main>
+
+      <form class="terminal-prompt" data-terminal-form hidden>
+        <label class="sr-only" for="terminal-input">
+          Terminal command
+        </label>
+        <span class="terminal-prompt__label">
+          {handle}@engiebenji:{path}$
+        </span>
+        <input
+          id="terminal-input"
+          data-terminal-input
+          type="text"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
+      </form>
+    </div>
+
+    <TerminalBoot />
+
+    <script
+      type="application/json"
+      id="terminal-commands"
+      set:html={commandData}
+    ></script>
+    <script>
+      import "../scripts/terminal";
+    </script>
+  </body>
+</html>

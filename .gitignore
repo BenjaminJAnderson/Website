@@ -1,5 +1,16 @@
-_site
-.sass-cache
+# Astro
+dist/
+.astro/
+node_modules/
+
+# Jekyll legacy
+_site/
+.sass-cache/
+.jekyll-cache/
 .jekyll-metadata
-.editorconfig
-*.DS_Store
+
+# Tooling
+.env
+.env.*
+.DS_Store
+*.log

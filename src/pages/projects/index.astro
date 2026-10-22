@@ -1,0 +1,39 @@
+---
+import { getPublishedProjects, statusLabels } from "../../lib/projects";
+import TerminalLayout from "../../layouts/TerminalLayout.astro";
+
+const projects = await getPublishedProjects();
+---
+
+<TerminalLayout
+  title="Projects"
+  description="Hardware, firmware and software projects by Benjamin Anderson."
+  path="~/projects"
+  command="projects"
+>
+  <h1 class="term-heading">Projects</h1>
+  <p class="term-line term-muted">
+    Hardware, firmware and software projects. Select a project or use
+    <button class="term-command" type="button" data-terminal-command="open">
+      open
+    </button>
+    to list them from the prompt.
+  </p>
+
+  <ul class="terminal-project-list">
+    {projects.map((project) => (
+      <li class="terminal-project-row">
+        <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+        <span>{project.data.period ?? project.data.year}</span>
+        <span class="terminal-dim">
+          [{statusLabels[project.data.status].toLowerCase()}]
+        </span>
+        <span class="terminal-dim">{project.data.tech.join(" ")}</span>
+      </li>
+    ))}
+  </ul>
+
+  <p class="term-line term-dim">
+    full case studies are available through the project names above.
+  </p>
+</TerminalLayout>

@@ -1,0 +1,53 @@
+---
+import { site } from "../data/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Contact"
+  description="Contact Benjamin Anderson by email, GitHub or LinkedIn."
+>
+  <div class="container">
+    <header class="page-header">
+      <p class="breadcrumb">~/contact</p>
+      <h1>Contact</h1>
+      <p>
+        Email is the best way to reach me. For code and project updates, use the
+        links below.
+      </p>
+    </header>
+
+    <ul class="contact-list">
+      <li>
+        <a href={`mailto:${site.email}`}>
+          <span class="label">Email</span>
+          <span class="value">{site.email}</span>
+        </a>
+      </li>
+      <li>
+        <a href={site.github} rel="me">
+          <span class="label">GitHub</span>
+          <span class="value">github.com/BenjaminJAnderson</span>
+        </a>
+      </li>
+      <li>
+        <a href={site.linkedin} rel="me">
+          <span class="label">LinkedIn</span>
+          <span class="value">linkedin.com/in/engiebenji</span>
+        </a>
+      </li>
+      <li>
+        <a href={site.twitter} rel="me">
+          <span class="label">Twitter</span>
+          <span class="value">@engiebenji1999</span>
+        </a>
+      </li>
+      <li>
+        <a href={site.cv}>
+          <span class="label">CV</span>
+          <span class="value">PDF / BenjaminAnderson-CV.pdf</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</BaseLayout>

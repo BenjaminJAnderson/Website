@@ -1,0 +1,90 @@
+---
+import { identity } from "../data/ascii";
+import { site } from "../data/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="About"
+  description="About Benjamin Anderson, an electronics engineer working across hardware, firmware and product design."
+>
+  <div class="container">
+    <header class="page-header">
+      <p class="breadcrumb">~/about</p>
+      <h1>About</h1>
+      <p>
+        A short system profile: what I work on, the tools I reach for, and what
+        I am building now.
+      </p>
+    </header>
+
+    <div class="about-grid">
+      <figure class="identity-panel">
+        <pre aria-hidden="true">{identity}</pre>
+        <figcaption>Benjamin Anderson / engiebenji.com</figcaption>
+      </figure>
+
+      <div class="about-body">
+        <p class="eyebrow">profile / benji</p>
+
+        <dl class="facts">
+          <dt>user</dt>
+          <dd>{site.name}</dd>
+
+          <dt>role</dt>
+          <dd>Electronics engineer</dd>
+
+          <dt>focus</dt>
+          <dd>Hardware design, embedded systems and PCB development</dd>
+
+          <dt>tools</dt>
+          <dd>KiCad, FreeCAD, Blender, OpenSCAD, C, C++, Python</dd>
+
+          <dt>education</dt>
+          <dd>Electronic engineering graduate</dd>
+
+          <dt>currently</dt>
+          <dd>Rebuilding engiebenji.com</dd>
+
+          <dt>links</dt>
+          <dd>
+            <a href={site.github} rel="me">
+              GitHub
+            </a>{" "}
+            /
+            <a href={site.linkedin} rel="me">
+              LinkedIn
+            </a>{" "}
+            /<a href={`mailto:${site.email}`}>Email</a>
+          </dd>
+        </dl>
+
+        <div class="prose">
+          <p>
+            I enjoy the process of moulding the ideas in my head into something
+            tangible, then fine tuning it until it is exactly what I envisioned.
+            Whether it is the PCBs controlling a new device, the renders for a
+            project thumbnail, or the code that makes it work, I care about the
+            details.
+          </p>
+          <p>
+            My work sits between electronics and product design: schematic
+            capture and PCB layout, firmware, mechanical design, and the small
+            tools that make the next build easier. I am particularly interested
+            in projects that reward careful iteration, from custom input devices
+            to compact display hardware.
+          </p>
+        </div>
+
+        <div class="actions">
+          <a class="button" href={site.cv}>
+            Download CV
+          </a>
+          <a class="button" href="/projects/">
+            See projects
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,36 @@
+---
+import ProjectCard from "../../components/ProjectCard.astro";
+import { projects } from "../../data/projects";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Projects"
+  description="Hardware, firmware and software projects by Benjamin Anderson."
+>
+  <div class="container">
+    <header class="page-header">
+      <p class="breadcrumb">~/projects</p>
+      <h1>Projects</h1>
+      <p>
+        A working index of hardware, firmware and software projects. Each entry
+        links to its source; detailed case studies are being migrated from the
+        old site.
+      </p>
+    </header>
+
+    <section aria-label="Project index">
+      <div class="project-grid">
+        {projects.map((project) => (
+          <ProjectCard project={project} linked={false} />
+        ))}
+      </div>
+    </section>
+
+    <p class="index-note">
+      More write-ups, photographs and technical notes are on the way. The
+      original posts remain available at
+      <a href="https://engiebenji.com/">engiebenji.com</a>.
+    </p>
+  </div>
+</BaseLayout>

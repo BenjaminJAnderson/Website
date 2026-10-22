@@ -1,0 +1,58 @@
+---
+import ProjectCard from "../components/ProjectCard.astro";
+import { identity } from "../data/ascii";
+import { projects } from "../data/projects";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout>
+  <section class="hero container">
+    <figure class="hero-ascii">
+      <pre aria-hidden="true">{identity}</pre>
+      <figcaption>Electronic engineer / hardware + firmware</figcaption>
+    </figure>
+
+    <div class="hero-copy">
+      <p class="eyebrow">Portfolio / 2026</p>
+      <h1>Benjamin Anderson</h1>
+      <p class="hero-role">
+        Electronics engineer building hardware, firmware and tools.
+      </p>
+      <p class="lede">
+        I'm a graduate electronic engineer interested in hardware design. This
+        site is a record of the things I build, the decisions behind them, and
+        what I learn along the way.
+      </p>
+
+      <div class="actions">
+        <a class="button button--primary" href="/projects/">
+          View projects
+        </a>
+        <a class="button" href="/about/">
+          About me
+        </a>
+      </div>
+
+      <p class="status-line">
+        <span class="status-dot" aria-hidden="true"></span>
+        Currently rebuilding engiebenji.com
+      </p>
+    </div>
+  </section>
+
+  <section class="section container" aria-labelledby="work-heading">
+    <div class="section-header">
+      <h2 id="work-heading">Selected work</h2>
+      <p>
+        Hardware, firmware and the occasional software tool. Start with a
+        project, or browse the full index.
+      </p>
+    </div>
+
+    <div class="project-grid">
+      {projects.map((project) => (
+        <ProjectCard project={project} linked eager />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,5 +1,3 @@
-const density = "ben";
-
 interface Vec2 {
   x: number;
   y: number;
@@ -10,11 +8,6 @@ export interface SpiralContext {
   rows: number;
   time: number;
   aspect: number;
-}
-
-export interface SpiralCell {
-  char: string;
-  color: 0 | 1 | 2;
 }
 
 function vec2(x = 0, y = 0): Vec2 {
@@ -64,10 +57,10 @@ function length(v: Vec2): number {
   return Math.hypot(v.x, v.y);
 }
 
-export function chromaSpiral(
+export function chromaDensity(
   coord: { x: number; y: number },
   context: SpiralContext,
-): SpiralCell {
+): number {
   const t = context.time * 0.0002;
   const m = Math.min(context.cols, context.rows);
   const st = vec2(
@@ -88,15 +81,8 @@ export function chromaSpiral(
   mulN(st, 0.6, st);
 
   const s = Math.cos(t) * 2;
-  let c = Math.sin(st.x * 3 + s) + Math.sin(st.y * 21);
-  c = map(Math.sin(c * 0.5), -1, 1, 0, 1);
+  let value = Math.sin(st.x * 3 + s) + Math.sin(st.y * 21);
+  value = map(Math.sin(value * 0.5), -1, 1, 0, 1);
 
-  const charIndex = Math.min(
-    density.length - 1,
-    Math.max(0, Math.floor(c * density.length)),
-  );
-  return {
-    char: density[charIndex] ?? density[0],
-    color: charIndex as 0 | 1 | 2,
-  };
+  return Math.min(1, Math.max(0, value));
 }

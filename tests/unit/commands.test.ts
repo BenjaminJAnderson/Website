@@ -78,6 +78,15 @@ describe("resolveCommand", () => {
     }
   });
 
+  it("resolves uninstall to the uninstall action", () => {
+    const result = resolveCommand("uninstall", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({ type: "uninstall" });
+    }
+  });
+
   it("resolves pwd to the path action", () => {
     const result = resolveCommand("pwd", commands);
 

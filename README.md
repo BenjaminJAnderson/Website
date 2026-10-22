@@ -27,18 +27,19 @@ npm run preview
 
 ## Terminal interface
 
-The site is a full-screen terminal. Every page boots with a Chroma Spiral
-background and waits for a keypress or pointer press before revealing the
-command prompt.
+The site is a full-screen terminal. The first page load in a tab shows an
+Asciify-generated Chroma Spiral hero, an Old London `benji` wordmark and a
+pacman-style package confirmation. Entering the site reveals the command prompt
+and is remembered for the rest of the tab session. Run `uninstall` in the
+terminal to remove `benji-portfolio-git` and return to the boot screen.
 
 Available commands include `help`, `about`, `projects`, `contact`, `cv`,
-`open <project>`, `ls`, `pwd`, `whoami`, `date`, `clear` and `cd <section>`.
+`open <project>`, `ls`, `pwd`, `whoami`, `date`, `clear`, `uninstall` and `cd <section>`.
 Project commands are generated from the content collection.
 
 Project images are linked as plain text rather than displayed inline. ASCII
-image previews are a future exploration. The boot-screen spiral is a port of
-Chroma Spiral by ertdfgcvb; see `THIRD_PARTY_NOTICES.md`. The boot also mounts an
-Asciify `wordmark` for the BENJI identity through `asciify-engine/kit`.
+image previews are a future exploration. The boot background and `benji`
+wordmark both run through `asciify-engine/kit`; see `THIRD_PARTY_NOTICES.md`.
 
 ## Adding a project
 
@@ -60,7 +61,7 @@ Set `featured: true` to include a project on the homepage.
 - `src/components/` — terminal boot and redirects
 - `src/layouts/TerminalLayout.astro` — full-screen terminal shell
 - `src/scripts/terminal.ts` — prompt, history, completion and output
-- `src/scripts/boot-background.ts` / `boot-wordmark.ts` — boot spiral and Asciify wordmark
+- `src/scripts/boot-hero.ts` / `boot-wordmark.ts` / `boot-pacman.ts` — boot field, wordmark and pacman confirmation
 - `src/styles/` — terminal typography and layout
 - `src/data/` — commands, site profile and ASCII identity
 - `src/lib/` — command parser and project collection helpers

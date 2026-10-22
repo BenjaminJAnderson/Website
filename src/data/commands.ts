@@ -8,6 +8,7 @@ export type CommandAction =
   | { type: "path" }
   | { type: "date" }
   | { type: "clear" }
+  | { type: "uninstall" }
   | { type: "list-projects" };
 
 export interface SiteCommand {
@@ -128,6 +129,16 @@ export const staticCommands: SiteCommand[] = [
     group: "utility",
     keywords: ["reset", "history"],
     action: { type: "clear" },
+  },
+  {
+    id: "uninstall",
+    label: "Uninstall",
+    description:
+      "Remove benji-portfolio-git and reset the website to the boot screen.",
+    group: "utility",
+    aliases: ["reset", "reboot"],
+    keywords: ["boot", "replay", "reset", "install"],
+    action: { type: "uninstall" },
   },
 ];
 

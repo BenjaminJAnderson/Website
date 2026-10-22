@@ -133,7 +133,7 @@ Still outstanding:
 The original modal-palette implementation was replaced after visual review.
 
 - Full-screen terminal shell with status line, scrollback and fixed prompt.
-- Terminal boot sequence on every page load, with a ported Chroma Spiral background, an Asciify BENJI wordmark and a keypress or pointer press to reveal the terminal.
+- Terminal boot sequence on every page load, with an Asciify Chroma Spiral background, an Old London `benji` wordmark and a pacman-style confirmation; running `uninstall` in the terminal resets the site to the boot screen.
 - All page chrome, cards, buttons, hero sections and modern layouts removed.
 - JetBrains Mono only; Inter removed.
 - About, Projects, Contact and project pages converted to terminal output.

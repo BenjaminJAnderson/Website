@@ -1,3 +1,4 @@
+import { BOOT_SESSION_KEY } from "../data/boot";
 import { site } from "../data/site";
 import type { SiteCommand } from "../data/commands";
 import {
@@ -7,8 +8,7 @@ import {
   normalizeInput,
   resolveCommand,
 } from "../lib/commands";
-import { startBootBackground } from "./boot-background";
-import { startBootWordmark } from "./boot-wordmark";
+import { startBoot } from "./boot-pacman";
 
 const HISTORY_KEY = "engiebenji.terminal-history";
 const HISTORY_LIMIT = 30;
@@ -23,13 +23,6 @@ const input = document.querySelector<HTMLInputElement>(
 const status = document.querySelector<HTMLElement>("#terminal-status")!;
 const commandData =
   document.querySelector<HTMLScriptElement>("#terminal-commands")!;
-const boot = document.querySelector<HTMLElement>("[data-terminal-boot]");
-const bootCanvas = document.querySelector<HTMLCanvasElement>(
-  "[data-terminal-boot-canvas]",
-);
-const bootMark = document.querySelector<HTMLElement>(
-  "[data-terminal-boot-mark]",
-);
 
 let commands: SiteCommand[] = [];
 
@@ -57,7 +50,7 @@ form.addEventListener("submit", handleSubmit);
 document.addEventListener("click", handleCommandClick);
 app.addEventListener("click", handleAppClick);
 
-runBoot();
+startBoot({ onEnter: finishBoot });
 
 function loadHistory(): string[] {
   try {
@@ -301,6 +294,19 @@ function handleAction(action: SiteCommand["action"]): void {
     case "clear":
       clearTerminal();
       return;
+    case "uninstall":
+      try {
+        sessionStorage.removeItem(BOOT_SESSION_KEY);
+      } catch {
+        // Reloading still gives a fresh boot attempt when storage is unavailable.
+      }
+
+      appendLine(
+        ":: removing benji-portfolio-git...",
+        "terminal-line terminal-dim",
+      );
+      window.setTimeout(() => window.location.reload(), 450);
+      return;
   }
 }
 
@@ -444,64 +450,9 @@ function handleAppClick(event: MouseEvent): void {
   focusInput();
 }
 
-function runBoot(): void {
-  if (!boot) {
-    finishBoot();
-    return;
-  }
-
-  let stopBackground = (): void => undefined;
-  let stopWordmark = (): void => undefined;
-
-  if (bootCanvas) {
-    try {
-      stopBackground = startBootBackground(bootCanvas);
-    } catch {
-      stopBackground = () => undefined;
-    }
-  }
-
-  if (bootMark) {
-    try {
-      stopWordmark = startBootWordmark(bootMark);
-    } catch {
-      stopWordmark = () => undefined;
-    }
-  }
-
-  let finished = false;
-
-  const finish = (event: Event): void => {
-    if (finished) {
-      return;
-    }
-
-    finished = true;
-    event.preventDefault();
-    event.stopPropagation();
-    stopBackground();
-    stopWordmark();
-    document.removeEventListener("keydown", handleKey, true);
-    boot.removeEventListener("pointerdown", handlePointer, true);
-    finishBoot();
-  };
-
-  const handleKey = (event: KeyboardEvent): void => {
-    finish(event);
-  };
-
-  const handlePointer = (event: PointerEvent): void => {
-    finish(event);
-  };
-
-  document.addEventListener("keydown", handleKey, true);
-  boot.addEventListener("pointerdown", handlePointer, {
-    capture: true,
-    passive: false,
-  });
-}
-
 function finishBoot(): void {
+  const boot = document.querySelector<HTMLElement>("[data-terminal-boot]");
+
   if (boot) {
     boot.hidden = true;
   }

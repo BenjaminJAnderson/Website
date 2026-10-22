@@ -1,5 +1,12 @@
 @import "./tokens.css";
 
+@font-face {
+  font-family: "Old London";
+  src: url("/fonts/Olondon_.otf") format("opentype");
+  font-display: swap;
+  font-weight: 400;
+}
+
 *,
 *::before,
 *::after {
@@ -402,53 +409,123 @@ button {
   position: fixed;
   inset: 0;
   z-index: 100;
-  overflow: hidden;
+  overflow-y: auto;
   background: var(--bg);
 }
 
-.terminal-boot__canvas {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  opacity: 0.28;
-}
-
-.terminal-boot__mark {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+.terminal-boot__content {
+  position: relative;
   z-index: 1;
-  display: grid;
-  place-items: center;
-  width: min(82vw, 900px);
-  height: clamp(140px, 28vh, 260px);
-  overflow: hidden;
-  transform: translate(-50%, -50%);
-  color: var(--text);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(4rem, 12vw, 10rem);
-  font-weight: 600;
-  line-height: 1;
-  text-align: center;
+  width: min(92vw, 920px);
+  margin: 0 auto;
+  padding: clamp(2rem, 8vh, 6rem) 0 max(2rem, env(safe-area-inset-bottom));
 }
 
-.terminal-boot__hint {
-  position: absolute;
-  right: var(--gutter);
-  bottom: max(1.2rem, env(safe-area-inset-bottom));
-  left: var(--gutter);
-  z-index: 2;
+.terminal-boot__wordmark {
+  width: 100%;
+  height: clamp(150px, 30vh, 320px);
+  margin: 0;
   color: var(--text);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
+  font-family: "Old London", Georgia, "Times New Roman", serif;
+  font-size: clamp(5rem, 18vw, 15rem);
+  font-weight: 400;
+  line-height: 0.85;
   text-align: center;
+  text-transform: lowercase;
+}
+
+.terminal-boot__pacman {
+  width: min(100%, 72ch);
+  margin: clamp(1rem, 3vh, 2rem) auto 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.boot-line {
+  margin: 0;
+}
+
+.boot-question__text {
+  margin-right: 0.6ch;
+}
+
+.boot-choices {
+  white-space: nowrap;
+}
+
+.boot-question {
+  margin-top: 1rem;
+  color: var(--text);
+}
+
+.boot-question:focus,
+.boot-cancel:focus {
+  outline: none;
+}
+
+.boot-cancel {
+  margin-top: 1rem;
+  color: var(--text-muted);
+}
+
+.boot-question button,
+.boot-cancel button {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0.35rem 0.2rem;
+  min-width: 1.6rem;
+  min-height: 2.75rem;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.boot-question button:hover,
+.boot-cancel button:hover {
+  color: var(--text);
+}
+
+.boot-cursor {
+  display: inline-block;
+  width: 1ch;
+  animation: boot-blink 1s step-end infinite;
+}
+
+.terminal-boot.is-typing [data-boot-line]:not(.is-visible) {
+  opacity: 0;
+}
+
+@keyframes boot-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 @media (max-width: 700px) {
   body {
     font-size: 13px;
+  }
+
+  .terminal-boot__content {
+    width: min(92vw, 640px);
+    padding-top: clamp(1.5rem, 6vh, 3rem);
+  }
+
+  .terminal-boot__wordmark {
+    height: clamp(130px, 25vh, 230px);
+    font-size: clamp(4rem, 22vw, 9rem);
+  }
+
+  .terminal-boot__pacman {
+    font-size: 0.76rem;
   }
 
   .terminal-status__right {
@@ -496,5 +573,15 @@ button {
 
   .term-ascii {
     font-size: 0.38rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot-cursor {
+    animation: none;
+  }
+
+  .terminal-boot.is-typing [data-boot-line] {
+    transition: none;
   }
 }

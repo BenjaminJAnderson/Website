@@ -1,10 +1,20 @@
 import { BOOT_SESSION_KEY } from "../data/boot";
-import { BOOT_BACKGROUND_FADE_MS, startBootHero } from "./boot-hero";
+import {
+  BOOT_BACKGROUND_FADE_MS,
+  startBootHero,
+  type BootHero,
+} from "./boot-hero";
 import { BOOT_WORDMARK_ASSEMBLE_MS, startBootWordmark } from "./boot-wordmark";
 
 const INTRO_HOLD_MS = 150;
+const EXIT_WORDMARK_MS = 700;
+const EXIT_PULSE_DELAY_MS = 250;
+const EXIT_FADE_DELAY_MS = 1400;
+const EXIT_FADE_MS = 900;
+const EXIT_TOTAL_MS = EXIT_FADE_DELAY_MS + EXIT_FADE_MS;
 
 interface BootOptions {
+  onReveal?: () => void;
   onEnter: () => void;
 }
 
@@ -32,7 +42,7 @@ const sequence: SequenceStep[] = [
   { key: "final-blank", delay: 80 },
 ];
 
-export function startBoot({ onEnter }: BootOptions): void {
+export function startBoot({ onEnter, onReveal }: BootOptions): void {
   const boot = document.querySelector<HTMLElement>("[data-terminal-boot]");
 
   if (!boot) {
@@ -83,11 +93,13 @@ export function startBoot({ onEnter }: BootOptions): void {
 
   let active = true;
   let canceled = false;
+  let exiting = false;
   let introStarted = false;
   let promptActive = false;
   let sequenceToken = 0;
-  let stopHero = (): void => undefined;
+  let hero: BootHero | null = null;
   let stopWordmark = (): void => undefined;
+  let wordmarkAnimation: Animation | null = null;
   const timers = new Set<number>();
 
   const schedule = (fn: () => void, ms: number): number => {
@@ -117,19 +129,23 @@ export function startBoot({ onEnter }: BootOptions): void {
     "(prefers-reduced-motion: reduce)",
   ).matches;
 
-  const finish = (): void => {
+  const completeExit = (): void => {
     if (!active) {
       return;
     }
 
     active = false;
+    exiting = false;
     promptActive = false;
-    sequenceToken += 1;
     clearTimers();
-    stopHero();
+    wordmarkAnimation?.cancel();
+    wordmarkAnimation = null;
+    hero?.destroy();
+    hero = null;
     stopWordmark();
     document.removeEventListener("keydown", handleKey, true);
     boot.hidden = true;
+    boot.classList.remove("is-leaving");
 
     try {
       sessionStorage.setItem(BOOT_SESSION_KEY, "1");
@@ -140,8 +156,58 @@ export function startBoot({ onEnter }: BootOptions): void {
     onEnter();
   };
 
+  const finish = (): void => {
+    if (!active || exiting) {
+      return;
+    }
+
+    exiting = true;
+    promptActive = false;
+    sequenceToken += 1;
+    clearTimers();
+    document.removeEventListener("keydown", handleKey, true);
+
+    if (reducedMotion) {
+      onReveal?.();
+      completeExit();
+      return;
+    }
+
+    if (wordmark) {
+      wordmarkAnimation = wordmark.animate(
+        [
+          { transform: "scale(1)" },
+          { transform: "scale(0.82)" },
+          { transform: "scale(1.18)" },
+          { transform: "scale(1)" },
+        ],
+        {
+          duration: EXIT_WORDMARK_MS,
+          easing: "cubic-bezier(.23, 1, .32, 1)",
+        },
+      );
+    }
+
+    schedule(() => {
+      if (active && exiting) {
+        hero?.pulse(wordmark ?? undefined);
+      }
+    }, EXIT_PULSE_DELAY_MS);
+
+    schedule(() => {
+      if (!active || !exiting) {
+        return;
+      }
+
+      boot.classList.add("is-leaving");
+      onReveal?.();
+    }, EXIT_FADE_DELAY_MS);
+
+    schedule(completeExit, EXIT_TOTAL_MS);
+  };
+
   const cancel = (): void => {
-    if (!active) {
+    if (!active || exiting) {
       return;
     }
 
@@ -279,7 +345,7 @@ export function startBoot({ onEnter }: BootOptions): void {
   };
 
   const startIntro = (): void => {
-    if (!active || canceled || introStarted) {
+    if (!active || canceled || exiting || introStarted) {
       return;
     }
 
@@ -303,9 +369,9 @@ export function startBoot({ onEnter }: BootOptions): void {
 
   if (content) {
     try {
-      stopHero = startBootHero(boot, content);
+      hero = startBootHero(boot, content);
     } catch {
-      stopHero = () => undefined;
+      hero = null;
     }
   }
 
@@ -321,7 +387,7 @@ export function startBoot({ onEnter }: BootOptions): void {
         if (active) {
           stopWordmark = stop;
 
-          if (!reducedMotion) {
+          if (!exiting && !reducedMotion) {
             startIntro();
           }
         } else {

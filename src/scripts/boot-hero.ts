@@ -3,10 +3,15 @@ import { chromaDensity } from "../lib/chroma-spiral";
 
 export const BOOT_BACKGROUND_FADE_MS = 1000;
 
+export interface BootHero {
+  destroy: () => void;
+  pulse: (element?: HTMLElement) => void;
+}
+
 export function startBootHero(
   host: HTMLElement,
   clearElement: HTMLElement,
-): () => void {
+): BootHero {
   let sourceCanvas: HTMLCanvasElement | null = null;
   let sourceContext: CanvasRenderingContext2D | null = null;
   let sourceCols = 0;
@@ -97,5 +102,27 @@ export function startBootHero(
     paint,
   });
 
-  return () => surface?.destroy();
+  let destroyed = false;
+
+  return {
+    destroy: () => {
+      destroyed = true;
+      surface?.destroy();
+    },
+    pulse: (element) => {
+      if (!surface || destroyed) {
+        return;
+      }
+
+      const field = surface.field;
+
+      void field.ready
+        .then(() => {
+          if (!destroyed && surface.live) {
+            field.pulse({ element, strength: 1.4 });
+          }
+        })
+        .catch(() => undefined);
+    },
+  };
 }

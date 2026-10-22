@@ -411,6 +411,12 @@ button {
   z-index: 100;
   overflow-y: auto;
   background: var(--bg);
+  transition: opacity 900ms ease;
+}
+
+.terminal-boot.is-leaving {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .terminal-boot__content {
@@ -637,6 +643,7 @@ button {
     animation: none;
   }
 
+  .terminal-boot,
   .terminal-boot > [data-ascii-kit],
   .boot-line,
   .boot-question,

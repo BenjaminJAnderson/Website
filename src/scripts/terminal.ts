@@ -50,7 +50,7 @@ form.addEventListener("submit", handleSubmit);
 document.addEventListener("click", handleCommandClick);
 app.addEventListener("click", handleAppClick);
 
-startBoot({ onEnter: finishBoot });
+startBoot({ onReveal: revealTerminal, onEnter: finishBoot });
 
 function loadHistory(): string[] {
   try {
@@ -448,6 +448,10 @@ function handleAppClick(event: MouseEvent): void {
   }
 
   focusInput();
+}
+
+function revealTerminal(): void {
+  form.hidden = false;
 }
 
 function finishBoot(): void {

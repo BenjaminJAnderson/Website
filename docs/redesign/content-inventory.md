@@ -106,3 +106,21 @@ M0 is complete when:
 - [ ] There are no remaining blockers for M1.
 
 Implementation note: M1 was started after the recommended defaults were approved. Final project copy, the ORIGIN decision and the ASCII identity asset remain M2/M4 inputs.
+
+---
+
+## 5. M2 status — 2026-10-22
+
+- Astro content collection added in `src/content.config.ts`.
+- CUBE, ORTHODOX and ENGIEBENJI migrated to `src/content/projects/`.
+- Project images moved to `src/assets/projects/<slug>/` and optimized at build time.
+- `/projects/` and `/projects/<slug>/` are generated from the collection.
+- Legacy post URLs and `/ideas/` redirect to their new pages.
+- `/tags.html` redirects to `/projects/`.
+
+Still outstanding:
+
+- Final copy for any projects not yet represented.
+- Additional project screenshots and diagrams.
+- Final decision on whether ORIGIN should remain a project case study or move to a notes section.
+- Original ASCII identity artwork for M4.

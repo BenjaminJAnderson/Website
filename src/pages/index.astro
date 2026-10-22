@@ -1,8 +1,14 @@
 ---
 import ProjectCard from "../components/ProjectCard.astro";
 import { identity } from "../data/ascii";
-import { projects } from "../data/projects";
+import { getPublishedProjects, toProjectCard } from "../lib/projects";
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const allProjects = await getPublishedProjects();
+const featured = allProjects.filter((project) => project.data.featured);
+const projects = (featured.length ? featured : allProjects)
+  .slice(0, 3)
+  .map(toProjectCard);
 ---
 
 <BaseLayout>
@@ -51,7 +57,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     <div class="project-grid">
       {projects.map((project) => (
-        <ProjectCard project={project} linked eager />
+        <ProjectCard project={project} eager />
       ))}
     </div>
   </section>

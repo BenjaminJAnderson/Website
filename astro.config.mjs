@@ -6,5 +6,12 @@ export default defineConfig({
   base: "/",
   trailingSlash: "always",
   output: "static",
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      filter: (page) =>
+        !page.includes("/2022/") &&
+        !page.includes("/ideas/") &&
+        !page.includes("/tags.html"),
+    }),
+  ],
 });

@@ -1,7 +1,9 @@
 ---
 import ProjectCard from "../../components/ProjectCard.astro";
-import { projects } from "../../data/projects";
+import { getPublishedProjects, toProjectCard } from "../../lib/projects";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const projects = (await getPublishedProjects()).map(toProjectCard);
 ---
 
 <BaseLayout
@@ -14,23 +16,22 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       <h1>Projects</h1>
       <p>
         A working index of hardware, firmware and software projects. Each entry
-        links to its source; detailed case studies are being migrated from the
-        old site.
+        links to a full case study with the design decisions, photographs and
+        technical notes behind it.
       </p>
     </header>
 
     <section aria-label="Project index">
       <div class="project-grid">
         {projects.map((project) => (
-          <ProjectCard project={project} linked={false} />
+          <ProjectCard project={project} />
         ))}
       </div>
     </section>
 
     <p class="index-note">
-      More write-ups, photographs and technical notes are on the way. The
-      original posts remain available at
-      <a href="https://engiebenji.com/">engiebenji.com</a>.
+      More write-ups, photographs and technical notes are on the way. Project
+      content is authored in Markdown and lives alongside the site.
     </p>
   </div>
 </BaseLayout>

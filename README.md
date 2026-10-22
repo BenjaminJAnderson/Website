@@ -24,14 +24,28 @@ npm run build
 npm run preview
 ```
 
+## Adding a project
+
+1. Create `src/content/projects/my-project.md`.
+2. Add the required frontmatter: `title`, `summary`, `status`, `year`, `cover`, `coverAlt`, `tech`.
+3. Add a cover and optional gallery images under `src/assets/projects/my-project/`.
+4. Reference images in the Markdown body with relative paths.
+5. Run `npm run dev`; the page appears at `/projects/my-project/`.
+
+The project index and homepage read from the content collection automatically.
+Set `featured: true` to include a project on the homepage.
+
 ## Structure
 
-- `src/pages/` — static routes
-- `src/layouts/` — shared page shell
-- `src/components/` — header, footer and project cards
+- `src/pages/` — static routes and dynamic project pages
+- `src/content/projects/` — Markdown project case studies
+- `src/assets/projects/` — project images optimized at build time
+- `src/layouts/` — shared page shell and project layout
+- `src/components/` — header, footer, project cards and redirects
 - `src/styles/` — design tokens and global styles
-- `src/data/` — navigation, project and profile data
-- `public/` — CNAME, CV, images and favicons copied to the build
+- `src/data/` — site profile and ASCII identity
+- `src/lib/projects.ts` — content collection helpers
+- `public/` — CNAME, CV, favicons and static redirects
 - `docs/redesign/` — investigation and implementation plan
 
 ## Deployment

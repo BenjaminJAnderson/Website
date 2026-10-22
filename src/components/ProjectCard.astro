@@ -1,53 +1,40 @@
 ---
-import type { Project } from "../data/projects";
+import { Image } from "astro:assets";
+import type { ProjectCardData } from "../lib/projects";
 
 interface Props {
-  project: Project;
-  linked?: boolean;
+  project: ProjectCardData;
   eager?: boolean;
 }
 
-const { project, linked = true, eager = false } = Astro.props;
+const { project, eager = false } = Astro.props;
 ---
 
 <article class="project-card" id={project.slug}>
-  {linked ? (
-    <a
-      class="project-card__media"
-      href={project.href}
-      aria-hidden="true"
-      tabindex="-1"
-    >
-      <img
-        src={project.image}
-        alt=""
-        width="800"
-        height="500"
-        loading={eager ? "eager" : "lazy"}
-        decoding="async"
-      />
-    </a>
-  ) : (
-    <div class="project-card__media">
-      <img
-        src={project.image}
-        alt={project.imageAlt}
-        width="800"
-        height="500"
-        loading={eager ? "eager" : "lazy"}
-        decoding="async"
-      />
-    </div>
-  )}
+  <a
+    class="project-card__media"
+    href={project.href}
+    aria-hidden="true"
+    tabindex="-1"
+  >
+    <Image
+      src={project.cover}
+      alt=""
+      width={800}
+      format="webp"
+      quality={82}
+      loading={eager ? "eager" : "lazy"}
+    />
+  </a>
 
   <div class="project-card__body">
     <div class="project-card__meta">
-      <span>{project.status}</span>
+      <span>{project.statusLabel}</span>
       <span>{project.year}</span>
     </div>
 
     <h3>
-      {linked ? <a href={project.href}>{project.title}</a> : project.title}
+      <a href={project.href}>{project.title}</a>
     </h3>
 
     <p>{project.summary}</p>

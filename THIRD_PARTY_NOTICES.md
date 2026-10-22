@@ -14,7 +14,6 @@ Used for the boot-screen `wordmark` mounted from `asciify-engine/kit`.
 - Title: Chroma Spiral
 - Description: Shadertoy port, inspired by scry
 - Inspiration: https://www.shadertoy.com/view/tdsyRf
-- Original sketch: `/home/benji/Downloads/chroma_spiral.js`
 
 The spiral density is ported into `src/lib/chroma-spiral.ts` and painted as a
 generated source for the Asciify boot field.

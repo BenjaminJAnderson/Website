@@ -9,7 +9,6 @@ export function startBootHero(
   let sourceContext: CanvasRenderingContext2D | null = null;
   let sourceCols = 0;
   let sourceRows = 0;
-  let lastPaint = 0;
 
   const paint = ({
     pen,
@@ -24,12 +23,6 @@ export function startBootHero(
     now: number;
     still: boolean;
   }): boolean => {
-    if (!still && now - lastPaint < 33) {
-      return true;
-    }
-
-    lastPaint = now;
-
     const cell = 10;
     const cols = Math.max(40, Math.ceil(w / cell));
     const rows = Math.max(24, Math.ceil(h / cell));
@@ -90,7 +83,7 @@ export function startBootHero(
       cellSize: 11,
       cellAspect: 0.62,
       charset: " .:-=+*#%@",
-      hover: "trail",
+      hover: "none",
       clear: {
         element: clearElement,
         padding: 28,

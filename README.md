@@ -2,9 +2,9 @@
 
 Personal engineering portfolio for Benjamin Anderson.
 
-The production site is being rebuilt as a static Astro site on the
-`redesign/astro` branch. The current live site remains on Jekyll until the
-cutover is explicitly approved.
+The site is a static Astro build presented as a full-screen terminal and
+deployed to GitHub Pages with a custom domain and HTTPS. The legacy Jekyll site
+has been removed.
 
 ## Local development
 
@@ -70,9 +70,12 @@ Set `featured: true` to include a project on the homepage.
 
 ## Deployment
 
-The site is intended to deploy to GitHub Pages with a custom domain and HTTPS.
-The Pages source and deploy workflow will only be switched after the redesign
-has passed review. No experimental branch deploys to production.
+The site builds to `dist/` for GitHub Pages. Deploy it through GitHub Actions
+rather than the legacy Jekyll builder. The custom domain is set by
+`public/CNAME`, and HTTPS is enforced in the Pages settings.
 
-See `docs/redesign/implementation-plan.md` for the full plan and
-`docs/redesign/content-inventory.md` for the remaining M0 content decisions.
+Legacy URLs are preserved by `src/pages/[...legacy].astro` and
+`public/tags.html`.
+
+See `docs/redesign/implementation-plan.md` for the migration plan and
+`docs/redesign/content-inventory.md` for the original content decisions.

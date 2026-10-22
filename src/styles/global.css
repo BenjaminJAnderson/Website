@@ -421,6 +421,15 @@ button {
   padding: clamp(2rem, 8vh, 6rem) 0 max(2rem, env(safe-area-inset-bottom));
 }
 
+.terminal-boot > [data-ascii-kit] {
+  opacity: 0;
+  transition: opacity 1000ms ease;
+}
+
+.terminal-boot.is-background-visible > [data-ascii-kit] {
+  opacity: 1;
+}
+
 .terminal-boot__wordmark {
   width: 100%;
   height: clamp(150px, 30vh, 320px);
@@ -444,6 +453,13 @@ button {
 
 .boot-line {
   margin: 0;
+  transition: opacity 240ms ease;
+}
+
+.boot-dots {
+  display: inline-block;
+  min-width: 3ch;
+  text-align: left;
 }
 
 .boot-question__text {
@@ -454,14 +470,54 @@ button {
   white-space: nowrap;
 }
 
+.boot-answer,
+.boot-cursor {
+  flex: none;
+}
+
 .boot-question {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  row-gap: 0.15rem;
   margin-top: 1rem;
   color: var(--text);
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+
+.boot-question.is-visible {
+  opacity: 1;
 }
 
 .boot-question:focus,
 .boot-cancel:focus {
   outline: none;
+}
+
+.boot-answer {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  margin: 0 0 0 0.6ch;
+  padding: 0;
+  width: 0;
+  min-width: 0;
+  max-width: 6ch;
+  flex: none;
+  color: inherit;
+  font: inherit;
+  caret-color: transparent;
+  outline: none;
+}
+
+.boot-answer:focus {
+  outline: none;
+}
+
+.boot-answer-hint {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
 }
 
 .boot-cancel {
@@ -581,6 +637,9 @@ button {
     animation: none;
   }
 
+  .terminal-boot > [data-ascii-kit],
+  .boot-line,
+  .boot-question,
   .terminal-boot.is-typing [data-boot-line] {
     transition: none;
   }

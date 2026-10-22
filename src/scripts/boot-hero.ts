@@ -1,6 +1,8 @@
 import { mountSurface } from "asciify-engine/kit";
 import { chromaDensity } from "../lib/chroma-spiral";
 
+export const BOOT_BACKGROUND_FADE_MS = 1000;
+
 export function startBootHero(
   host: HTMLElement,
   clearElement: HTMLElement,

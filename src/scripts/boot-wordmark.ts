@@ -1,5 +1,7 @@
 import { wordmark } from "asciify-engine/kit";
 
+export const BOOT_WORDMARK_ASSEMBLE_MS = 1800;
+
 export async function startBootWordmark(
   element: HTMLElement,
 ): Promise<() => void> {
@@ -15,6 +17,8 @@ export async function startBootWordmark(
     fontWeight: 400,
     ink: "--ascii-ink-strong",
     lazy: false,
+    assemble: "visible",
+    duration: BOOT_WORDMARK_ASSEMBLE_MS,
     look: {
       charset: " .:-=+*#%@",
       cellSize: 6,

@@ -1,0 +1,494 @@
+import { site } from "../data/site";
+import type { SiteCommand } from "../data/commands";
+import {
+  filterCommands,
+  getCanonicalInput,
+  groupCommands,
+  normalizeInput,
+  resolveCommand,
+} from "../lib/commands";
+import { startBootBackground } from "./boot-background";
+
+const HISTORY_KEY = "engiebenji.terminal-history";
+const HISTORY_LIMIT = 30;
+
+const app = document.querySelector<HTMLElement>("[data-terminal-app]")!;
+const output = document.querySelector<HTMLElement>("[data-terminal-output]")!;
+const screen = document.querySelector<HTMLElement>(".terminal-screen")!;
+const form = document.querySelector<HTMLFormElement>("[data-terminal-form]")!;
+const input = document.querySelector<HTMLInputElement>(
+  "[data-terminal-input]",
+)!;
+const status = document.querySelector<HTMLElement>("#terminal-status")!;
+const commandData =
+  document.querySelector<HTMLScriptElement>("#terminal-commands")!;
+const boot = document.querySelector<HTMLElement>("[data-terminal-boot]");
+const bootCanvas = document.querySelector<HTMLCanvasElement>(
+  "[data-terminal-boot-canvas]",
+);
+
+let commands: SiteCommand[] = [];
+
+try {
+  const parsed: unknown = JSON.parse(commandData.textContent ?? "[]");
+  if (Array.isArray(parsed)) {
+    commands = parsed as SiteCommand[];
+  }
+} catch {
+  commands = [];
+}
+
+const currentPath = app.dataset.path ?? "~";
+let history = loadHistory();
+let historyIndex = -1;
+let historyMode = false;
+
+input.addEventListener("input", () => {
+  historyMode = false;
+  historyIndex = -1;
+});
+
+input.addEventListener("keydown", handleKeyDown);
+form.addEventListener("submit", handleSubmit);
+document.addEventListener("click", handleCommandClick);
+app.addEventListener("click", handleAppClick);
+
+runBoot();
+
+function loadHistory(): string[] {
+  try {
+    const raw = sessionStorage.getItem(HISTORY_KEY);
+    const parsed: unknown = JSON.parse(raw ?? "[]");
+
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed
+      .filter((item): item is string => typeof item === "string")
+      .slice(-HISTORY_LIMIT);
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(): void {
+  try {
+    sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  } catch {
+    return;
+  }
+}
+
+function pushHistory(value: string): void {
+  const trimmed = value.trim();
+
+  if (!trimmed || trimmed === "clear") {
+    return;
+  }
+
+  history = [...history.filter((item) => item !== trimmed), trimmed].slice(
+    -HISTORY_LIMIT,
+  );
+  saveHistory();
+}
+
+function setStatus(message: string): void {
+  status.textContent = message;
+}
+
+function scrollOutput(): void {
+  screen.scrollTop = screen.scrollHeight;
+}
+
+function appendLine(text: string, className = "terminal-line"): HTMLElement {
+  const line = document.createElement("div");
+  line.className = className;
+  line.textContent = text;
+  output.append(line);
+  scrollOutput();
+  return line;
+}
+
+function appendEcho(command: string): void {
+  const echo = document.createElement("div");
+  echo.className = "terminal-echo";
+
+  const prompt = document.createElement("span");
+  prompt.className = "terminal-echo__prompt";
+  prompt.textContent = "$";
+
+  echo.append(prompt, document.createTextNode(` ${command}`));
+  output.append(echo);
+  scrollOutput();
+}
+
+function appendCommandRow(command: SiteCommand): void {
+  const row = document.createElement("div");
+  row.className = "terminal-command-row";
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "term-command";
+  button.dataset.terminalCommand = getCanonicalInput(command);
+  button.textContent = getCanonicalInput(command);
+
+  const description = document.createElement("span");
+  description.className = "terminal-dim";
+  description.textContent = command.description;
+
+  row.append(button, description);
+  output.append(row);
+  scrollOutput();
+}
+
+function appendLinkRow(href: string, label: string, description: string): void {
+  const row = document.createElement("div");
+  row.className = "terminal-command-row";
+
+  const link = document.createElement("a");
+  link.href = href;
+  link.textContent = label;
+
+  const text = document.createElement("span");
+  text.className = "terminal-dim";
+  text.textContent = description;
+
+  row.append(link, text);
+  output.append(row);
+  scrollOutput();
+}
+
+function appendInlineLinks(
+  links: Array<{ label: string; href: string }>,
+): void {
+  const line = document.createElement("div");
+  line.className = "terminal-line";
+
+  links.forEach((item, index) => {
+    const link = document.createElement("a");
+    link.href = item.href;
+    link.textContent = item.label;
+    line.append(link);
+
+    if (index < links.length - 1) {
+      line.append(document.createTextNode("  "));
+    }
+  });
+
+  output.append(line);
+  scrollOutput();
+}
+
+function renderHelp(): void {
+  appendLine("available commands:", "terminal-line terminal-dim");
+
+  for (const group of groupCommands(commands)) {
+    appendLine(`${group.label.toLowerCase()}:`, "terminal-line terminal-group");
+
+    for (const command of group.commands) {
+      appendCommandRow(command);
+    }
+  }
+
+  setStatus("Help displayed");
+}
+
+function renderSections(): void {
+  appendLine("available sections:", "terminal-line terminal-dim");
+  appendLinkRow("/about/", "about/", "profile and current work");
+  appendLinkRow("/projects/", "projects/", "project index");
+  appendLinkRow("/contact/", "contact/", "email and links");
+  appendLinkRow(site.cv, "cv/", "download the CV");
+  setStatus("Sections listed");
+}
+
+function renderProjects(): void {
+  appendLine("projects:", "terminal-line terminal-dim");
+
+  for (const command of commands.filter(
+    (item) => item.group === "projects" && item.id !== "open",
+  )) {
+    appendCommandRow(command);
+  }
+
+  setStatus("Projects listed");
+}
+
+function renderProfile(): void {
+  appendLine(site.name, "terminal-line terminal-heading");
+  appendLine(site.role, "terminal-line");
+  appendLine(
+    "hardware design, embedded systems and PCB development",
+    "terminal-line terminal-muted",
+  );
+  appendInlineLinks([
+    { label: "github", href: site.github },
+    { label: "linkedin", href: site.linkedin },
+    { label: "email", href: `mailto:${site.email}` },
+    { label: "about", href: "/about/" },
+  ]);
+  setStatus("Profile displayed");
+}
+
+function renderDate(): void {
+  appendLine(
+    new Intl.DateTimeFormat(undefined, {
+      dateStyle: "full",
+      timeStyle: "short",
+    }).format(new Date()),
+  );
+  setStatus("Date displayed");
+}
+
+function renderError(message: string, suggestions: SiteCommand[]): void {
+  appendLine(message, "terminal-line terminal-error");
+
+  if (suggestions.length > 0) {
+    appendLine("did you mean:", "terminal-line terminal-dim");
+
+    for (const suggestion of suggestions) {
+      appendCommandRow(suggestion);
+    }
+  }
+
+  setStatus(message);
+}
+
+function clearTerminal(): void {
+  output.replaceChildren();
+  input.value = "";
+  historyMode = false;
+  historyIndex = -1;
+  setStatus("Terminal cleared");
+  focusInput();
+}
+
+function focusInput(): void {
+  if (window.matchMedia("(pointer: fine)").matches) {
+    input.focus();
+  }
+}
+
+function handleAction(action: SiteCommand["action"]): void {
+  switch (action.type) {
+    case "navigate":
+      window.location.assign(action.href);
+      return;
+    case "help":
+      renderHelp();
+      return;
+    case "sections":
+      renderSections();
+      return;
+    case "list-projects":
+      renderProjects();
+      return;
+    case "profile":
+      renderProfile();
+      return;
+    case "path":
+      appendLine(currentPath);
+      setStatus("Path displayed");
+      return;
+    case "date":
+      renderDate();
+      return;
+    case "clear":
+      clearTerminal();
+      return;
+  }
+}
+
+function execute(raw: string): void {
+  const command = normalizeInput(raw);
+
+  if (!command) {
+    return;
+  }
+
+  if (command === "clear") {
+    clearTerminal();
+    return;
+  }
+
+  pushHistory(command);
+  appendEcho(command);
+  input.value = "";
+  historyMode = false;
+  historyIndex = -1;
+
+  const resolution = resolveCommand(command, commands);
+
+  if (resolution.kind === "success") {
+    handleAction(resolution.command.action);
+    focusInput();
+    return;
+  }
+
+  if (resolution.kind === "error") {
+    renderError(resolution.message, resolution.suggestions);
+  } else {
+    appendLine("type a command, or type help", "terminal-line terminal-dim");
+  }
+
+  focusInput();
+}
+
+function handleSubmit(event: SubmitEvent): void {
+  event.preventDefault();
+  execute(input.value);
+}
+
+function handleKeyDown(event: KeyboardEvent): void {
+  if (event.key === "ArrowUp") {
+    event.preventDefault();
+
+    if (history.length === 0) {
+      return;
+    }
+
+    if (!historyMode) {
+      if (input.value) {
+        return;
+      }
+
+      historyMode = true;
+      historyIndex = history.length - 1;
+    } else if (historyIndex > 0) {
+      historyIndex -= 1;
+    }
+
+    input.value = history[historyIndex] ?? "";
+    return;
+  }
+
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+
+    if (!historyMode) {
+      return;
+    }
+
+    if (historyIndex < history.length - 1) {
+      historyIndex += 1;
+      input.value = history[historyIndex] ?? "";
+    } else {
+      historyMode = false;
+      historyIndex = -1;
+      input.value = "";
+    }
+
+    return;
+  }
+
+  if (event.key === "Tab") {
+    if (!input.value.trim()) {
+      return;
+    }
+
+    const matches = filterCommands(commands, input.value);
+
+    if (matches[0]) {
+      event.preventDefault();
+      input.value = getCanonicalInput(matches[0]);
+      historyMode = false;
+      historyIndex = -1;
+    }
+
+    return;
+  }
+
+  if (event.key === "Escape") {
+    input.value = "";
+    historyMode = false;
+    historyIndex = -1;
+    return;
+  }
+
+  if (event.key.toLowerCase() === "l" && event.ctrlKey) {
+    event.preventDefault();
+    clearTerminal();
+  }
+}
+
+function handleCommandClick(event: MouseEvent): void {
+  if (!(event.target instanceof Element)) {
+    return;
+  }
+
+  const button = event.target.closest<HTMLElement>("[data-terminal-command]");
+
+  if (!button) {
+    return;
+  }
+
+  event.preventDefault();
+  const command = button.dataset.terminalCommand ?? "";
+  execute(command);
+}
+
+function handleAppClick(event: MouseEvent): void {
+  if (!(event.target instanceof Element)) {
+    return;
+  }
+
+  if (event.target.closest("a, button, input, textarea, select")) {
+    return;
+  }
+
+  focusInput();
+}
+
+function runBoot(): void {
+  if (!boot) {
+    finishBoot();
+    return;
+  }
+
+  let stopBackground = (): void => undefined;
+
+  if (bootCanvas) {
+    try {
+      stopBackground = startBootBackground(bootCanvas);
+    } catch {
+      stopBackground = () => undefined;
+    }
+  }
+
+  let finished = false;
+
+  const finish = (event: Event): void => {
+    if (finished) {
+      return;
+    }
+
+    finished = true;
+    event.preventDefault();
+    event.stopPropagation();
+    stopBackground();
+    document.removeEventListener("keydown", handleKey, true);
+    boot.removeEventListener("pointerdown", handlePointer);
+    finishBoot();
+  };
+
+  const handleKey = (event: KeyboardEvent): void => {
+    finish(event);
+  };
+
+  const handlePointer = (event: PointerEvent): void => {
+    finish(event);
+  };
+
+  document.addEventListener("keydown", handleKey, true);
+  boot.addEventListener("pointerdown", handlePointer, { passive: false });
+}
+
+function finishBoot(): void {
+  if (boot) {
+    boot.hidden = true;
+  }
+
+  form.hidden = false;
+  input.focus();
+}

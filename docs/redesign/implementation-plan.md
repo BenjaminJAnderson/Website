@@ -5,6 +5,8 @@
 **Branch:** `redesign/astro`<br />
 **Scope:** read-only audit of `/home/benji/Documents/Portfolio25-main/` and `/home/benji/Documents/Projects/Website/`.
 
+> **Direction update 2026-10-22:** the modal command palette in the original M3 plan was replaced by a full-screen terminal shell after review. The site is now terminal-first across all routes. See `docs/redesign/content-inventory.md`.
+
 **Implementation note:** the scaffold uses Astro 6.4.8. Astro 7 requires Node >=22.23.4 and the local runtime is 22.23.2; the content/routing APIs used here are compatible with the Astro 5 plan.
 
 > This document records the investigation and the proposed implementation plan. It is intentionally a planning artifact, not an implementation specification that has been approved line-by-line.

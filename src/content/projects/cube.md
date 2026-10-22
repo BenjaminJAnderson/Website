@@ -57,7 +57,7 @@ There are 3 main ICs present on the motherboard.
 
 **SSD1351**\
 This is the IC used by every display in this design, it allows for SPI control of a 128×128 RGB OLED display. Unfortunately there isn't a massive market for square OLED displays, so it's hard to find ones that are small and high resolution. As a result the best display I could find has rather large bezels, hopefully with the growth of the VR market, small OLED screens might become a cheap as phone screens are today. 
-![SSD1351 display reference drawing](../../assets/projects/cube/display.webp)
+[image: SSD1351 display reference drawing](/project-images/cube/display.webp)
 
 **ICM20602**\
 The ICM20602 is an **I**nertial **M**easurement **U**nit **(IMU)**, housing an accelerometer and gyroscope. IMUs open up the possibility of using simple gestures to control the device, for example shaking the device can be used to wake the device from sleep or tilting the device to control the movement of a cursor. I chose this chip for its small size and SPI port, meaning only one more chip select line needs to be added to the SPI bus used by the displays. 
@@ -65,8 +65,8 @@ The ICM20602 is an **I**nertial **M**easurement **U**nit **(IMU)**, housing an a
 **ESP32-S2-Mini-1U**\
 Finally, the star of the show. The ESP32 is an amazing chip for its size, the benefit of using the newer/slightly slower chip is its simplicity. The ESP32-S2 has its own native USB interface, this means I don't have to add a CP2102 and a bunch of other circuity to my design. Fewer parts, fewer problems.
 
-![CUBE motherboard schematic](../../assets/projects/cube/motherboard.webp)
-![CUBE PCB layout](../../assets/projects/cube/pcb.webp)
+[image: CUBE motherboard schematic](/project-images/cube/motherboard.webp)
+[image: CUBE PCB layout](/project-images/cube/pcb.webp)
 
 ### Daughterboards (PCB 2-6)
 The other 5 PCBs have almost identical schematics, providing the passive components and connectors for the displays. These displays will all be daisy-chained together with the motherboard to provide a 6 display device.
@@ -75,17 +75,17 @@ The other 5 PCBs have almost identical schematics, providing the passive compone
 One design idea was to build the frame from two 3 sided pieces which would be joined via 3 mm neodymium magnets. By attaching two halves together the design is easy to charge/fix.
 I prototyped this frame using ABS on an FDM printer, by printing the pieces flat, I can avoid overhangs and give the outside of the frame a smooth texture. This print can then be folded like origami. The downside of FDM is it's not very pretty and the tolerances are a bit too high for a print of this scale, so whilst the origami method works well, it makes the frame look amateurish.
 
-![Unfolded CUBE enclosure frame](../../assets/projects/cube/unfolded-frame.webp)
-![Alternate unfolded enclosure frame](../../assets/projects/cube/unfolded-frame-2.webp)
-![Inside the assembled CUBE](../../assets/projects/cube/cover.webp)
+[image: Unfolded CUBE enclosure frame](/project-images/cube/unfolded-frame.webp)
+[image: Alternate unfolded enclosure frame](/project-images/cube/unfolded-frame-2.webp)
+[image: Inside the assembled CUBE](/project-images/cube/cover.webp)
 
 I also tried a lid design, where the design would be printed as a single piece, with one panel being attached with the 3 mm magnets. Whilst I liked the speed and quality of the SLA print, it was very brittle, leading to parts chipping during clean-up of the supports. Another issue with the design is it would be hard to place PCBs with 5 panels connected. 
 
-![PCB frame test fit](../../assets/projects/cube/pcb-frame.webp)
+[image: PCB frame test fit](/project-images/cube/pcb-frame.webp)
 
 Finally, I experimented with printing the frames as individual panels, allowing for PCBs and screens to be easily attached. The parts were sent to JLCPCBs new 3D printing service, removing a lot of the hassle and ensuring an amazing quality print. This design was the highest quality I have made so far, however using magnets for each frame resulted in a much more fragile design. The magnets hold extremely well until pressure on opposite corners of the cube is applied, resulting in a pealing motion which separates the magnets with ease. The other issue is the amount of magnets that have to be placed and the difficulty of gluing them to the frame.   
 
-![Magnetic frame assembly](../../assets/projects/cube/magnet-frame.webp)
+[image: Magnetic frame assembly](/project-images/cube/magnet-frame.webp)
 
 I came up with multiple designs for the frame, but what I ultimately decided was the frame should be made of at least two evenly sized pieces in order to separate easily for charging/fixing the device. If any frame piece has more than 3 sides, it becomes hard to assemble.
 

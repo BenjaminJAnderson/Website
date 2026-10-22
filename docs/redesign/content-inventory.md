@@ -15,7 +15,7 @@ These defaults were approved on 2026-10-22. Amend any entry here if the directio
 | 1 | Framework | Astro 6 static site | Approved (Astro 6.4.8) |
 | 2 | Hosting | Keep GitHub Pages, custom domain and HTTPS; deploy with GitHub Actions | Approved (recommended default) |
 | 3 | Migration | Convert CUBE, ORTHODOX and ORIGIN; preserve `/about/`, `/contact/`, `/cv/`; redirect old post URLs and `/ideas/` | Approved (recommended default) |
-| 4 | Terminal | Navigation-first command bar + command palette; commands open real routes; no blocking boot | Approved (recommended default) |
+| 4 | Terminal | Full-screen terminal shell; commands open real routes; terminal boot on every load | Revised 2026-10-22 |
 | 5 | Visual direction | Dark-only monochrome; no CRT, scanlines or glow | Approved (recommended default) |
 | 6 | Project photos | UI monochrome; photos slightly desaturated but still in color | Approved (recommended default) |
 | 7 | About identity | Original ASCII portrait if a suitable photo is supplied; otherwise a custom wordmark/circuit graphic | Approved (recommended default) |
@@ -124,3 +124,20 @@ Still outstanding:
 - Additional project screenshots and diagrams.
 - Final decision on whether ORIGIN should remain a project case study or move to a notes section.
 - Original ASCII identity artwork for M4.
+
+
+---
+
+## 6. M3 status — 2026-10-22
+
+The original modal-palette implementation was replaced after visual review.
+
+- Full-screen terminal shell with status line, scrollback and fixed prompt.
+- Terminal boot sequence on every page load, with a ported Chroma Spiral background and a keypress or pointer press to reveal the terminal.
+- All page chrome, cards, buttons, hero sections and modern layouts removed.
+- JetBrains Mono only; Inter removed.
+- About, Projects, Contact and project pages converted to terminal output.
+- Project images converted to plain text links.
+- Command parser, aliases, history, Tab completion and suggestions retained.
+- No CRT or scanline effects.
+- Unit tests, no-JS fallback markup, reduced-motion behaviour and mobile layout are in place and should be re-checked during final review.

@@ -1,53 +1,47 @@
 ---
 import { site } from "../data/site";
-import BaseLayout from "../layouts/BaseLayout.astro";
+import TerminalLayout from "../layouts/TerminalLayout.astro";
 ---
 
-<BaseLayout
+<TerminalLayout
   title="Contact"
   description="Contact Benjamin Anderson by email, GitHub or LinkedIn."
+  path="~/contact"
+  command="contact"
 >
-  <div class="container">
-    <header class="page-header">
-      <p class="breadcrumb">~/contact</p>
-      <h1>Contact</h1>
-      <p>
-        Email is the best way to reach me. For code and project updates, use the
-        links below.
-      </p>
-    </header>
+  <h1 class="term-heading">Contact</h1>
+  <p class="term-line term-muted">Email is the best way to reach me.</p>
 
-    <ul class="contact-list">
-      <li>
-        <a href={`mailto:${site.email}`}>
-          <span class="label">Email</span>
-          <span class="value">{site.email}</span>
-        </a>
-      </li>
-      <li>
-        <a href={site.github} rel="me">
-          <span class="label">GitHub</span>
-          <span class="value">github.com/BenjaminJAnderson</span>
-        </a>
-      </li>
-      <li>
-        <a href={site.linkedin} rel="me">
-          <span class="label">LinkedIn</span>
-          <span class="value">linkedin.com/in/engiebenji</span>
-        </a>
-      </li>
-      <li>
-        <a href={site.twitter} rel="me">
-          <span class="label">Twitter</span>
-          <span class="value">@engiebenji1999</span>
-        </a>
-      </li>
-      <li>
-        <a href={site.cv}>
-          <span class="label">CV</span>
-          <span class="value">PDF / BenjaminAnderson-CV.pdf</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-</BaseLayout>
+  <dl class="term-facts">
+    <dt>email</dt>
+    <dd>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+    </dd>
+
+    <dt>github</dt>
+    <dd>
+      <a href={site.github} rel="me">
+        github.com/BenjaminJAnderson
+      </a>
+    </dd>
+
+    <dt>linkedin</dt>
+    <dd>
+      <a href={site.linkedin} rel="me">
+        linkedin.com/in/engiebenji
+      </a>
+    </dd>
+
+    <dt>twitter</dt>
+    <dd>
+      <a href={site.twitter} rel="me">
+        @engiebenji1999
+      </a>
+    </dd>
+
+    <dt>cv</dt>
+    <dd>
+      <a href={site.cv}>BenjaminAnderson-CV.pdf</a>
+    </dd>
+  </dl>
+</TerminalLayout>

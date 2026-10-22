@@ -20,9 +20,24 @@ The dev server runs at `http://localhost:4321`.
 ```bash
 npm run check
 npm run format:check
+npm run test
 npm run build
 npm run preview
 ```
+
+## Terminal interface
+
+The site is a full-screen terminal. Every page boots with a Chroma Spiral
+background and waits for a keypress or pointer press before revealing the
+command prompt.
+
+Available commands include `help`, `about`, `projects`, `contact`, `cv`,
+`open <project>`, `ls`, `pwd`, `whoami`, `date`, `clear` and `cd <section>`.
+Project commands are generated from the content collection.
+
+Project images are linked as plain text rather than displayed inline. ASCII
+image previews are a future exploration. The boot-screen spiral is a port of
+Chroma Spiral by ertdfgcvb; see `THIRD_PARTY_NOTICES.md`.
 
 ## Adding a project
 
@@ -41,11 +56,13 @@ Set `featured: true` to include a project on the homepage.
 - `src/content/projects/` — Markdown project case studies
 - `src/assets/projects/` — project images optimized at build time
 - `src/layouts/` — shared page shell and project layout
-- `src/components/` — header, footer, project cards and redirects
-- `src/styles/` — design tokens and global styles
-- `src/data/` — site profile and ASCII identity
-- `src/lib/projects.ts` — content collection helpers
-- `public/` — CNAME, CV, favicons and static redirects
+- `src/components/` — terminal boot and redirects
+- `src/layouts/TerminalLayout.astro` — full-screen terminal shell
+- `src/scripts/terminal.ts` — prompt, history, completion and output
+- `src/styles/` — terminal typography and layout
+- `src/data/` — commands, site profile and ASCII identity
+- `src/lib/` — command parser and project collection helpers
+- `public/` — CNAME, CV, favicons, static redirects and project images
 - `docs/redesign/` — investigation and implementation plan
 
 ## Deployment

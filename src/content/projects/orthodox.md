@@ -56,7 +56,7 @@ For creating custom keycaps, I used **OpenSCAD**, a script-based 3D CAD modeler 
 ### Schematic Design
 The heart of any custom keyboard project lies in the PCB design. Below is the schematic diagram of my custom ortholinear keyboard, designed using KiCad.
 
-![Orthodox keyboard schematic](../../assets/projects/orthodox/keyboard-motherboard.webp)
+[image: Orthodox keyboard schematic](/project-images/orthodox/keyboard-motherboard.webp)
 
 #### Microcontroller Unit (MCU)
 At the core of the design is the **ATmega32U4** microcontroller, chosen for its USB HID compatibility and multiple input/output operations.
@@ -67,13 +67,13 @@ The USB interface includes a USB Type-C connector wired for USB 2.0 functionalit
 #### Key Matrix
 The key matrix configuration is crucial for detecting key presses reliably.
 
-![Key matrix schematic](../../assets/projects/orthodox/keyswitch-matrix.webp)
+[image: Key matrix schematic](/project-images/orthodox/keyswitch-matrix.webp)
 
 #### Reset and Other Components
 Includes a reset button, decoupling capacitors, and other essential components to ensure stable operation.
 
 ## PCB Design
-![Orthodox PCB layout](../../assets/projects/orthodox/keyboard-layout.webp)
+[image: Orthodox PCB layout](/project-images/orthodox/keyboard-layout.webp)
 
 The PCB design focused on integrating Kailh Choc low-profile keyswitches and implementing a novel method for measuring analog keypresses using copper coil traces and the LDC1614 from Texas Instruments.
 
@@ -100,12 +100,12 @@ The PCB design focused on integrating Kailh Choc low-profile keyswitches and imp
 ### Parametric Design with OpenSCAD
 OpenSCAD was used for designing key switches, enabling quick iterations and adjustments through parametric design.
 
-![Parametric keycap design](../../assets/projects/orthodox/buttons.webp)
+[image: Parametric keycap design](/project-images/orthodox/buttons.webp)
 
 ### Creating the Outer Case with FreeCAD
 FreeCAD was used for designing the outer case, providing detailed modelling and parametric features.
 
-![Orthodox case model](../../assets/projects/orthodox/case.webp)
+[image: Orthodox case model](/project-images/orthodox/case.webp)
 
 ### Material Selection and Manufacturing
 The case and key caps were 3D printed using durable SLA for prototypes, with plans for aluminium or acrylic for the final version.

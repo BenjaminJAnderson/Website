@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
-import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import { statusLabels } from "../../lib/projects";
+import TerminalLayout from "../../layouts/TerminalLayout.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects", ({ data }) =>
@@ -14,9 +15,50 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
+const { data } = project;
 const { Content } = await render(project);
+const period = data.period ?? String(data.year);
 ---
 
-<ProjectLayout project={project}>
-  <Content />
-</ProjectLayout>
+<TerminalLayout
+  title={data.title}
+  description={data.summary}
+  path={`~/projects/${project.id}`}
+  command={`open ${project.id}`}
+>
+  <h1 class="term-heading">{data.title}</h1>
+  <p class="term-line">
+    {period} <span class="terminal-dim">·</span>[
+    {statusLabels[data.status].toLowerCase()}]
+  </p>
+
+  <dl class="term-facts">
+    {data.role && (
+      <>
+        <dt>role</dt>
+        <dd>{data.role}</dd>
+      </>
+    )}
+    <dt>stack</dt>
+    <dd>{data.tech.join(" · ")}</dd>
+    {data.repo && (
+      <>
+        <dt>source</dt>
+        <dd>
+          <a href={data.repo} target="_blank" rel="noopener noreferrer">
+            {data.repo}
+          </a>
+        </dd>
+      </>
+    )}
+  </dl>
+
+  <div class="term-prose">
+    <Content />
+  </div>
+
+  <p class="term-line term-dim">
+    <a href="/projects/">← projects</a>
+    <a href="/">home</a>
+  </p>
+</TerminalLayout>

@@ -1,37 +1,39 @@
 ---
-import ProjectCard from "../../components/ProjectCard.astro";
-import { getPublishedProjects, toProjectCard } from "../../lib/projects";
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getPublishedProjects, statusLabels } from "../../lib/projects";
+import TerminalLayout from "../../layouts/TerminalLayout.astro";
 
-const projects = (await getPublishedProjects()).map(toProjectCard);
+const projects = await getPublishedProjects();
 ---
 
-<BaseLayout
+<TerminalLayout
   title="Projects"
   description="Hardware, firmware and software projects by Benjamin Anderson."
+  path="~/projects"
+  command="projects"
 >
-  <div class="container">
-    <header class="page-header">
-      <p class="breadcrumb">~/projects</p>
-      <h1>Projects</h1>
-      <p>
-        A working index of hardware, firmware and software projects. Each entry
-        links to a full case study with the design decisions, photographs and
-        technical notes behind it.
-      </p>
-    </header>
+  <h1 class="term-heading">Projects</h1>
+  <p class="term-line term-muted">
+    Hardware, firmware and software projects. Select a project or use
+    <button class="term-command" type="button" data-terminal-command="open">
+      open
+    </button>
+    to list them from the prompt.
+  </p>
 
-    <section aria-label="Project index">
-      <div class="project-grid">
-        {projects.map((project) => (
-          <ProjectCard project={project} />
-        ))}
-      </div>
-    </section>
+  <ul class="terminal-project-list">
+    {projects.map((project) => (
+      <li class="terminal-project-row">
+        <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+        <span>{project.data.period ?? project.data.year}</span>
+        <span class="terminal-dim">
+          [{statusLabels[project.data.status].toLowerCase()}]
+        </span>
+        <span class="terminal-dim">{project.data.tech.join(" ")}</span>
+      </li>
+    ))}
+  </ul>
 
-    <p class="index-note">
-      More write-ups, photographs and technical notes are on the way. Project
-      content is authored in Markdown and lives alongside the site.
-    </p>
-  </div>
-</BaseLayout>
+  <p class="term-line term-dim">
+    full case studies are available through the project names above.
+  </p>
+</TerminalLayout>

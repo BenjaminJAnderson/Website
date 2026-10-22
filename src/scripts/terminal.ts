@@ -12,6 +12,10 @@ import { startBoot } from "./boot-pacman";
 
 const HISTORY_KEY = "engiebenji.terminal-history";
 const HISTORY_LIMIT = 30;
+const INTRO_COMMAND = "help";
+const INTRO_START_DELAY_MS = 300;
+const INTRO_TYPE_DELAY_MS = 95;
+const INTRO_SUBMIT_DELAY_MS = 320;
 
 const app = document.querySelector<HTMLElement>("[data-terminal-app]")!;
 const output = document.querySelector<HTMLElement>("[data-terminal-output]")!;
@@ -39,8 +43,12 @@ const currentPath = app.dataset.path ?? "~";
 let history = loadHistory();
 let historyIndex = -1;
 let historyMode = false;
+let introTimer = 0;
+let introToken = 0;
+let introActive = false;
 
 input.addEventListener("input", () => {
+  cancelIntro();
   historyMode = false;
   historyIndex = -1;
 });
@@ -48,6 +56,12 @@ input.addEventListener("input", () => {
 input.addEventListener("keydown", handleKeyDown);
 form.addEventListener("submit", handleSubmit);
 document.addEventListener("click", handleCommandClick);
+document.addEventListener("pointerdown", cancelIntro, true);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    cancelIntro();
+  }
+});
 app.addEventListener("click", handleAppClick);
 
 startBoot({ onReveal: revealTerminal, onEnter: finishBoot });
@@ -347,10 +361,13 @@ function execute(raw: string): void {
 
 function handleSubmit(event: SubmitEvent): void {
   event.preventDefault();
+  cancelIntro();
   execute(input.value);
 }
 
 function handleKeyDown(event: KeyboardEvent): void {
+  cancelIntro();
+
   if (event.key === "ArrowUp") {
     event.preventDefault();
 
@@ -454,7 +471,7 @@ function revealTerminal(): void {
   form.hidden = false;
 }
 
-function finishBoot(): void {
+function finishBoot(freshBoot: boolean): void {
   const boot = document.querySelector<HTMLElement>("[data-terminal-boot]");
 
   if (boot) {
@@ -463,4 +480,88 @@ function finishBoot(): void {
 
   form.hidden = false;
   input.focus();
+
+  if (freshBoot) {
+    startIntroCommand();
+  }
+}
+
+function startIntroCommand(): void {
+  if (currentPath !== "~") {
+    return;
+  }
+
+  cancelIntro();
+  introActive = true;
+
+  const token = ++introToken;
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  const submit = (): void => {
+    if (!introActive || token !== introToken) {
+      return;
+    }
+
+    submitIntroCommand();
+  };
+
+  if (reducedMotion) {
+    setIntroValue(INTRO_COMMAND);
+    introTimer = window.setTimeout(submit, INTRO_START_DELAY_MS);
+    return;
+  }
+
+  let index = 0;
+
+  const typeNext = (): void => {
+    if (!introActive || token !== introToken) {
+      return;
+    }
+
+    index += 1;
+    setIntroValue(INTRO_COMMAND.slice(0, index));
+
+    if (index < INTRO_COMMAND.length) {
+      introTimer = window.setTimeout(typeNext, INTRO_TYPE_DELAY_MS);
+      return;
+    }
+
+    introTimer = window.setTimeout(submit, INTRO_SUBMIT_DELAY_MS);
+  };
+
+  introTimer = window.setTimeout(typeNext, INTRO_START_DELAY_MS);
+}
+
+function setIntroValue(value: string): void {
+  input.value = value;
+
+  if (document.activeElement === input) {
+    input.setSelectionRange(value.length, value.length);
+  }
+}
+
+function submitIntroCommand(): void {
+  if (!introActive) {
+    return;
+  }
+
+  introActive = false;
+  introToken += 1;
+  window.clearTimeout(introTimer);
+  introTimer = 0;
+
+  execute(INTRO_COMMAND);
+}
+
+function cancelIntro(): void {
+  if (!introActive) {
+    return;
+  }
+
+  introActive = false;
+  introToken += 1;
+  window.clearTimeout(introTimer);
+  introTimer = 0;
 }

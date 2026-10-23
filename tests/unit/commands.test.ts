@@ -120,6 +120,58 @@ describe("resolveCommand", () => {
     }
   });
 
+  it("resolves cursor trail commands", () => {
+    const list = resolveCommand("cursor", commands);
+    const wake = resolveCommand("cursor wake", commands);
+    const off = resolveCommand("cursor off", commands);
+    const spray = resolveCommand("trail spray", commands);
+
+    expect(list.kind).toBe("success");
+    expect(wake.kind).toBe("success");
+    expect(off.kind).toBe("success");
+    expect(spray.kind).toBe("success");
+
+    if (list.kind === "success") {
+      expect(list.command.action).toEqual({
+        type: "cursor-trail",
+        query: "list",
+      });
+    }
+
+    if (wake.kind === "success") {
+      expect(wake.command.action).toEqual({
+        type: "cursor-trail",
+        query: "wake",
+      });
+    }
+
+    if (off.kind === "success") {
+      expect(off.command.action).toEqual({
+        type: "cursor-trail",
+        query: "off",
+      });
+    }
+
+    if (spray.kind === "success") {
+      expect(spray.command.action).toEqual({
+        type: "cursor-trail",
+        query: "spray",
+      });
+    }
+  });
+
+  it("suggests cursor trails for an unknown style", () => {
+    const result = resolveCommand("cursor nope", commands);
+
+    expect(result.kind).toBe("error");
+    if (result.kind === "error") {
+      expect(result.message).toContain("nope");
+      expect(
+        result.suggestions.some((command) => command.id === "cursor sparkle"),
+      ).toBe(true);
+    }
+  });
+
   it("resolves neofetch to the neofetch action", () => {
     const result = resolveCommand("neofetch", commands);
 
@@ -326,6 +378,29 @@ describe("completeCommand", () => {
 
   it("returns undefined when no theme matches", () => {
     expect(completeCommand("theme zzzzz", commands, themes)).toBeUndefined();
+  });
+
+  it("completes cursor trail styles and subcommands", () => {
+    expect(completeCommand("cursor", commands, themes)).toBe("cursor ");
+    expect(completeCommand("cursor w", commands, themes)).toBe("cursor wa");
+    expect(completeCommand("cursor wak", commands, themes)).toBe("cursor wake");
+    expect(completeCommand("cursor wat", commands, themes)).toBe(
+      "cursor water",
+    );
+    expect(completeCommand("cursor spa", commands, themes)).toBe(
+      "cursor sparkle",
+    );
+    expect(completeCommand("cursor spr", commands, themes)).toBe(
+      "cursor spray",
+    );
+    expect(completeCommand("trail o", commands, themes)).toBe("trail off");
+    expect(completeCommand("cursor cur", commands, themes)).toBe(
+      "cursor current",
+    );
+    expect(completeCommand("cursor res", commands, themes)).toBe(
+      "cursor reset",
+    );
+    expect(completeCommand("cursor zzz", commands, themes)).toBeUndefined();
   });
 });
 

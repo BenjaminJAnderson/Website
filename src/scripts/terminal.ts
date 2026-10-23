@@ -9,6 +9,15 @@ import {
 import { site } from "../data/site";
 import type { SiteCommand } from "../data/commands";
 import {
+  CURSOR_TRAIL_STORAGE_KEY,
+  cursorTrailOptions,
+  defaultCursorTrail,
+  findCursorTrailOption,
+  normalizeCursorTrailPreference,
+  type CursorTrailOption,
+  type CursorTrailPreference,
+} from "../data/trails";
+import {
   THEME_STORAGE_KEY,
   defaultTheme,
   themeById,
@@ -31,6 +40,7 @@ import {
 } from "../lib/terminal-fs";
 import type { Theme } from "../lib/themes";
 import { startBoot } from "./boot-pacman";
+import { applyCursorTrail, destroyCursorTrail } from "./cursor-trail";
 import { mountNeofetchLogo } from "./neofetch-logo";
 
 const HISTORY_KEY = "engiebenji.terminal-history";
@@ -99,6 +109,8 @@ let historyMode = false;
 let introTimer = 0;
 let introToken = 0;
 let introActive = false;
+let cursorTrailPreference = readCursorTrailPreference();
+let cursorTrailStarted = false;
 const logoHandles = new Set<() => void>();
 
 input.addEventListener("input", () => {
@@ -117,6 +129,7 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 app.addEventListener("click", handleAppClick);
+window.addEventListener("pagehide", destroyCursorTrail);
 
 startBoot({ onReveal: revealTerminal, onEnter: finishBoot });
 applyTheme(getActiveTheme(), false);
@@ -565,6 +578,128 @@ function handleTheme(query: string): void {
   setStatus(`Theme: ${theme.name}`);
 }
 
+function readCursorTrailPreference(): CursorTrailPreference {
+  try {
+    return normalizeCursorTrailPreference(
+      localStorage.getItem(CURSOR_TRAIL_STORAGE_KEY),
+    );
+  } catch {
+    return defaultCursorTrail;
+  }
+}
+
+function saveCursorTrailPreference(preference: CursorTrailPreference): void {
+  try {
+    localStorage.setItem(CURSOR_TRAIL_STORAGE_KEY, preference);
+  } catch {
+    return;
+  }
+}
+
+function appendCursorTrailRow(option: CursorTrailOption): void {
+  const row = document.createElement("div");
+  row.className = "terminal-command-row";
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "term-command";
+  button.dataset.terminalCommand = `cursor ${option.id}`;
+  button.textContent = option.id;
+
+  const description = document.createElement("span");
+  description.className = "terminal-dim";
+  const current = option.id === cursorTrailPreference ? " · current" : "";
+  description.textContent = `${option.description}${current}`;
+
+  row.append(button, description);
+  output.append(row);
+}
+
+function renderCursorTrailList(): void {
+  appendLine("cursor trails:", "terminal-line terminal-dim");
+
+  for (const option of cursorTrailOptions) {
+    appendCursorTrailRow(option);
+  }
+
+  scrollOutput();
+  setStatus(`${cursorTrailOptions.length} cursor trails listed`);
+}
+
+function renderCurrentCursorTrail(): void {
+  const option =
+    findCursorTrailOption(cursorTrailPreference) ??
+    findCursorTrailOption(defaultCursorTrail);
+
+  if (!option) {
+    return;
+  }
+
+  appendLine(`cursor trail: ${option.id}`, "terminal-line terminal-heading");
+  appendLine(option.description, "terminal-line terminal-dim");
+  setStatus(`Cursor trail: ${option.id}`);
+}
+
+function setCursorTrail(preference: CursorTrailPreference): void {
+  cursorTrailPreference = preference;
+  cursorTrailStarted = true;
+  saveCursorTrailPreference(preference);
+
+  const handle = applyCursorTrail(preference);
+
+  if (preference === "off") {
+    appendLine("cursor trail disabled.", "terminal-line");
+    setStatus("Cursor trail disabled");
+    return;
+  }
+
+  const option = findCursorTrailOption(preference);
+  appendLine(
+    `cursor trail set to ${option?.label ?? preference}.`,
+    "terminal-line",
+  );
+
+  if (!handle || !handle.supported) {
+    appendLine(
+      "cursor trail is unavailable on this device.",
+      "terminal-line terminal-dim",
+    );
+  }
+
+  setStatus(`Cursor trail: ${option?.label ?? preference}`);
+}
+
+function handleCursorTrail(query: string): void {
+  if (query === "list") {
+    renderCursorTrailList();
+    return;
+  }
+
+  if (query === "current") {
+    renderCurrentCursorTrail();
+    return;
+  }
+
+  if (query === "reset") {
+    setCursorTrail(defaultCursorTrail);
+    return;
+  }
+
+  if (query === "off") {
+    setCursorTrail("off");
+    return;
+  }
+
+  const option = findCursorTrailOption(query);
+
+  if (!option) {
+    renderError(`No cursor trail matching “${query}”.`, []);
+    return;
+  }
+
+  setCursorTrail(option.id);
+}
+
 function renderDate(): void {
   appendLine(
     new Intl.DateTimeFormat(undefined, {
@@ -632,6 +767,9 @@ function handleAction(action: SiteCommand["action"]): void {
       return;
     case "theme":
       handleTheme(action.query);
+      return;
+    case "cursor-trail":
+      handleCursorTrail(action.query);
       return;
     case "profile":
       renderProfile();
@@ -864,6 +1002,11 @@ function finishBoot(freshBoot: boolean): void {
 
   form.hidden = false;
   input.focus();
+
+  if (!cursorTrailStarted) {
+    cursorTrailStarted = true;
+    applyCursorTrail(cursorTrailPreference);
+  }
 
   if (freshBoot) {
     startIntroCommand();

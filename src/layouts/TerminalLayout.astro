@@ -2,9 +2,13 @@
 import "@fontsource-variable/jetbrains-mono";
 import "../styles/global.css";
 import TerminalBoot from "../components/TerminalBoot.astro";
+import ThemeInit from "../components/ThemeInit.astro";
+import ThemeStyles from "../components/ThemeStyles.astro";
 import { buildProjectCommands, staticCommands } from "../data/commands";
 import { site } from "../data/site";
+import { defaultTheme } from "../data/themes";
 import { getPublishedProjects } from "../lib/projects";
+import { buildTerminalFileSystem } from "../lib/terminal-fs";
 
 interface Props {
   title?: string;
@@ -38,6 +42,14 @@ const commands = [
   ),
 ];
 const commandData = JSON.stringify(commands).replace(/</g, "\\u003c");
+const fileSystem = buildTerminalFileSystem(
+  projects.map((project) => ({
+    slug: project.id,
+    summary: project.data.summary,
+  })),
+  site.cv,
+);
+const fileSystemData = JSON.stringify(fileSystem).replace(/</g, "\\u003c");
 ---
 
 <!doctype html>
@@ -45,7 +57,7 @@ const commandData = JSON.stringify(commands).replace(/</g, "\\u003c");
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="color-scheme" content="dark light" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />
@@ -59,7 +71,9 @@ const commandData = JSON.stringify(commands).replace(/</g, "\\u003c");
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
 
-    <meta name="theme-color" content="#050505" />
+    <meta name="theme-color" content={defaultTheme.colors.background} />
+    <ThemeStyles />
+    <ThemeInit />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -80,7 +94,12 @@ const commandData = JSON.stringify(commands).replace(/</g, "\\u003c");
       skip to terminal input
     </a>
 
-    <div class="terminal-app" data-terminal-app data-path={path}>
+    <div
+      class="terminal-app"
+      data-terminal-app
+      data-path={path}
+      data-route={Astro.url.pathname}
+    >
       <div class="terminal-status">
         <span>
           {handle}@engiebenji:{path}
@@ -129,6 +148,11 @@ const commandData = JSON.stringify(commands).replace(/</g, "\\u003c");
       type="application/json"
       id="terminal-commands"
       set:html={commandData}
+    ></script>
+    <script
+      type="application/json"
+      id="terminal-filesystem"
+      set:html={fileSystemData}
     ></script>
     <script>
       import "../scripts/terminal";

@@ -15,7 +15,7 @@ const EXIT_TOTAL_MS = EXIT_FADE_DELAY_MS + EXIT_FADE_MS;
 
 interface BootOptions {
   onReveal?: () => void;
-  onEnter: () => void;
+  onEnter: (freshBoot: boolean) => void;
 }
 
 interface SequenceStep {
@@ -46,7 +46,7 @@ export function startBoot({ onEnter, onReveal }: BootOptions): void {
   const boot = document.querySelector<HTMLElement>("[data-terminal-boot]");
 
   if (!boot) {
-    onEnter();
+    onEnter(false);
     return;
   }
 
@@ -87,7 +87,7 @@ export function startBoot({ onEnter, onReveal }: BootOptions): void {
 
   if (previouslyConfirmed) {
     boot.hidden = true;
-    onEnter();
+    onEnter(false);
     return;
   }
 
@@ -153,7 +153,7 @@ export function startBoot({ onEnter, onReveal }: BootOptions): void {
       // Session storage may be unavailable in private contexts.
     }
 
-    onEnter();
+    onEnter(true);
   };
 
   const finish = (): void => {

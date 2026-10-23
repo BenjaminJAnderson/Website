@@ -1,17 +1,45 @@
 import { BOOT_SESSION_KEY } from "../data/boot";
+import {
+  logoArt,
+  neofetchFacts,
+  neofetchHeader,
+  neofetchPalette,
+  neofetchRule,
+} from "../data/neofetch";
 import { site } from "../data/site";
 import type { SiteCommand } from "../data/commands";
 import {
-  filterCommands,
+  THEME_STORAGE_KEY,
+  defaultTheme,
+  themeById,
+  themes,
+} from "../data/themes";
+import { appendAnsi } from "../lib/ansi";
+import {
+  completeCommand,
   getCanonicalInput,
   groupCommands,
   normalizeInput,
   resolveCommand,
 } from "../lib/commands";
+import {
+  completePath,
+  listDirectory,
+  normalizeRoute,
+  resolvePath,
+  type TerminalNode,
+} from "../lib/terminal-fs";
+import type { Theme } from "../lib/themes";
 import { startBoot } from "./boot-pacman";
+import { mountNeofetchLogo } from "./neofetch-logo";
 
 const HISTORY_KEY = "engiebenji.terminal-history";
+const PREVIOUS_ROUTE_KEY = "engiebenji.terminal-previous-route";
 const HISTORY_LIMIT = 30;
+const INTRO_COMMAND = "help";
+const INTRO_START_DELAY_MS = 300;
+const INTRO_TYPE_DELAY_MS = 95;
+const INTRO_SUBMIT_DELAY_MS = 320;
 
 const app = document.querySelector<HTMLElement>("[data-terminal-app]")!;
 const output = document.querySelector<HTMLElement>("[data-terminal-output]")!;
@@ -23,6 +51,9 @@ const input = document.querySelector<HTMLInputElement>(
 const status = document.querySelector<HTMLElement>("#terminal-status")!;
 const commandData =
   document.querySelector<HTMLScriptElement>("#terminal-commands")!;
+const fileSystemData = document.querySelector<HTMLScriptElement>(
+  "#terminal-filesystem",
+);
 
 let commands: SiteCommand[] = [];
 
@@ -35,12 +66,43 @@ try {
   commands = [];
 }
 
+let fileSystem: TerminalNode = {
+  name: "~",
+  route: "/",
+  kind: "dir",
+  children: [],
+};
+
+try {
+  const parsed: unknown = JSON.parse(fileSystemData?.textContent ?? "null");
+  if (
+    parsed &&
+    typeof parsed === "object" &&
+    (parsed as TerminalNode).kind === "dir"
+  ) {
+    fileSystem = parsed as TerminalNode;
+  }
+} catch {
+  fileSystem = {
+    name: "~",
+    route: "/",
+    kind: "dir",
+    children: [],
+  };
+}
+
 const currentPath = app.dataset.path ?? "~";
+const currentRoute = normalizeRoute(app.dataset.route ?? "/");
 let history = loadHistory();
 let historyIndex = -1;
 let historyMode = false;
+let introTimer = 0;
+let introToken = 0;
+let introActive = false;
+const logoHandles = new Set<() => void>();
 
 input.addEventListener("input", () => {
+  cancelIntro();
   historyMode = false;
   historyIndex = -1;
 });
@@ -48,9 +110,21 @@ input.addEventListener("input", () => {
 input.addEventListener("keydown", handleKeyDown);
 form.addEventListener("submit", handleSubmit);
 document.addEventListener("click", handleCommandClick);
+document.addEventListener("pointerdown", cancelIntro, true);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    cancelIntro();
+  }
+});
 app.addEventListener("click", handleAppClick);
 
 startBoot({ onReveal: revealTerminal, onEnter: finishBoot });
+applyTheme(getActiveTheme(), false);
+
+const pageLogo = document.querySelector<HTMLElement>("[data-neofetch-logo]");
+if (pageLogo) {
+  logoHandles.add(mountNeofetchLogo(pageLogo));
+}
 
 function loadHistory(): string[] {
   try {
@@ -196,8 +270,110 @@ function renderSections(): void {
   appendLinkRow("/about/", "about/", "profile and current work");
   appendLinkRow("/projects/", "projects/", "project index");
   appendLinkRow("/contact/", "contact/", "email and links");
-  appendLinkRow(site.cv, "cv/", "download the CV");
+  appendLinkRow(site.cv, "cv", "download the CV");
   setStatus("Sections listed");
+}
+
+function renderDirectory(target = ""): void {
+  const result = resolvePath(fileSystem, currentRoute, target || ".");
+
+  if (result.kind === "error") {
+    renderError(
+      `ls: cannot access '${target || "."}': No such file or directory`,
+      [],
+    );
+    return;
+  }
+
+  if (result.node.kind === "file") {
+    appendInlineLinks([{ label: result.node.name, href: result.node.route }]);
+    setStatus(`File: ${result.node.name}`);
+    return;
+  }
+
+  const entries = listDirectory(result.node);
+
+  if (entries.length === 0) {
+    appendLine("no entries.", "terminal-line terminal-dim");
+    setStatus("Directory is empty");
+    return;
+  }
+
+  appendInlineLinks(
+    entries.map((entry) => ({
+      label: entry.kind === "dir" ? `${entry.name}/` : entry.name,
+      href: entry.route,
+    })),
+  );
+  setStatus(
+    `${entries.length} ${entries.length === 1 ? "entry" : "entries"} listed`,
+  );
+}
+
+function readPreviousRoute(): string | undefined {
+  try {
+    const value = sessionStorage.getItem(PREVIOUS_ROUTE_KEY);
+    return value ? normalizeRoute(value) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function rememberRoute(route: string): void {
+  try {
+    sessionStorage.setItem(PREVIOUS_ROUTE_KEY, route);
+  } catch {
+    return;
+  }
+}
+
+function navigateToDirectory(node: TerminalNode): void {
+  if (node.kind !== "dir" || node.route === currentRoute) {
+    return;
+  }
+
+  rememberRoute(currentRoute);
+  window.location.assign(node.route);
+}
+
+function handleCd(target: string): void {
+  if (target === "-") {
+    const previous = readPreviousRoute();
+
+    if (!previous) {
+      renderError("cd: OLDPWD not set", []);
+      return;
+    }
+
+    const result = resolvePath(fileSystem, currentRoute, previous);
+
+    if (result.kind !== "found" || result.node.kind !== "dir") {
+      renderError("cd: OLDPWD not set", []);
+      return;
+    }
+
+    navigateToDirectory(result.node);
+    return;
+  }
+
+  const result = resolvePath(fileSystem, currentRoute, target || "/");
+
+  if (result.kind === "error") {
+    renderError(
+      result.reason === "not-directory"
+        ? `cd: not a directory: ${target}`
+        : `cd: no such file or directory: ${target}`,
+      [],
+    );
+    return;
+  }
+
+  if (result.node.kind !== "dir") {
+    renderError(`cd: not a directory: ${target}`, []);
+    return;
+  }
+
+  navigateToDirectory(result.node);
 }
 
 function renderProjects(): void {
@@ -210,6 +386,58 @@ function renderProjects(): void {
   }
 
   setStatus("Projects listed");
+}
+
+function renderNeofetch(): void {
+  const wrapper = document.createElement("div");
+  wrapper.className = "term-neofetch term-neofetch--logo";
+
+  const logoHost = document.createElement("div");
+  logoHost.className = "term-neofetch__logo";
+  logoHost.dataset.neofetchLogo = "";
+  logoHost.setAttribute("aria-hidden", "true");
+
+  const logo = document.createElement("pre");
+  logo.className = "term-ascii";
+  logo.dataset.neofetchLogoFallback = "";
+  appendAnsi(logo, logoArt);
+  logoHost.append(logo);
+
+  const details = document.createElement("div");
+  details.className = "term-neofetch__details";
+
+  const header = document.createElement("p");
+  header.className = "term-neofetch__header";
+  appendAnsi(header, neofetchHeader);
+
+  const rule = document.createElement("p");
+  rule.className = "term-neofetch__rule";
+  appendAnsi(rule, neofetchRule);
+
+  const facts = document.createElement("dl");
+  facts.className = "term-facts";
+
+  for (const fact of neofetchFacts) {
+    const label = document.createElement("dt");
+    appendAnsi(label, fact.label);
+
+    const value = document.createElement("dd");
+    value.textContent = fact.value;
+
+    facts.append(label, value);
+  }
+
+  const palette = document.createElement("pre");
+  palette.className = "term-palette";
+  palette.setAttribute("aria-hidden", "true");
+  appendAnsi(palette, neofetchPalette);
+
+  details.append(header, rule, facts, palette);
+  wrapper.append(logoHost, details);
+  output.append(wrapper);
+  logoHandles.add(mountNeofetchLogo(logoHost));
+  scrollOutput();
+  setStatus("System information displayed");
 }
 
 function renderProfile(): void {
@@ -226,6 +454,115 @@ function renderProfile(): void {
     { label: "about", href: "/about/" },
   ]);
   setStatus("Profile displayed");
+}
+
+function getActiveTheme(): Theme {
+  const id = document.documentElement.dataset.theme;
+  return (id ? themeById.get(id) : undefined) ?? defaultTheme;
+}
+
+function applyTheme(theme: Theme, persist = true): void {
+  document.documentElement.dataset.theme = theme.id;
+  document.documentElement.style.colorScheme = theme.mode;
+
+  const meta = document.querySelector<HTMLMetaElement>(
+    'meta[name="theme-color"]',
+  );
+
+  if (meta) {
+    meta.content = theme.colors.background;
+  }
+
+  if (!persist) {
+    return;
+  }
+
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme.id);
+  } catch {
+    return;
+  }
+}
+
+function appendThemeRow(theme: Theme): void {
+  const row = document.createElement("div");
+  row.className = "terminal-command-row";
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "term-command";
+  button.dataset.terminalCommand = `theme ${theme.id}`;
+  button.textContent = theme.id;
+
+  const description = document.createElement("span");
+  description.className = "terminal-dim";
+  const current = theme.id === getActiveTheme().id ? " · current" : "";
+  description.textContent = `${theme.name} · ${theme.mode}${current}`;
+
+  row.append(button, description);
+  output.append(row);
+}
+
+function renderThemeList(): void {
+  appendLine("themes:", "terminal-line terminal-dim");
+
+  for (const theme of themes) {
+    appendThemeRow(theme);
+  }
+
+  scrollOutput();
+  setStatus(`${themes.length} themes listed`);
+}
+
+function renderCurrentTheme(): void {
+  const theme = getActiveTheme();
+
+  appendLine(`${theme.name} (${theme.id})`, "terminal-line terminal-heading");
+  appendLine(`mode: ${theme.mode}`, "terminal-line terminal-dim");
+  appendLine(
+    `background: ${theme.colors.background}`,
+    "terminal-line terminal-dim",
+  );
+  appendLine(`accent: ${theme.colors.accent}`, "terminal-line terminal-dim");
+  appendLine("run theme list to see all themes", "terminal-line terminal-dim");
+  setStatus(`Current theme: ${theme.name}`);
+}
+
+function handleTheme(query: string): void {
+  if (query === "list") {
+    renderThemeList();
+    return;
+  }
+
+  if (query === "current") {
+    renderCurrentTheme();
+    return;
+  }
+
+  if (query === "reset") {
+    try {
+      localStorage.removeItem(THEME_STORAGE_KEY);
+    } catch {}
+
+    applyTheme(defaultTheme, false);
+    appendLine(
+      `theme reset to ${defaultTheme.name} (${defaultTheme.id}).`,
+      "terminal-line",
+    );
+    setStatus(`Theme reset to ${defaultTheme.name}`);
+    return;
+  }
+
+  const theme = themeById.get(query);
+
+  if (!theme) {
+    renderError(`No theme matching “${query}”.`, []);
+    return;
+  }
+
+  applyTheme(theme);
+  appendLine(`theme set to ${theme.name} (${theme.id}).`, "terminal-line");
+  setStatus(`Theme: ${theme.name}`);
 }
 
 function renderDate(): void {
@@ -252,7 +589,16 @@ function renderError(message: string, suggestions: SiteCommand[]): void {
   setStatus(message);
 }
 
+function destroyLogos(): void {
+  for (const destroy of logoHandles) {
+    destroy();
+  }
+
+  logoHandles.clear();
+}
+
 function clearTerminal(): void {
+  destroyLogos();
   output.replaceChildren();
   input.value = "";
   historyMode = false;
@@ -281,12 +627,24 @@ function handleAction(action: SiteCommand["action"]): void {
     case "list-projects":
       renderProjects();
       return;
+    case "neofetch":
+      renderNeofetch();
+      return;
+    case "theme":
+      handleTheme(action.query);
+      return;
     case "profile":
       renderProfile();
       return;
     case "path":
       appendLine(currentPath);
       setStatus("Path displayed");
+      return;
+    case "change-directory":
+      handleCd("");
+      return;
+    case "list-directory":
+      renderDirectory();
       return;
     case "date":
       renderDate();
@@ -328,7 +686,19 @@ function execute(raw: string): void {
   historyMode = false;
   historyIndex = -1;
 
-  const resolution = resolveCommand(command, commands);
+  if (command === "cd" || command.startsWith("cd ")) {
+    handleCd(command.slice(3).trim());
+    focusInput();
+    return;
+  }
+
+  if (command === "ls" || command.startsWith("ls ")) {
+    renderDirectory(command.slice(3).trim());
+    focusInput();
+    return;
+  }
+
+  const resolution = resolveCommand(command, commands, themes);
 
   if (resolution.kind === "success") {
     handleAction(resolution.command.action);
@@ -347,10 +717,20 @@ function execute(raw: string): void {
 
 function handleSubmit(event: SubmitEvent): void {
   event.preventDefault();
+  cancelIntro();
   execute(input.value);
 }
 
+function getShellCommand(inputValue: string): "cd" | "ls" | undefined {
+  const match = /^(cd|ls)(?=\s|$)/i.exec(inputValue.trimStart());
+  const command = match?.[1]?.toLowerCase();
+
+  return command === "cd" || command === "ls" ? command : undefined;
+}
+
 function handleKeyDown(event: KeyboardEvent): void {
+  cancelIntro();
+
   if (event.key === "ArrowUp") {
     event.preventDefault();
 
@@ -397,11 +777,32 @@ function handleKeyDown(event: KeyboardEvent): void {
       return;
     }
 
-    const matches = filterCommands(commands, input.value);
+    const shellCommand = getShellCommand(input.value);
 
-    if (matches[0]) {
+    if (shellCommand) {
       event.preventDefault();
-      input.value = getCanonicalInput(matches[0]);
+      const completion = completePath(
+        input.value,
+        fileSystem,
+        currentRoute,
+        shellCommand,
+      );
+
+      if (completion) {
+        input.value = completion;
+        input.setSelectionRange(completion.length, completion.length);
+        historyMode = false;
+        historyIndex = -1;
+      }
+
+      return;
+    }
+
+    const completion = completeCommand(input.value, commands, themes);
+
+    if (completion) {
+      event.preventDefault();
+      input.value = completion;
       historyMode = false;
       historyIndex = -1;
     }
@@ -454,7 +855,7 @@ function revealTerminal(): void {
   form.hidden = false;
 }
 
-function finishBoot(): void {
+function finishBoot(freshBoot: boolean): void {
   const boot = document.querySelector<HTMLElement>("[data-terminal-boot]");
 
   if (boot) {
@@ -463,4 +864,88 @@ function finishBoot(): void {
 
   form.hidden = false;
   input.focus();
+
+  if (freshBoot) {
+    startIntroCommand();
+  }
+}
+
+function startIntroCommand(): void {
+  if (currentPath !== "~") {
+    return;
+  }
+
+  cancelIntro();
+  introActive = true;
+
+  const token = ++introToken;
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  const submit = (): void => {
+    if (!introActive || token !== introToken) {
+      return;
+    }
+
+    submitIntroCommand();
+  };
+
+  if (reducedMotion) {
+    setIntroValue(INTRO_COMMAND);
+    introTimer = window.setTimeout(submit, INTRO_START_DELAY_MS);
+    return;
+  }
+
+  let index = 0;
+
+  const typeNext = (): void => {
+    if (!introActive || token !== introToken) {
+      return;
+    }
+
+    index += 1;
+    setIntroValue(INTRO_COMMAND.slice(0, index));
+
+    if (index < INTRO_COMMAND.length) {
+      introTimer = window.setTimeout(typeNext, INTRO_TYPE_DELAY_MS);
+      return;
+    }
+
+    introTimer = window.setTimeout(submit, INTRO_SUBMIT_DELAY_MS);
+  };
+
+  introTimer = window.setTimeout(typeNext, INTRO_START_DELAY_MS);
+}
+
+function setIntroValue(value: string): void {
+  input.value = value;
+
+  if (document.activeElement === input) {
+    input.setSelectionRange(value.length, value.length);
+  }
+}
+
+function submitIntroCommand(): void {
+  if (!introActive) {
+    return;
+  }
+
+  introActive = false;
+  introToken += 1;
+  window.clearTimeout(introTimer);
+  introTimer = 0;
+
+  execute(INTRO_COMMAND);
+}
+
+function cancelIntro(): void {
+  if (!introActive) {
+    return;
+  }
+
+  introActive = false;
+  introToken += 1;
+  window.clearTimeout(introTimer);
+  introTimer = 0;
 }

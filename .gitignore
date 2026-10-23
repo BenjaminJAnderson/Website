@@ -3,12 +3,6 @@ dist/
 .astro/
 node_modules/
 
-# Jekyll legacy
-_site/
-.sass-cache/
-.jekyll-cache/
-.jekyll-metadata
-
 # Tooling
 .env
 .env.*

@@ -6,8 +6,12 @@ export type CommandAction =
   | { type: "sections" }
   | { type: "profile" }
   | { type: "path" }
+  | { type: "change-directory" }
+  | { type: "list-directory" }
   | { type: "date" }
   | { type: "clear" }
+  | { type: "neofetch" }
+  | { type: "theme"; query: string }
   | { type: "uninstall" }
   | { type: "list-projects" };
 
@@ -42,7 +46,7 @@ export const staticCommands: SiteCommand[] = [
     label: "About",
     description: "Profile, tools and current work.",
     group: "navigate",
-    aliases: ["cd about", "go about"],
+    aliases: ["go about"],
     keywords: ["profile", "bio", "who"],
     action: { type: "navigate", href: "/about/" },
   },
@@ -51,7 +55,7 @@ export const staticCommands: SiteCommand[] = [
     label: "Projects",
     description: "Browse hardware, firmware and software case studies.",
     group: "navigate",
-    aliases: ["work", "cd projects", "go projects"],
+    aliases: ["work", "go projects"],
     keywords: ["case studies", "portfolio"],
     action: { type: "navigate", href: "/projects/" },
   },
@@ -68,7 +72,7 @@ export const staticCommands: SiteCommand[] = [
     label: "Contact",
     description: "Email, GitHub, LinkedIn and other links.",
     group: "navigate",
-    aliases: ["email", "mail", "cd contact", "go contact"],
+    aliases: ["email", "mail", "go contact"],
     keywords: ["email", "github", "linkedin"],
     action: { type: "navigate", href: "/contact/" },
   },
@@ -90,12 +94,44 @@ export const staticCommands: SiteCommand[] = [
     action: { type: "navigate", href: "/" },
   },
   {
+    id: "cd",
+    label: "Change directory",
+    description: "Change directory. cd on its own returns home.",
+    group: "utility",
+    keywords: ["directory", "navigate", "path"],
+    action: { type: "change-directory" },
+  },
+  {
     id: "ls",
-    label: "List sections",
+    label: "List directory",
+    description: "List entries in the current directory, or use ls <path>.",
+    group: "utility",
+    keywords: ["directory", "files", "navigation"],
+    action: { type: "list-directory" },
+  },
+  {
+    id: "sections",
+    label: "Sections",
     description: "List the main sections of the site.",
     group: "utility",
     keywords: ["sections", "navigation"],
     action: { type: "sections" },
+  },
+  {
+    id: "neofetch",
+    label: "Neofetch",
+    description: "Show basic information about me.",
+    group: "utility",
+    keywords: ["system", "info", "profile", "about"],
+    action: { type: "neofetch" },
+  },
+  {
+    id: "theme",
+    label: "Theme",
+    description: "List or switch the site colour theme.",
+    group: "utility",
+    keywords: ["appearance", "palette", "colors", "colorscheme", "omarchy"],
+    action: { type: "theme", query: "list" },
   },
   {
     id: "whoami",

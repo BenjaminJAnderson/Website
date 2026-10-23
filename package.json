@@ -14,7 +14,8 @@
     "format": "prettier --write \"src/**/*.{astro,ts,css}\" \"tests/**/*.ts\" package.json tsconfig.json astro.config.mjs prettier.config.mjs vitest.config.ts",
     "format:check": "prettier --check \"src/**/*.{astro,ts,css}\" \"tests/**/*.ts\" package.json tsconfig.json astro.config.mjs prettier.config.mjs vitest.config.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "themes:pull": "node scripts/pull-themes.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",

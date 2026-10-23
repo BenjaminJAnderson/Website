@@ -1,14 +1,4 @@
 :root {
-  color-scheme: dark;
-
-  --bg: #050505;
-  --text: #e6e6e1;
-  --text-muted: #a8a8a0;
-  --text-dim: #8a8a82;
-  --line: #262624;
-  --line-strong: #3a3a36;
-  --focus: #ffffff;
-
   --font-mono:
     "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas,
     monospace;

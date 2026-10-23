@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { chromaDensity } from "../../src/lib/chroma-spiral";
+import { chromaBand, chromaDensity } from "../../src/lib/chroma-spiral";
 import type { SpiralContext } from "../../src/lib/chroma-spiral";
 
 const context: SpiralContext = {
@@ -48,5 +48,29 @@ describe("chromaDensity", () => {
     const second = chromaDensity({ x: 60, y: 30 }, { ...context, time: 5000 });
 
     expect(second).not.toBe(first);
+  });
+});
+
+describe("chromaBand", () => {
+  it("maps the density range across every palette band", () => {
+    const bands = new Set(
+      Array.from({ length: 100 }, (_, index) => chromaBand(index / 99, 16)),
+    );
+
+    expect(chromaBand(0, 16)).toBe(0);
+    expect(chromaBand(0.5, 16)).toBe(8);
+    expect(chromaBand(1, 16)).toBe(15);
+    expect(bands.size).toBe(16);
+  });
+
+  it("clamps out-of-range and invalid values", () => {
+    expect(chromaBand(-1, 16)).toBe(0);
+    expect(chromaBand(2, 16)).toBe(15);
+    expect(chromaBand(Number.NaN, 16)).toBe(0);
+  });
+
+  it("returns the first band when there is no palette", () => {
+    expect(chromaBand(0.8, 0)).toBe(0);
+    expect(chromaBand(0.8, 1)).toBe(0);
   });
 });

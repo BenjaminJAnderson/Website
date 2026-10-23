@@ -4,7 +4,9 @@ import {
   staticCommands,
   type SiteCommand,
 } from "../../src/data/commands";
+import { themes } from "../../src/data/themes";
 import {
+  completeCommand,
   filterCommands,
   findExactCommand,
   getCanonicalInput,
@@ -96,6 +98,113 @@ describe("resolveCommand", () => {
     }
   });
 
+  it("resolves shell commands to their actions", () => {
+    const cd = resolveCommand("cd", commands);
+    const ls = resolveCommand("ls", commands);
+    const sections = resolveCommand("sections", commands);
+
+    expect(cd.kind).toBe("success");
+    expect(ls.kind).toBe("success");
+    expect(sections.kind).toBe("success");
+
+    if (cd.kind === "success") {
+      expect(cd.command.action).toEqual({ type: "change-directory" });
+    }
+
+    if (ls.kind === "success") {
+      expect(ls.command.action).toEqual({ type: "list-directory" });
+    }
+
+    if (sections.kind === "success") {
+      expect(sections.command.action).toEqual({ type: "sections" });
+    }
+  });
+
+  it("resolves neofetch to the neofetch action", () => {
+    const result = resolveCommand("neofetch", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({ type: "neofetch" });
+      expect(result.command.description).toBe(
+        "Show basic information about me.",
+      );
+    }
+  });
+
+  it("resolves theme to the theme list", () => {
+    const result = resolveCommand("theme", commands, themes);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({
+        type: "theme",
+        query: "list",
+      });
+    }
+  });
+
+  it("resolves theme list, current and reset", () => {
+    const list = resolveCommand("theme list", commands, themes);
+    const current = resolveCommand("theme current", commands, themes);
+    const reset = resolveCommand("theme reset", commands, themes);
+
+    expect(list.kind).toBe("success");
+    expect(current.kind).toBe("success");
+    expect(reset.kind).toBe("success");
+
+    if (list.kind === "success") {
+      expect(list.command.action).toEqual({ type: "theme", query: "list" });
+    }
+
+    if (current.kind === "success") {
+      expect(current.command.action).toEqual({
+        type: "theme",
+        query: "current",
+      });
+    }
+
+    if (reset.kind === "success") {
+      expect(reset.command.action).toEqual({ type: "theme", query: "reset" });
+    }
+  });
+
+  it("resolves a theme by slug or display name", () => {
+    const slug = resolveCommand("theme tokyo-night", commands, themes);
+    const spaced = resolveCommand("theme Tokyo Night", commands, themes);
+
+    expect(slug.kind).toBe("success");
+    expect(spaced.kind).toBe("success");
+
+    if (slug.kind === "success") {
+      expect(slug.command.action).toEqual({
+        type: "theme",
+        query: "tokyo-night",
+      });
+    }
+
+    if (spaced.kind === "success") {
+      expect(spaced.command.action).toEqual({
+        type: "theme",
+        query: "tokyo-night",
+      });
+    }
+  });
+
+  it("suggests themes for an unknown theme", () => {
+    const result = resolveCommand("theme tokio", commands, themes);
+
+    expect(result.kind).toBe("error");
+    if (result.kind === "error") {
+      expect(result.message).toContain("tokio");
+      expect(
+        result.suggestions.some(
+          (command) => command.id === "theme tokyo-night",
+        ),
+      ).toBe(true);
+    }
+  });
+
   it("resolves open with no argument to the project list", () => {
     const result = resolveCommand("open", commands);
 
@@ -171,6 +280,10 @@ describe("filterCommands", () => {
     expect(filterCommands(commands, "mail")[0]?.id).toBe("contact");
   });
 
+  it("matches theme keywords", () => {
+    expect(filterCommands(commands, "appearance")[0]?.id).toBe("theme");
+  });
+
   it("returns no matches for unrelated text", () => {
     expect(filterCommands(commands, "zzzzzz")).toEqual([]);
   });
@@ -181,6 +294,38 @@ describe("suggestCommands", () => {
     const suggestions = suggestCommands("projets", commands);
 
     expect(suggestions[0]?.id).toBe("projects");
+  });
+});
+
+describe("completeCommand", () => {
+  it("completes theme slugs and display names", () => {
+    expect(completeCommand("theme vant", commands, themes)).toBe(
+      "theme vantablack",
+    );
+    expect(completeCommand("theme Tokyo N", commands, themes)).toBe(
+      "theme tokyo-night",
+    );
+    expect(completeCommand("theme tokio", commands, themes)).toBe(
+      "theme tokyo-night",
+    );
+  });
+
+  it("keeps theme subcommands and adds a trailing space", () => {
+    expect(completeCommand("theme", commands, themes)).toBe("theme ");
+    expect(completeCommand("theme current", commands, themes)).toBe(
+      "theme current",
+    );
+    expect(completeCommand("theme reset", commands, themes)).toBe(
+      "theme reset",
+    );
+  });
+
+  it("still completes non-theme commands", () => {
+    expect(completeCommand("neo", commands, themes)).toBe("neofetch");
+  });
+
+  it("returns undefined when no theme matches", () => {
+    expect(completeCommand("theme zzzzz", commands, themes)).toBeUndefined();
   });
 });
 

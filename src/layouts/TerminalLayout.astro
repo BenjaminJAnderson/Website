@@ -31,6 +31,7 @@ const {
 
 const pageTitle = title === site.name ? title : `${title} · ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const shouldBoot = boot && path === "~";
 
 const projects = await getPublishedProjects();
 const commands = [
@@ -163,7 +164,7 @@ const fileSystemData = JSON.stringify(fileSystem).replace(/</g, "\\u003c");
       </form>
     </div>
 
-    {boot && <TerminalBoot />}
+    {shouldBoot && <TerminalBoot />}
 
     <script
       type="application/json"

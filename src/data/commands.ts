@@ -11,6 +11,7 @@ export type CommandAction =
   | { type: "date" }
   | { type: "clear" }
   | { type: "neofetch" }
+  | { type: "contact" }
   | { type: "theme"; query: string }
   | { type: "ascii"; query: string }
   | { type: "cursor-trail"; query: string }
@@ -103,11 +104,11 @@ export const staticCommands: SiteCommand[] = [
   {
     id: "contact",
     label: "Contact",
-    description: "Email, GitHub, LinkedIn and other links.",
+    description: "Show email, GitHub, LinkedIn and Twitter details.",
     group: "navigate",
     aliases: ["email", "mail", "go contact"],
-    keywords: ["email", "github", "linkedin"],
-    action: { type: "navigate", href: "/contact/" },
+    keywords: ["email", "github", "linkedin", "twitter"],
+    action: { type: "contact" },
   },
   {
     id: "cv",

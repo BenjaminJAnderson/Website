@@ -42,7 +42,6 @@ describe("buildTerminalFileSystem", () => {
   it("builds the root and project directories", () => {
     expect(listDirectory(fileSystem).map((node) => node.name)).toEqual([
       "about",
-      "contact",
       "cv",
       "projects",
     ]);
@@ -133,7 +132,7 @@ describe("completePath", () => {
   it("completes directories from the root and projects", () => {
     expect(completePath("cd", fileSystem, "/", "cd")).toBe("cd ");
     expect(completePath("cd pro", fileSystem, "/", "cd")).toBe("cd projects/");
-    expect(completePath("cd c", fileSystem, "/", "cd")).toBe("cd contact/");
+    expect(completePath("cd a", fileSystem, "/", "cd")).toBe("cd about/");
     expect(completePath("cd c", fileSystem, "/projects/", "cd")).toBe(
       "cd cube/",
     );
@@ -149,8 +148,8 @@ describe("completePath", () => {
     expect(completePath("cd ~/pro", fileSystem, "/", "cd")).toBe(
       "cd ~/projects/",
     );
-    expect(completePath("cd ../c", fileSystem, "/projects/", "cd")).toBe(
-      "cd ../contact/",
+    expect(completePath("cd ../a", fileSystem, "/projects/", "cd")).toBe(
+      "cd ../about/",
     );
   });
 
@@ -160,9 +159,9 @@ describe("completePath", () => {
     expect(completePath("ls cv", fileSystem, "/", "ls")).toBe("ls cv");
   });
 
-  it("does not complete ambiguous prefixes or the wrong command", () => {
+  it("does not complete unmatched directories or the wrong command", () => {
     expect(completePath("cd zzz", fileSystem, "/", "cd")).toBeUndefined();
+    expect(completePath("cd c", fileSystem, "/", "cd")).toBeUndefined();
     expect(completePath("cd pro", fileSystem, "/", "ls")).toBeUndefined();
-    expect(completePath("ls c", fileSystem, "/", "ls")).toBeUndefined();
   });
 });

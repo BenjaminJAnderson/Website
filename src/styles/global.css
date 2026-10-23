@@ -586,6 +586,42 @@ html[data-boot-pending] .terminal-app[data-path="~"] .terminal-output {
   text-align: left;
 }
 
+.terminal-contact-row {
+  display: grid;
+  grid-template-columns: 9ch minmax(0, 1fr);
+  gap: 1.5ch;
+  align-items: baseline;
+  margin: 0 0 0.25rem;
+}
+
+.terminal-contact-row__label {
+  color: var(--text-dim);
+}
+
+.terminal-contact-row a,
+.terminal-contact-row__copy {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.terminal-contact-row__copy {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.terminal-contact-row__copy:hover {
+  color: var(--text);
+}
+
 .term-prose {
   max-width: 100ch;
   margin: 1rem 0 1.5rem;

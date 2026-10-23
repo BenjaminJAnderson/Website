@@ -27,11 +27,12 @@ npm run preview
 
 ## Terminal interface
 
-The site is a full-screen terminal. The first page load in a tab shows an
+The site is a full-screen terminal. The first home page load in a tab shows an
 Asciify-generated Chroma Spiral hero, an Old London `benji` wordmark and a
-pacman-style package confirmation. Entering the site reveals the command prompt
-and is remembered for the rest of the tab session. Run `uninstall` in the
-terminal to remove `benji-portfolio-git` and return to the boot screen.
+pacman-style package confirmation. Direct links to other sections skip the boot
+screen. Entering the site reveals the command prompt and is remembered for the
+rest of the tab session. Run `uninstall` in the terminal to remove
+`benji-portfolio-git` and return to the boot screen.
 
 Available commands include `help`, `about`, `projects`, `contact`, `cv`,
 `open <project>`, `ls`, `pwd`, `whoami`, `date`, `ascii`, `clear`, `uninstall`

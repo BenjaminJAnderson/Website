@@ -16,6 +16,7 @@ interface Props {
   path: string;
   command?: string;
   noindex?: boolean;
+  boot?: boolean;
 }
 
 const {
@@ -24,6 +25,7 @@ const {
   path,
   command,
   noindex = false,
+  boot = true,
 } = Astro.props;
 
 const pageTitle = title === site.name ? title : `${title} · ${site.name}`;
@@ -154,7 +156,7 @@ const fileSystemData = JSON.stringify(fileSystem).replace(/</g, "\\u003c");
       </form>
     </div>
 
-    <TerminalBoot />
+    {boot && <TerminalBoot />}
 
     <script
       type="application/json"

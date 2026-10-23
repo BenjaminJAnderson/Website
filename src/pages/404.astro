@@ -8,17 +8,34 @@ import TerminalLayout from "../layouts/TerminalLayout.astro";
   path="~/404"
   command="cat /404"
   noindex
+  boot={false}
 >
-  <h1 class="term-heading">404</h1>
-  <p class="term-line terminal-error">cat: /404: No such file or directory</p>
-  <p class="term-line term-muted">
-    The page you are looking for does not exist, or it has moved.
-  </p>
-  <p class="term-line term-dim">
-    <a href="/">home</a>
-    <a href="/projects/">projects</a>
-    <button class="term-command" type="button" data-terminal-command="help">
-      help
-    </button>
-  </p>
+  <h1 class="sr-only">404 — page not found</h1>
+
+  <section class="terminal-404">
+    <div class="terminal-404__art" data-not-found-art aria-hidden="true"></div>
+
+    <div class="terminal-404__copy">
+      <p class="term-line terminal-error">
+        cat: /404: No such file or directory
+      </p>
+      <p class="term-line terminal-muted">
+        The page you are looking for does not exist, or it has moved.
+      </p>
+
+      <p class="terminal-404__actions term-line terminal-dim">
+        <a href="/" data-not-found-home>
+          cd ~
+        </a>
+        <a href="/projects/">open projects</a>
+        <button class="term-command" type="button" data-terminal-command="help">
+          help
+        </button>
+      </p>
+    </div>
+  </section>
 </TerminalLayout>
+
+<script>
+  import "../scripts/not-found";
+</script>

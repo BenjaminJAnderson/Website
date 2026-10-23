@@ -212,6 +212,32 @@ button {
   max-width: 110ch;
 }
 
+.terminal-404 {
+  margin: 0.25rem 0 1.25rem;
+}
+
+.terminal-404__art {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: clamp(200px, 32vh, 380px);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.terminal-404__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.25rem;
+  align-items: baseline;
+  margin-top: 0.85rem;
+}
+
+.terminal-404__actions a {
+  color: var(--text);
+}
+
 .terminal-echo {
   margin-bottom: 1rem;
   color: var(--text-dim);
@@ -983,6 +1009,10 @@ button {
 @media (max-width: 700px) {
   body {
     font-size: 13px;
+  }
+
+  .terminal-404__art {
+    height: clamp(160px, 28vh, 260px);
   }
 
   .terminal-boot__content {

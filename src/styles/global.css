@@ -774,11 +774,11 @@ button {
 
 .terminal-boot__wordmark {
   width: 100%;
-  height: clamp(150px, 30vh, 320px);
+  height: clamp(180px, 36vh, 380px);
   margin: 0;
   color: var(--text);
   font-family: "Old London", Georgia, "Times New Roman", serif;
-  font-size: clamp(5rem, 18vw, 15rem);
+  font-size: clamp(5rem, 24vw, 18rem);
   font-weight: 400;
   line-height: 0.85;
   text-align: center;
@@ -937,8 +937,8 @@ button {
   }
 
   .terminal-boot__wordmark {
-    height: clamp(130px, 25vh, 230px);
-    font-size: clamp(4rem, 22vw, 9rem);
+    height: clamp(160px, 34vh, 260px);
+    font-size: clamp(5rem, 44vw, 12rem);
   }
 
   .terminal-boot__pacman {

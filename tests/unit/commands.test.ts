@@ -96,6 +96,18 @@ describe("resolveCommand", () => {
     }
   });
 
+  it("resolves neofetch to the neofetch action", () => {
+    const result = resolveCommand("neofetch", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({ type: "neofetch" });
+      expect(result.command.description).toBe(
+        "Show basic information about me.",
+      );
+    }
+  });
+
   it("resolves open with no argument to the project list", () => {
     const result = resolveCommand("open", commands);
 

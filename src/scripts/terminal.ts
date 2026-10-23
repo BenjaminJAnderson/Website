@@ -1,6 +1,14 @@
 import { BOOT_SESSION_KEY } from "../data/boot";
+import {
+  archLogo,
+  neofetchFacts,
+  neofetchHeader,
+  neofetchPalette,
+  neofetchRule,
+} from "../data/neofetch";
 import { site } from "../data/site";
 import type { SiteCommand } from "../data/commands";
+import { appendAnsi } from "../lib/ansi";
 import {
   filterCommands,
   getCanonicalInput,
@@ -226,6 +234,51 @@ function renderProjects(): void {
   setStatus("Projects listed");
 }
 
+function renderNeofetch(): void {
+  const wrapper = document.createElement("div");
+  wrapper.className = "term-neofetch term-neofetch--arch";
+
+  const logo = document.createElement("pre");
+  logo.className = "term-ascii";
+  logo.setAttribute("aria-hidden", "true");
+  appendAnsi(logo, archLogo);
+
+  const details = document.createElement("div");
+  details.className = "term-neofetch__details";
+
+  const header = document.createElement("p");
+  header.className = "term-neofetch__header";
+  appendAnsi(header, neofetchHeader);
+
+  const rule = document.createElement("p");
+  rule.className = "term-neofetch__rule";
+  appendAnsi(rule, neofetchRule);
+
+  const facts = document.createElement("dl");
+  facts.className = "term-facts";
+
+  for (const fact of neofetchFacts) {
+    const label = document.createElement("dt");
+    appendAnsi(label, fact.label);
+
+    const value = document.createElement("dd");
+    value.textContent = fact.value;
+
+    facts.append(label, value);
+  }
+
+  const palette = document.createElement("pre");
+  palette.className = "term-palette";
+  palette.setAttribute("aria-hidden", "true");
+  appendAnsi(palette, neofetchPalette);
+
+  details.append(header, rule, facts, palette);
+  wrapper.append(logo, details);
+  output.append(wrapper);
+  scrollOutput();
+  setStatus("System information displayed");
+}
+
 function renderProfile(): void {
   appendLine(site.name, "terminal-line terminal-heading");
   appendLine(site.role, "terminal-line");
@@ -294,6 +347,9 @@ function handleAction(action: SiteCommand["action"]): void {
       return;
     case "list-projects":
       renderProjects();
+      return;
+    case "neofetch":
+      renderNeofetch();
       return;
     case "profile":
       renderProfile();

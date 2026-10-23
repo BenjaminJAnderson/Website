@@ -9,6 +9,23 @@
   --line-strong: #3a3a36;
   --focus: #ffffff;
 
+  --ansi-0: #222222;
+  --ansi-1: #685742;
+  --ansi-2: #5f875f;
+  --ansi-3: #b36d43;
+  --ansi-4: #78824b;
+  --ansi-5: #bb7744;
+  --ansi-6: #c9a554;
+  --ansi-7: #c2c2b0;
+  --ansi-8: #666666;
+  --ansi-9: #685742;
+  --ansi-10: #5f875f;
+  --ansi-11: #b36d43;
+  --ansi-12: #78824b;
+  --ansi-13: #bb7744;
+  --ansi-14: #c9a554;
+  --ansi-15: #c2c2b0;
+
   --font-mono:
     "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas,
     monospace;

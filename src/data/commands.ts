@@ -8,6 +8,7 @@ export type CommandAction =
   | { type: "path" }
   | { type: "date" }
   | { type: "clear" }
+  | { type: "neofetch" }
   | { type: "uninstall" }
   | { type: "list-projects" };
 
@@ -96,6 +97,14 @@ export const staticCommands: SiteCommand[] = [
     group: "utility",
     keywords: ["sections", "navigation"],
     action: { type: "sections" },
+  },
+  {
+    id: "neofetch",
+    label: "Neofetch",
+    description: "Show basic information about me.",
+    group: "utility",
+    keywords: ["system", "info", "profile", "about"],
+    action: { type: "neofetch" },
   },
   {
     id: "whoami",

@@ -1,33 +1,53 @@
 ---
-import { identity } from "../data/ascii";
+import {
+  archLogo,
+  neofetchFacts,
+  neofetchHeader,
+  neofetchPalette,
+  neofetchRule,
+} from "../data/neofetch";
 import { site } from "../data/site";
+import { ansiToHtml } from "../lib/ansi";
 import TerminalLayout from "../layouts/TerminalLayout.astro";
 ---
 
-<TerminalLayout path="~" command="./welcome">
-  <pre class="term-ascii" aria-hidden="true">{identity}</pre>
+<TerminalLayout path="~" command="neofetch">
+  <h1 class="sr-only">{site.name}</h1>
 
-  <h1 class="term-heading">{site.name}</h1>
-  <p class="term-line">
-    {site.role}. Hardware, firmware and the tools around them.
-  </p>
-  <p class="term-line term-muted">
-    This is a record of the things I build, the decisions behind them, and what
-    I learn along the way.
-  </p>
+  <div class="term-neofetch term-neofetch--arch">
+    <pre
+      class="term-ascii"
+      aria-hidden="true"
+      set:html={ansiToHtml(archLogo)}
+    ></pre>
 
-  <p class="term-line">
-    Type
-    <button class="term-command" type="button" data-terminal-command="help">
-      help
-    </button>
-    to list commands, or use the plain links below.
-  </p>
+    <div class="term-neofetch__details">
+      <p class="term-neofetch__header" set:html={ansiToHtml(neofetchHeader)} />
+      <p class="term-neofetch__rule" set:html={ansiToHtml(neofetchRule)} />
 
-  <p class="term-line term-dim">
-    <a href="/about/">about</a>
-    <a href="/projects/">projects</a>
-    <a href="/contact/">contact</a>
-    <a href={site.cv}>cv</a>
-  </p>
+      <dl class="term-facts">
+        {neofetchFacts.map((fact) => (
+          <>
+            <dt set:html={ansiToHtml(fact.label)} />
+            <dd>{fact.value}</dd>
+          </>
+        ))}
+      </dl>
+
+      <pre
+        class="term-palette"
+        aria-hidden="true"
+        set:html={ansiToHtml(neofetchPalette)}
+      ></pre>
+    </div>
+  </div>
+
+  <noscript>
+    <p class="term-line terminal-dim">
+      <a href="/about/">about</a>
+      <a href="/projects/">projects</a>
+      <a href="/contact/">contact</a>
+      <a href={site.cv}>cv</a>
+    </p>
+  </noscript>
 </TerminalLayout>

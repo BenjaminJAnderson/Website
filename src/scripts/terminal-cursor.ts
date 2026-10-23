@@ -1,5 +1,5 @@
 const TYPING_HOLD_MS = 480;
-const RESOLVE_MS = 280;
+const RESOLVE_MS = 2000;
 const RESOLVE_TICK_MS = 38;
 const RESOLVE_TICKS = 6;
 const MAX_RESOLVE_CHARS = 8;

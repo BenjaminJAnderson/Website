@@ -172,6 +172,64 @@ describe("resolveCommand", () => {
     }
   });
 
+  it("resolves ascii character set commands", () => {
+    const list = resolveCommand("ascii", commands);
+    const blocks = resolveCommand("ascii blocks", commands);
+    const label = resolveCommand("ascii tonal blocks", commands);
+    const current = resolveCommand("ascii current", commands);
+    const reset = resolveCommand("charset reset", commands);
+
+    expect(list.kind).toBe("success");
+    expect(blocks.kind).toBe("success");
+    expect(label.kind).toBe("success");
+    expect(current.kind).toBe("success");
+    expect(reset.kind).toBe("success");
+
+    if (list.kind === "success") {
+      expect(list.command.action).toEqual({ type: "ascii", query: "list" });
+    }
+
+    if (blocks.kind === "success") {
+      expect(blocks.command.action).toEqual({
+        type: "ascii",
+        query: "blocks",
+      });
+    }
+
+    if (label.kind === "success") {
+      expect(label.command.action).toEqual({
+        type: "ascii",
+        query: "blocks",
+      });
+    }
+
+    if (current.kind === "success") {
+      expect(current.command.action).toEqual({
+        type: "ascii",
+        query: "current",
+      });
+    }
+
+    if (reset.kind === "success") {
+      expect(reset.command.action).toEqual({
+        type: "ascii",
+        query: "reset",
+      });
+    }
+  });
+
+  it("suggests ascii character sets for an unknown ramp", () => {
+    const result = resolveCommand("ascii nope", commands);
+
+    expect(result.kind).toBe("error");
+    if (result.kind === "error") {
+      expect(result.message).toContain("nope");
+      expect(
+        result.suggestions.some((command) => command.id === "ascii blocks"),
+      ).toBe(true);
+    }
+  });
+
   it("resolves neofetch to the neofetch action", () => {
     const result = resolveCommand("neofetch", commands);
 
@@ -336,6 +394,10 @@ describe("filterCommands", () => {
     expect(filterCommands(commands, "appearance")[0]?.id).toBe("theme");
   });
 
+  it("matches ascii character keywords", () => {
+    expect(filterCommands(commands, "glyphs")[0]?.id).toBe("ascii");
+  });
+
   it("returns no matches for unrelated text", () => {
     expect(filterCommands(commands, "zzzzzz")).toEqual([]);
   });
@@ -378,6 +440,18 @@ describe("completeCommand", () => {
 
   it("returns undefined when no theme matches", () => {
     expect(completeCommand("theme zzzzz", commands, themes)).toBeUndefined();
+  });
+
+  it("completes ascii character sets and subcommands", () => {
+    expect(completeCommand("ascii", commands, themes)).toBe("ascii ");
+    expect(completeCommand("ascii bl", commands, themes)).toBe("ascii blocks");
+    expect(completeCommand("ascii br", commands, themes)).toBe("ascii braille");
+    expect(completeCommand("ascii ton", commands, themes)).toBe("ascii blocks");
+    expect(completeCommand("charset cur", commands, themes)).toBe(
+      "charset current",
+    );
+    expect(completeCommand("ascii res", commands, themes)).toBe("ascii reset");
+    expect(completeCommand("ascii zzz", commands, themes)).toBeUndefined();
   });
 
   it("completes cursor trail styles and subcommands", () => {

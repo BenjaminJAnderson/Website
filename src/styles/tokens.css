@@ -5,6 +5,7 @@
 
   --ascii-ink: color-mix(in oklab, var(--text) 50%, var(--bg));
   --ascii-ink-strong: color-mix(in oklab, var(--text) 92%, var(--bg));
+  --ascii-sweep: var(--accent);
 
   --gutter: clamp(0.9rem, 2.5vw, 1.8rem);
 }

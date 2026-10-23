@@ -1,3 +1,9 @@
+import {
+  asciiCharsetOptions,
+  findAsciiCharsetOption,
+  normalizeAsciiCharsetQuery,
+  type AsciiCharsetOption,
+} from "../data/ascii";
 import type { CommandGroup, SiteCommand } from "../data/commands";
 import {
   cursorTrailOptions,
@@ -176,6 +182,69 @@ export function completeCommand(
     return theme ? `theme ${theme.id}` : undefined;
   }
 
+  if (
+    parsed.name === "ascii" ||
+    parsed.name === "charset" ||
+    parsed.name === "glyphs" ||
+    parsed.name === "characters"
+  ) {
+    const query = parsed.args.join(" ");
+
+    if (!query) {
+      return `${parsed.name} `;
+    }
+
+    if (asciiCharsetCommands.includes(query)) {
+      return `${parsed.name} ${query}`;
+    }
+
+    const option = findAsciiCharsetOption(query);
+
+    if (option) {
+      return `${parsed.name} ${option.id}`;
+    }
+
+    const normalized = normalizeAsciiCharsetQuery(query);
+    const matches = [
+      ...new Set([
+        ...asciiCharsetOptions
+          .filter((item) =>
+            [item.id, item.label].some((value) =>
+              normalizeAsciiCharsetQuery(value).startsWith(normalized),
+            ),
+          )
+          .map((item) => item.id),
+        ...asciiCharsetCommands.filter((value) =>
+          normalizeAsciiCharsetQuery(value).startsWith(normalized),
+        ),
+      ]),
+    ];
+
+    if (matches.length === 0) {
+      return undefined;
+    }
+
+    const first = matches[0];
+
+    if (matches.length === 1 && first) {
+      return `${parsed.name} ${first}`;
+    }
+
+    let prefix = normalizeAsciiCharsetQuery(first ?? "");
+
+    for (const item of matches.slice(1)) {
+      const value = normalizeAsciiCharsetQuery(item);
+
+      while (prefix && !value.startsWith(prefix)) {
+        prefix = prefix.slice(0, -1);
+      }
+    }
+
+    return prefix.length > normalized.length
+      ? `${parsed.name} ${prefix}`
+      : undefined;
+  }
+
   if (parsed.name === "cursor" || parsed.name === "trail") {
     const query = parsed.args.join(" ");
 
@@ -273,6 +342,7 @@ export function suggestCommands(
     .map((entry) => entry.command);
 }
 
+const asciiCharsetCommands = ["list", "current", "reset"];
 const cursorTrailCommands = ["list", "current", "off", "reset"];
 
 function withThemeQuery(
@@ -295,6 +365,31 @@ function themeSuggestionCommand(theme: Theme): SiteCommand {
     description: `${theme.name} · ${theme.mode} theme`,
     group: "utility",
     action: { type: "theme", query: theme.id },
+  };
+}
+
+function withAsciiCharsetQuery(
+  commands: SiteCommand[],
+  query: string,
+): SiteCommand | undefined {
+  const command = commands.find((item) => item.id === "ascii");
+
+  if (!command) {
+    return undefined;
+  }
+
+  return { ...command, action: { type: "ascii", query } };
+}
+
+function asciiCharsetSuggestionCommand(
+  option: AsciiCharsetOption,
+): SiteCommand {
+  return {
+    id: `ascii ${option.id}`,
+    label: option.label,
+    description: `${option.label} · ${option.description}`,
+    group: "utility",
+    action: { type: "ascii", query: option.id },
   };
 }
 
@@ -412,6 +507,56 @@ export function resolveCommand(
       kind: "error",
       message: `No theme matching “${query}”.`,
       suggestions: suggestThemes(query, themes).map(themeSuggestionCommand),
+    };
+  }
+
+  if (
+    parsed.name === "ascii" ||
+    parsed.name === "charset" ||
+    parsed.name === "glyphs" ||
+    parsed.name === "characters"
+  ) {
+    const query = parsed.args.join(" ");
+    const asciiCommand = withAsciiCharsetQuery(commands, "list");
+
+    if (!asciiCommand) {
+      return {
+        kind: "error",
+        message: "ASCII character command is unavailable.",
+        suggestions: [],
+      };
+    }
+
+    if (!query || query === "list") {
+      return { kind: "success", command: asciiCommand };
+    }
+
+    if (query === "current" || query === "reset") {
+      return {
+        kind: "success",
+        command: {
+          ...asciiCommand,
+          action: { type: "ascii", query },
+        },
+      };
+    }
+
+    const option = findAsciiCharsetOption(query);
+
+    if (option) {
+      return {
+        kind: "success",
+        command: {
+          ...asciiCommand,
+          action: { type: "ascii", query: option.id },
+        },
+      };
+    }
+
+    return {
+      kind: "error",
+      message: `No ASCII character set matching “${query}”.`,
+      suggestions: asciiCharsetOptions.map(asciiCharsetSuggestionCommand),
     };
   }
 

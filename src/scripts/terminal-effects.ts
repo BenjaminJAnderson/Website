@@ -5,6 +5,7 @@ import {
   scrambleFrame,
   shouldScrambleText,
 } from "../lib/terminal-effects";
+import { getAsciiGlyphs } from "./ascii-charset";
 
 const REVEAL_ATTRIBUTE = "data-terminal-reveal";
 const REVEAL_DELAY_PROPERTY = "--terminal-reveal-delay";
@@ -55,6 +56,7 @@ export function mountTerminalEffects(root: HTMLElement): TerminalEffectsHandle {
     }
 
     const remaining: ScrambleJob[] = [];
+    const glyphs = getAsciiGlyphs();
 
     for (const job of jobs) {
       if (!job.node.isConnected) {
@@ -68,7 +70,7 @@ export function mountTerminalEffects(root: HTMLElement): TerminalEffectsHandle {
         continue;
       }
 
-      job.node.data = scrambleFrame(job.source, progress);
+      job.node.data = scrambleFrame(job.source, progress, glyphs);
       remaining.push(job);
     }
 

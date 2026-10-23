@@ -1,3 +1,9 @@
+import {
+  asciiCharsetOptions,
+  defaultAsciiCharset,
+  findAsciiCharsetOption,
+  type AsciiCharsetOption,
+} from "../data/ascii";
 import { BOOT_SESSION_KEY } from "../data/boot";
 import {
   logoArt,
@@ -39,6 +45,13 @@ import {
   type TerminalNode,
 } from "../lib/terminal-fs";
 import type { Theme } from "../lib/themes";
+import {
+  applyAsciiCharset,
+  getActiveAsciiCharset,
+  readAsciiCharsetPreference,
+  resetAsciiCharsetPreference,
+  saveAsciiCharsetPreference,
+} from "./ascii-charset";
 import { startBoot } from "./boot-pacman";
 import { applyCursorTrail, destroyCursorTrail } from "./cursor-trail";
 import { mountNeofetchLogo } from "./neofetch-logo";
@@ -147,6 +160,7 @@ const promptCursor = document.querySelector<HTMLElement>(
 const terminalRipple = mountTerminalRipple();
 window.addEventListener("pagehide", terminalRipple.destroy);
 
+applyAsciiCharset(readAsciiCharsetPreference());
 startBoot({ onReveal: revealTerminal, onEnter: finishBoot });
 applyTheme(getActiveTheme(), false);
 
@@ -600,6 +614,97 @@ function handleTheme(query: string): void {
   setStatus(`Theme: ${theme.name}`);
 }
 
+function appendAsciiCharsetRow(option: AsciiCharsetOption): void {
+  const row = document.createElement("div");
+  row.className = "terminal-command-row";
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "term-command";
+  button.dataset.terminalCommand = `ascii ${option.id}`;
+  button.textContent = option.id;
+
+  const description = document.createElement("span");
+  description.className = "terminal-dim";
+  const current = option.id === getActiveAsciiCharset() ? " · current" : "";
+  description.textContent = `${option.chars.trim()} · ${option.label}${current}`;
+
+  row.append(button, description);
+  output.append(row);
+}
+
+function renderAsciiCharsetList(): void {
+  appendLine("ascii characters:", "terminal-line terminal-dim");
+
+  for (const option of asciiCharsetOptions) {
+    appendAsciiCharsetRow(option);
+  }
+
+  scrollOutput();
+  setStatus(`${asciiCharsetOptions.length} ASCII character sets listed`);
+}
+
+function renderCurrentAsciiCharset(): void {
+  const option = findAsciiCharsetOption(getActiveAsciiCharset());
+
+  if (!option) {
+    return;
+  }
+
+  appendLine(
+    `ascii characters: ${option.id}`,
+    "terminal-line terminal-heading",
+  );
+  appendLine(`name: ${option.label}`, "terminal-line terminal-dim");
+  appendLine(`chars: ${option.chars}`, "terminal-line terminal-dim");
+  appendLine(`glyphs: ${option.chars.trim()}`, "terminal-line terminal-dim");
+  setStatus(`ASCII characters: ${option.label}`);
+}
+
+function setAsciiCharset(id: string): void {
+  const option = findAsciiCharsetOption(id);
+
+  if (!option) {
+    renderError(`No ASCII character set matching “${id}”.`, []);
+    return;
+  }
+
+  applyAsciiCharset(option.id);
+  saveAsciiCharsetPreference(option.id);
+  appendLine(
+    `ascii characters set to ${option.label} (${option.id}).`,
+    "terminal-line",
+  );
+  setStatus(`ASCII characters: ${option.label}`);
+}
+
+function handleAsciiCharset(query: string): void {
+  if (query === "list") {
+    renderAsciiCharsetList();
+    return;
+  }
+
+  if (query === "current") {
+    renderCurrentAsciiCharset();
+    return;
+  }
+
+  if (query === "reset") {
+    resetAsciiCharsetPreference();
+    applyAsciiCharset(defaultAsciiCharset);
+
+    const option = findAsciiCharsetOption(defaultAsciiCharset);
+    appendLine(
+      `ascii characters reset to ${option?.label ?? defaultAsciiCharset}.`,
+      "terminal-line",
+    );
+    setStatus(`ASCII characters: ${option?.label ?? defaultAsciiCharset}`);
+    return;
+  }
+
+  setAsciiCharset(query);
+}
+
 function readCursorTrailPreference(): CursorTrailPreference {
   try {
     return normalizeCursorTrailPreference(
@@ -790,6 +895,9 @@ function handleAction(action: SiteCommand["action"]): void {
       return;
     case "theme":
       handleTheme(action.query);
+      return;
+    case "ascii":
+      handleAsciiCharset(action.query);
       return;
     case "cursor-trail":
       handleCursorTrail(action.query);

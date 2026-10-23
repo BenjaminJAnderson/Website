@@ -12,6 +12,7 @@ export type CommandAction =
   | { type: "clear" }
   | { type: "neofetch" }
   | { type: "theme"; query: string }
+  | { type: "ascii"; query: string }
   | { type: "cursor-trail"; query: string }
   | { type: "uninstall" }
   | { type: "list-projects" };
@@ -133,6 +134,24 @@ export const staticCommands: SiteCommand[] = [
     group: "utility",
     keywords: ["appearance", "palette", "colors", "colorscheme", "omarchy"],
     action: { type: "theme", query: "list" },
+  },
+  {
+    id: "ascii",
+    label: "ASCII characters",
+    description: "List or switch the character ramp used by ASCII effects.",
+    group: "utility",
+    aliases: ["charset", "glyphs", "characters"],
+    keywords: [
+      "ascii",
+      "chars",
+      "characters",
+      "charset",
+      "glyphs",
+      "ramp",
+      "density",
+      "look",
+    ],
+    action: { type: "ascii", query: "list" },
   },
   {
     id: "cursor",

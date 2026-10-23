@@ -28,27 +28,20 @@ const archLogoLines = [
 
 export const archLogo = archLogoLines.map((line) => sgr("34", line)).join("\n");
 
-export const neofetchHeader = sgr("1;36", "benji@benji");
-export const neofetchRule = sgr("36", "-----------");
+export const neofetchHeader = sgr("1;36", "benji@portfolio");
+export const neofetchRule = sgr("36", "----------------");
 
 export const neofetchFacts = [
-  { label: sgr("1;34", "OS"), value: "Arch Linux x86_64" },
-  { label: sgr("1;34", "Host"), value: "V3" },
-  { label: sgr("1;34", "Kernel"), value: "7.2.5-3-omarchy" },
-  { label: sgr("1;34", "Uptime"), value: "1 day, 15 hours, 3 mins" },
-  { label: sgr("1;34", "Packages"), value: "1177 (pacman)" },
-  { label: sgr("1;34", "Shell"), value: "bash 5.3.15" },
-  { label: sgr("1;34", "Resolution"), value: "2560x1600" },
-  { label: sgr("1;34", "DE"), value: "Hyprland" },
-  { label: sgr("1;34", "Theme"), value: "Adwaita-dark [GTK3]" },
-  { label: sgr("1;34", "Icons"), value: "Yaru-wartybrown [GTK3]" },
-  { label: sgr("1;34", "Terminal"), value: "ghostty" },
+  { label: sgr("1;34", "Name"), value: "Benjamin Anderson" },
+  { label: sgr("1;34", "Degree"), value: "BEng Electronic Engineering" },
+  { label: sgr("1;34", "Focus"), value: "Hardware / Software" },
   {
-    label: sgr("1;34", "CPU"),
-    value: "AMD Ryzen 7 8840U w/ Radeon 780M Graphics (16) @ 5.134GHz",
+    label: sgr("1;34", "Interests"),
+    value: "Hardware Design, 3D Printing, CNC Fabrication",
   },
-  { label: sgr("1;34", "GPU"), value: "AMD ATI c4:00.0 HawkPoint1" },
-  { label: sgr("1;34", "Memory"), value: "9854MiB / 15768MiB" },
+  { label: sgr("1;34", "Languages"), value: "Rust, Python, C/C++" },
+  { label: sgr("1;34", "Tools"), value: "Linux, Git, KiCad, FreeCAD" },
+  { label: sgr("1;34", "Location"), value: "London, UK" },
 ] as const;
 
 function paletteBlock(code: number): string {

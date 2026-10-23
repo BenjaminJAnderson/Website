@@ -22,11 +22,19 @@ import {
   normalizeInput,
   resolveCommand,
 } from "../lib/commands";
+import {
+  completePath,
+  listDirectory,
+  normalizeRoute,
+  resolvePath,
+  type TerminalNode,
+} from "../lib/terminal-fs";
 import type { Theme } from "../lib/themes";
 import { startBoot } from "./boot-pacman";
 import { mountNeofetchLogo } from "./neofetch-logo";
 
 const HISTORY_KEY = "engiebenji.terminal-history";
+const PREVIOUS_ROUTE_KEY = "engiebenji.terminal-previous-route";
 const HISTORY_LIMIT = 30;
 const INTRO_COMMAND = "help";
 const INTRO_START_DELAY_MS = 300;
@@ -43,6 +51,9 @@ const input = document.querySelector<HTMLInputElement>(
 const status = document.querySelector<HTMLElement>("#terminal-status")!;
 const commandData =
   document.querySelector<HTMLScriptElement>("#terminal-commands")!;
+const fileSystemData = document.querySelector<HTMLScriptElement>(
+  "#terminal-filesystem",
+);
 
 let commands: SiteCommand[] = [];
 
@@ -55,7 +66,33 @@ try {
   commands = [];
 }
 
+let fileSystem: TerminalNode = {
+  name: "~",
+  route: "/",
+  kind: "dir",
+  children: [],
+};
+
+try {
+  const parsed: unknown = JSON.parse(fileSystemData?.textContent ?? "null");
+  if (
+    parsed &&
+    typeof parsed === "object" &&
+    (parsed as TerminalNode).kind === "dir"
+  ) {
+    fileSystem = parsed as TerminalNode;
+  }
+} catch {
+  fileSystem = {
+    name: "~",
+    route: "/",
+    kind: "dir",
+    children: [],
+  };
+}
+
 const currentPath = app.dataset.path ?? "~";
+const currentRoute = normalizeRoute(app.dataset.route ?? "/");
 let history = loadHistory();
 let historyIndex = -1;
 let historyMode = false;
@@ -233,8 +270,110 @@ function renderSections(): void {
   appendLinkRow("/about/", "about/", "profile and current work");
   appendLinkRow("/projects/", "projects/", "project index");
   appendLinkRow("/contact/", "contact/", "email and links");
-  appendLinkRow(site.cv, "cv/", "download the CV");
+  appendLinkRow(site.cv, "cv", "download the CV");
   setStatus("Sections listed");
+}
+
+function renderDirectory(target = ""): void {
+  const result = resolvePath(fileSystem, currentRoute, target || ".");
+
+  if (result.kind === "error") {
+    renderError(
+      `ls: cannot access '${target || "."}': No such file or directory`,
+      [],
+    );
+    return;
+  }
+
+  if (result.node.kind === "file") {
+    appendInlineLinks([{ label: result.node.name, href: result.node.route }]);
+    setStatus(`File: ${result.node.name}`);
+    return;
+  }
+
+  const entries = listDirectory(result.node);
+
+  if (entries.length === 0) {
+    appendLine("no entries.", "terminal-line terminal-dim");
+    setStatus("Directory is empty");
+    return;
+  }
+
+  appendInlineLinks(
+    entries.map((entry) => ({
+      label: entry.kind === "dir" ? `${entry.name}/` : entry.name,
+      href: entry.route,
+    })),
+  );
+  setStatus(
+    `${entries.length} ${entries.length === 1 ? "entry" : "entries"} listed`,
+  );
+}
+
+function readPreviousRoute(): string | undefined {
+  try {
+    const value = sessionStorage.getItem(PREVIOUS_ROUTE_KEY);
+    return value ? normalizeRoute(value) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function rememberRoute(route: string): void {
+  try {
+    sessionStorage.setItem(PREVIOUS_ROUTE_KEY, route);
+  } catch {
+    return;
+  }
+}
+
+function navigateToDirectory(node: TerminalNode): void {
+  if (node.kind !== "dir" || node.route === currentRoute) {
+    return;
+  }
+
+  rememberRoute(currentRoute);
+  window.location.assign(node.route);
+}
+
+function handleCd(target: string): void {
+  if (target === "-") {
+    const previous = readPreviousRoute();
+
+    if (!previous) {
+      renderError("cd: OLDPWD not set", []);
+      return;
+    }
+
+    const result = resolvePath(fileSystem, currentRoute, previous);
+
+    if (result.kind !== "found" || result.node.kind !== "dir") {
+      renderError("cd: OLDPWD not set", []);
+      return;
+    }
+
+    navigateToDirectory(result.node);
+    return;
+  }
+
+  const result = resolvePath(fileSystem, currentRoute, target || "/");
+
+  if (result.kind === "error") {
+    renderError(
+      result.reason === "not-directory"
+        ? `cd: not a directory: ${target}`
+        : `cd: no such file or directory: ${target}`,
+      [],
+    );
+    return;
+  }
+
+  if (result.node.kind !== "dir") {
+    renderError(`cd: not a directory: ${target}`, []);
+    return;
+  }
+
+  navigateToDirectory(result.node);
 }
 
 function renderProjects(): void {
@@ -501,6 +640,12 @@ function handleAction(action: SiteCommand["action"]): void {
       appendLine(currentPath);
       setStatus("Path displayed");
       return;
+    case "change-directory":
+      handleCd("");
+      return;
+    case "list-directory":
+      renderDirectory();
+      return;
     case "date":
       renderDate();
       return;
@@ -541,6 +686,18 @@ function execute(raw: string): void {
   historyMode = false;
   historyIndex = -1;
 
+  if (command === "cd" || command.startsWith("cd ")) {
+    handleCd(command.slice(3).trim());
+    focusInput();
+    return;
+  }
+
+  if (command === "ls" || command.startsWith("ls ")) {
+    renderDirectory(command.slice(3).trim());
+    focusInput();
+    return;
+  }
+
   const resolution = resolveCommand(command, commands, themes);
 
   if (resolution.kind === "success") {
@@ -562,6 +719,13 @@ function handleSubmit(event: SubmitEvent): void {
   event.preventDefault();
   cancelIntro();
   execute(input.value);
+}
+
+function getShellCommand(inputValue: string): "cd" | "ls" | undefined {
+  const match = /^(cd|ls)(?=\s|$)/i.exec(inputValue.trimStart());
+  const command = match?.[1]?.toLowerCase();
+
+  return command === "cd" || command === "ls" ? command : undefined;
 }
 
 function handleKeyDown(event: KeyboardEvent): void {
@@ -610,6 +774,27 @@ function handleKeyDown(event: KeyboardEvent): void {
 
   if (event.key === "Tab") {
     if (!input.value.trim()) {
+      return;
+    }
+
+    const shellCommand = getShellCommand(input.value);
+
+    if (shellCommand) {
+      event.preventDefault();
+      const completion = completePath(
+        input.value,
+        fileSystem,
+        currentRoute,
+        shellCommand,
+      );
+
+      if (completion) {
+        input.value = completion;
+        input.setSelectionRange(completion.length, completion.length);
+        historyMode = false;
+        historyIndex = -1;
+      }
+
       return;
     }
 

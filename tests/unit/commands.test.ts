@@ -98,6 +98,28 @@ describe("resolveCommand", () => {
     }
   });
 
+  it("resolves shell commands to their actions", () => {
+    const cd = resolveCommand("cd", commands);
+    const ls = resolveCommand("ls", commands);
+    const sections = resolveCommand("sections", commands);
+
+    expect(cd.kind).toBe("success");
+    expect(ls.kind).toBe("success");
+    expect(sections.kind).toBe("success");
+
+    if (cd.kind === "success") {
+      expect(cd.command.action).toEqual({ type: "change-directory" });
+    }
+
+    if (ls.kind === "success") {
+      expect(ls.command.action).toEqual({ type: "list-directory" });
+    }
+
+    if (sections.kind === "success") {
+      expect(sections.command.action).toEqual({ type: "sections" });
+    }
+  });
+
   it("resolves neofetch to the neofetch action", () => {
     const result = resolveCommand("neofetch", commands);
 

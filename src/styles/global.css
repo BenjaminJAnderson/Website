@@ -539,6 +539,224 @@ html[data-boot-pending] .terminal-app[data-path="~"] .terminal-output {
   margin-left: 0.8rem;
 }
 
+.contact-tui {
+  position: relative;
+  width: min(100%, 88ch);
+  margin: 1.5rem 0 1.4rem;
+  border: 2px solid var(--line-strong);
+  background: transparent;
+}
+
+.contact-tui__label {
+  position: absolute;
+  top: -0.72em;
+  z-index: 2;
+  padding: 0 0.5ch;
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: inherit;
+  line-height: 1.2;
+}
+
+.contact-tui__label--title {
+  left: 0.9rem;
+  color: var(--text-muted);
+}
+
+.contact-tui__label--status {
+  right: 0.9rem;
+  color: var(--text-dim);
+}
+
+.contact-tui__header {
+  padding: 1.35rem 0.85rem 1rem;
+  border-bottom: 2px solid var(--line-strong);
+  text-align: center;
+}
+
+.contact-tui__title {
+  margin: 0;
+  color: var(--text);
+  font-size: inherit;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.contact-tui__subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.contact-tui__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6ch;
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+}
+
+.contact-tui__status-dot {
+  width: 0.55em;
+  height: 0.55em;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.contact-tui__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  padding: 0.9rem 0.85rem;
+}
+
+.contact-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border: 2px solid var(--line-strong);
+  padding: 1.15rem 0.8rem 0.65rem;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease;
+}
+
+.contact-card:hover,
+.contact-card:focus-within {
+  border-color: var(--focus);
+  background: color-mix(in oklab, var(--text) 8%, transparent);
+}
+
+.contact-card__heading {
+  position: absolute;
+  top: -0.72em;
+  left: 0.7rem;
+  display: flex;
+  gap: 0.2ch;
+  align-items: baseline;
+  margin: 0;
+  padding: 0 0.4ch;
+  background: var(--bg);
+  color: var(--accent);
+  font-size: inherit;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.contact-card__notch {
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+.contact-card__notch--left::before {
+  content: "┌";
+}
+
+.contact-card__notch--right::before {
+  content: "┐";
+}
+
+.contact-card:focus-within .contact-card__heading,
+.contact-card:focus-within .contact-card__action,
+.contact-card:focus-within .contact-card__copy {
+  color: var(--focus);
+}
+
+.contact-card__glyph {
+  color: var(--accent);
+  line-height: 1.2;
+}
+
+.contact-card__title {
+  margin: 0.15rem 0 0;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.contact-card__description {
+  margin: 0.1rem 0 0;
+  color: var(--text-muted);
+}
+
+.contact-card__value {
+  margin: 0.2rem 0 0;
+  color: var(--text-dim);
+  overflow-wrap: anywhere;
+}
+
+.contact-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+}
+
+.contact-card__action,
+.contact-card__copy {
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.contact-card__copy {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.contact-card__action:hover,
+.contact-card__copy:hover,
+.contact-card__action:focus-visible,
+.contact-card__copy:focus-visible {
+  color: var(--text);
+}
+
+.contact-tui__keybar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.3rem 1rem;
+  border-top: 2px solid var(--line-strong);
+  padding: 0.6rem 0.85rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.contact-tui__back {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.contact-tui__back:hover,
+.contact-tui__back:focus-visible {
+  color: var(--text);
+}
+
+.contact-toasts {
+  --ascii-toast-bg: color-mix(in oklab, var(--text) 8%, var(--bg));
+  --ascii-toast-ink: var(--text);
+  --ascii-toast-shadow: 0 1rem 2.5rem
+    color-mix(in oklab, var(--bg) 72%, transparent);
+  position: fixed;
+  right: var(--gutter);
+  bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  z-index: 40;
+  width: min(22rem, calc(100vw - var(--gutter) * 2));
+}
+
 .terminal-project-list {
   display: grid;
   gap: 0.3rem;
@@ -1057,6 +1275,32 @@ html[data-boot-pending] .terminal-app[data-path="~"] .terminal-output {
     margin-top: 0.45rem;
   }
 
+  .contact-tui__header {
+    padding: 1.25rem 0.7rem 0.85rem;
+  }
+
+  .contact-tui__label--title {
+    left: 0.65rem;
+  }
+
+  .contact-tui__label--status {
+    right: 0.65rem;
+  }
+
+  .contact-tui__grid {
+    grid-template-columns: 1fr;
+    padding: 0.75rem;
+  }
+
+  .contact-tui__keybar {
+    gap: 0.25rem 0.8rem;
+  }
+
+  .contact-toasts {
+    bottom: calc(5.5rem + env(safe-area-inset-bottom));
+    width: calc(100vw - var(--gutter) * 2);
+  }
+
   .terminal-project-row {
     display: flex;
     flex-wrap: wrap;
@@ -1115,6 +1359,10 @@ html[data-boot-pending] .terminal-app[data-path="~"] .terminal-output {
 
   .terminal-output > [data-terminal-appear] {
     animation: none;
+  }
+
+  .contact-card {
+    transition: none;
   }
 
   .terminal-boot,

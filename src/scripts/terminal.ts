@@ -155,12 +155,25 @@ const terminalRipple = mountTerminalRipple();
 window.addEventListener("pagehide", terminalRipple.destroy);
 
 applyAsciiCharset(readAsciiCharsetPreference());
+markSubpageBootSkipped();
 startBoot({ onReveal: revealTerminal, onEnter: finishBoot });
 applyTheme(getActiveTheme(), false);
 
 const pageLogo = document.querySelector<HTMLElement>("[data-neofetch-logo]");
 if (pageLogo) {
   logoHandles.add(mountNeofetchLogo(pageLogo));
+}
+
+function markSubpageBootSkipped(): void {
+  if (currentPath === "~") {
+    return;
+  }
+
+  try {
+    sessionStorage.setItem(BOOT_SESSION_KEY, "1");
+  } catch {
+    // The terminal still skips the boot because non-home routes do not render it.
+  }
 }
 
 function loadHistory(): string[] {
@@ -1033,7 +1046,7 @@ function handleAction(action: SiteCommand["action"]): void {
         ":: removing benji-portfolio-git...",
         "terminal-line terminal-dim",
       );
-      window.setTimeout(() => window.location.reload(), 450);
+      window.setTimeout(() => window.location.assign("/"), 450);
       return;
   }
 }

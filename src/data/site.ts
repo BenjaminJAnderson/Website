@@ -1,6 +1,7 @@
 export const site = {
   name: "Benjamin Anderson",
-  shortName: "Benji",
+  user: "benji",
+  host: "engiebenji.com",
   role: "Electronics engineer",
   description:
     "Portfolio of Benjamin Anderson, an electronics engineer building hardware, firmware and tools.",
@@ -10,3 +11,5 @@ export const site = {
   twitter: "https://twitter.com/engiebenji1999",
   cv: "/cv/BenjaminAnderson-CV.pdf",
 } as const;
+
+export const terminalIdentity = `${site.user}@${site.host}`;

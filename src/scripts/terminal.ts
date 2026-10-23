@@ -69,6 +69,8 @@ const INTRO_COMMAND = "help";
 const INTRO_START_DELAY_MS = 300;
 const INTRO_TYPE_DELAY_MS = 95;
 const INTRO_SUBMIT_DELAY_MS = 320;
+const PROMPT_PRESS_MS = 380;
+const PROMPT_SHAKE_MS = 320;
 
 const app = document.querySelector<HTMLElement>("[data-terminal-app]")!;
 const output = document.querySelector<HTMLElement>("[data-terminal-output]")!;
@@ -131,6 +133,8 @@ let introActive = false;
 let cursorTrailPreference = readCursorTrailPreference();
 let cursorTrailStarted = false;
 let terminalEffects: TerminalEffectsHandle | null = null;
+let promptAnimations: Animation[] = [];
+const promptMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 const logoHandles = new Set<() => void>();
 
 input.addEventListener("input", () => {
@@ -861,7 +865,65 @@ function renderDate(): void {
   setStatus("Date displayed");
 }
 
+function clearPromptAnimations(): void {
+  for (const animation of promptAnimations) {
+    animation.cancel();
+  }
+
+  promptAnimations = [];
+}
+
+function pressPromptBar(): void {
+  clearPromptAnimations();
+
+  if (promptMotionQuery.matches) {
+    return;
+  }
+
+  promptAnimations.push(
+    form.animate(
+      [
+        { transform: "translateY(0)" },
+        { transform: "translateY(8px)", offset: 0.3 },
+        { transform: "translateY(-4px)", offset: 0.65 },
+        { transform: "translateY(1px)", offset: 0.85 },
+        { transform: "translateY(0)" },
+      ],
+      {
+        duration: PROMPT_PRESS_MS,
+        easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+      },
+    ),
+  );
+}
+
+function shakePromptBar(): void {
+  if (promptMotionQuery.matches) {
+    return;
+  }
+
+  promptAnimations.push(
+    form.animate(
+      [
+        { transform: "translateX(0)" },
+        { transform: "translateX(-4px)", offset: 0.15 },
+        { transform: "translateX(4px)", offset: 0.3 },
+        { transform: "translateX(-3px)", offset: 0.45 },
+        { transform: "translateX(3px)", offset: 0.6 },
+        { transform: "translateX(-2px)", offset: 0.75 },
+        { transform: "translateX(0)" },
+      ],
+      {
+        duration: PROMPT_SHAKE_MS,
+        delay: PROMPT_PRESS_MS,
+        easing: "ease-in-out",
+      },
+    ),
+  );
+}
+
 function renderError(message: string, suggestions: SiteCommand[]): void {
+  shakePromptBar();
   appendLine(message, "terminal-line terminal-error");
 
   if (suggestions.length > 0) {
@@ -977,6 +1039,10 @@ function execute(raw: string, withRipple = true, reveal = true): void {
 
   if (!command) {
     return;
+  }
+
+  if (withRipple) {
+    pressPromptBar();
   }
 
   const rippled =

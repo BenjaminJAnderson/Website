@@ -1,19 +1,16 @@
 import {
   revealDelay,
   SCRAMBLE_DURATION_MS,
-  SCRAMBLE_MAX_LINES,
   scrambleFrame,
   shouldScrambleText,
 } from "../lib/terminal-effects";
 import { getAsciiGlyphs } from "./ascii-charset";
 
-const REVEAL_ATTRIBUTE = "data-terminal-reveal";
-const REVEAL_DELAY_PROPERTY = "--terminal-reveal-delay";
-const SCRAMBLE_SELECTOR = ".terminal-echo, .terminal-line";
+const APPEAR_ATTRIBUTE = "data-terminal-appear";
+const APPEAR_DELAY_PROPERTY = "--terminal-appear-delay";
 const SCRAMBLE_SKIP_SELECTOR =
-  ".terminal-echo__prompt, .term-ascii, .terminal-command-row, .terminal-project-row";
-const INTERACTIVE_SELECTOR = "a, button, input, textarea, select";
-const SCRAMBLE_MAX_NODES = 12;
+  ".terminal-echo__prompt, .term-ascii, .term-palette, .sr-only, [data-neofetch-logo]";
+const SCRAMBLE_MAX_NODES = 24;
 
 interface ScrambleJob {
   node: Text;
@@ -108,11 +105,6 @@ export function mountTerminalEffects(root: HTMLElement): TerminalEffectsHandle {
     return nodes;
   };
 
-  const shouldScramble = (element: HTMLElement): boolean =>
-    element.matches(SCRAMBLE_SELECTOR) &&
-    !element.querySelector(INTERACTIVE_SELECTOR) &&
-    !element.matches(SCRAMBLE_SKIP_SELECTOR);
-
   const flushReveal = (): void => {
     revealFrame = 0;
 
@@ -128,19 +120,16 @@ export function mountTerminalEffects(root: HTMLElement): TerminalEffectsHandle {
     }
 
     const now = performance.now();
-    let scrambled = 0;
+    const glyphs = getAsciiGlyphs();
 
     nodes.forEach((node, index) => {
       if (!node.isConnected || node.parentElement !== root) {
         return;
       }
 
-      node.setAttribute(REVEAL_ATTRIBUTE, "");
-      node.style.setProperty(REVEAL_DELAY_PROPERTY, `${revealDelay(index)}ms`);
-
-      if (scrambled >= SCRAMBLE_MAX_LINES || !shouldScramble(node)) {
-        return;
-      }
+      const delay = revealDelay(index);
+      node.setAttribute(APPEAR_ATTRIBUTE, "");
+      node.style.setProperty(APPEAR_DELAY_PROPERTY, `${delay}ms`);
 
       const textNodes = collectTextNodes(node);
 
@@ -148,13 +137,15 @@ export function mountTerminalEffects(root: HTMLElement): TerminalEffectsHandle {
         return;
       }
 
-      scrambled += 1;
+      const start = now + delay;
 
       for (const textNode of textNodes) {
+        const source = textNode.data;
+        textNode.data = scrambleFrame(source, 0, glyphs);
         jobs.push({
           node: textNode,
-          source: textNode.data,
-          start: now,
+          source,
+          start,
         });
       }
     });

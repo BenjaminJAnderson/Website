@@ -1,3 +1,4 @@
+import { pageDissolve, type PageDissolveHandle } from "asciify-engine/kit";
 import {
   asciiCharsetOptions,
   defaultAsciiCharset,
@@ -133,6 +134,8 @@ let introActive = false;
 let cursorTrailPreference = readCursorTrailPreference();
 let cursorTrailStarted = false;
 let terminalEffects: TerminalEffectsHandle | null = null;
+let outputDissolve: PageDissolveHandle | null = null;
+let clearing = false;
 let promptAnimations: Animation[] = [];
 const promptMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 const logoHandles = new Set<() => void>();
@@ -155,6 +158,7 @@ document.addEventListener("visibilitychange", () => {
 app.addEventListener("click", handleAppClick);
 window.addEventListener("pagehide", destroyCursorTrail);
 window.addEventListener("pagehide", destroyTerminalEffects);
+window.addEventListener("pagehide", destroyOutputDissolve);
 
 const terminalCursor = mountTerminalCursor(input);
 const promptCursor = document.querySelector<HTMLElement>(
@@ -945,15 +949,31 @@ function destroyLogos(): void {
   logoHandles.clear();
 }
 
-function clearTerminal(): void {
+function resetTerminal(): void {
   destroyLogos();
   output.replaceChildren();
   input.value = "";
   terminalCursor.sync();
   historyMode = false;
   historyIndex = -1;
-  setStatus("Terminal cleared");
-  focusInput();
+}
+
+async function clearTerminal(): Promise<void> {
+  if (clearing) {
+    return;
+  }
+
+  clearing = true;
+
+  try {
+    await getOutputDissolve().swap(resetTerminal, promptCursor ?? undefined);
+  } catch {
+    resetTerminal();
+  } finally {
+    clearing = false;
+    setStatus("Terminal cleared");
+    focusInput();
+  }
 }
 
 function focusInput(): void {
@@ -1005,7 +1025,7 @@ function handleAction(action: SiteCommand["action"]): void {
       renderDate();
       return;
     case "clear":
-      clearTerminal();
+      void clearTerminal();
       return;
     case "uninstall":
       try {
@@ -1034,10 +1054,26 @@ function destroyTerminalEffects(): void {
   terminalEffects = null;
 }
 
+function getOutputDissolve(): PageDissolveHandle {
+  if (!outputDissolve) {
+    outputDissolve = pageDissolve(output, {
+      dissolve: 700,
+      condense: 400,
+    });
+  }
+
+  return outputDissolve;
+}
+
+function destroyOutputDissolve(): void {
+  outputDissolve?.destroy();
+  outputDissolve = null;
+}
+
 function execute(raw: string, withRipple = true, reveal = true): void {
   const command = normalizeInput(raw);
 
-  if (!command) {
+  if (!command || clearing) {
     return;
   }
 
@@ -1049,7 +1085,7 @@ function execute(raw: string, withRipple = true, reveal = true): void {
     withRipple && promptCursor ? terminalRipple.trigger(promptCursor) : false;
 
   if (command === "clear") {
-    clearTerminal();
+    void clearTerminal();
     return;
   }
 
@@ -1213,7 +1249,7 @@ function handleKeyDown(event: KeyboardEvent): void {
 
   if (event.key.toLowerCase() === "l" && event.ctrlKey) {
     event.preventDefault();
-    clearTerminal();
+    void clearTerminal();
   }
 }
 

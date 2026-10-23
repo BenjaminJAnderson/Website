@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  REVEAL_MAX_STEPS,
   REVEAL_STAGGER_MS,
   revealDelay,
   scrambleFrame,
@@ -9,12 +8,16 @@ import {
 } from "../../src/lib/terminal-effects";
 
 describe("terminal effects", () => {
-  it("caps the reveal stagger", () => {
-    expect(revealDelay(0)).toBe(0);
-    expect(revealDelay(3)).toBe(3 * REVEAL_STAGGER_MS);
-    expect(revealDelay(REVEAL_MAX_STEPS + 10)).toBe(
-      REVEAL_MAX_STEPS * REVEAL_STAGGER_MS,
-    );
+  it("staggers every reveal line without a cap", () => {
+    const delays = Array.from({ length: 25 }, (_, index) => revealDelay(index));
+
+    expect(delays[0]).toBe(0);
+    expect(delays[3]).toBe(3 * REVEAL_STAGGER_MS);
+    expect(delays[24]).toBe(24 * REVEAL_STAGGER_MS);
+    expect(new Set(delays).size).toBe(delays.length);
+    expect(
+      delays.every((delay, index) => delay === index * REVEAL_STAGGER_MS),
+    ).toBe(true);
     expect(revealDelay(-2)).toBe(0);
   });
 

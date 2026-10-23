@@ -1,18 +1,13 @@
-export const REVEAL_STAGGER_MS = 28;
-export const REVEAL_MAX_STEPS = 8;
-export const SCRAMBLE_DURATION_MS = 420;
-export const SCRAMBLE_MAX_LENGTH = 96;
-export const SCRAMBLE_MAX_LINES = 6;
+export const REVEAL_STAGGER_MS = 60;
+export const SCRAMBLE_DURATION_MS = 650;
+export const SCRAMBLE_MAX_LENGTH = 200;
 export const SCRAMBLE_GLYPHS = "#%*+=-:";
 
 export function revealDelay(
   index: number,
   staggerMs = REVEAL_STAGGER_MS,
-  maxSteps = REVEAL_MAX_STEPS,
 ): number {
-  const step = Math.min(Math.max(0, Math.floor(index)), maxSteps);
-
-  return step * Math.max(0, staggerMs);
+  return Math.max(0, Math.floor(index)) * Math.max(0, staggerMs);
 }
 
 export function shouldScrambleText(text: string): boolean {

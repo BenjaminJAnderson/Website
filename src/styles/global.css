@@ -353,12 +353,21 @@ button {
   margin-bottom: 1.5rem;
 }
 
-.term-neofetch--arch {
+.term-neofetch--logo {
   grid-template-columns: max-content minmax(0, 1fr);
 }
 
-.term-neofetch--arch .term-ascii {
-  margin-bottom: 0;
+.term-neofetch__logo {
+  position: relative;
+  width: max-content;
+}
+
+.term-neofetch__logo .term-ascii {
+  margin: 0;
+}
+
+.term-neofetch__logo.is-live .term-ascii {
+  visibility: hidden;
 }
 
 .term-neofetch__details {

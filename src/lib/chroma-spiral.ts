@@ -86,3 +86,12 @@ export function chromaDensity(
 
   return Math.min(1, Math.max(0, value));
 }
+
+export function chromaBand(density: number, count: number): number {
+  if (count <= 1 || !Number.isFinite(density)) {
+    return 0;
+  }
+
+  const clamped = Math.min(1, Math.max(0, density));
+  return Math.min(count - 1, Math.floor(clamped * count));
+}

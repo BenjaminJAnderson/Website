@@ -1,5 +1,6 @@
 import { mountSurface } from "asciify-engine/kit";
-import { chromaDensity } from "../lib/chroma-spiral";
+import { chromaBand, chromaDensity } from "../lib/chroma-spiral";
+import { readAnsiPalette, rgbAtLuminance } from "../lib/theme-palette";
 
 export const BOOT_BACKGROUND_FADE_MS = 1000;
 
@@ -16,6 +17,7 @@ export function startBootHero(
   let sourceContext: CanvasRenderingContext2D | null = null;
   let sourceCols = 0;
   let sourceRows = 0;
+  const palette = readAnsiPalette(host);
 
   const paint = ({
     pen,
@@ -65,12 +67,15 @@ export function startBootHero(
             aspect: 0.62,
           },
         );
-        const value = Math.round(density * 255);
+        const color =
+          palette[chromaBand(density, palette.length)] ??
+          ([255, 255, 255] as const);
+        const tint = rgbAtLuminance(color, density);
         const index = (y * cols + x) * 4;
 
-        image.data[index] = value;
-        image.data[index + 1] = value;
-        image.data[index + 2] = value;
+        image.data[index] = tint[0];
+        image.data[index + 1] = tint[1];
+        image.data[index + 2] = tint[2];
         image.data[index + 3] = 255;
       }
     }
@@ -90,6 +95,7 @@ export function startBootHero(
       cellSize: 11,
       cellAspect: 0.62,
       charset: " .:-=+*#%@",
+      color: "source",
       hover: "none",
       clear: {
         element: clearElement,

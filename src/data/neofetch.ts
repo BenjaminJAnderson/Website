@@ -5,28 +5,28 @@ function sgr(code: string, text: string): string {
   return `${ESC}${code}m${text}${RESET}`;
 }
 
-const archLogoLines = [
-  "                  .o+`",
-  "                 `ooo/",
-  "                `+oooo:",
-  "               `+oooooo:",
-  "               -+oooooo+:",
-  "             `/:-:++oooo+:",
-  "            `/++++/+++++++:",
-  "           `/++++++++++++++:",
-  "          `/+++ooooooooooooo/`",
-  "         ./ooosssso++osssssso+`",
-  "        .oossssso-````/ossssss+`",
-  "       -osssssso.      :ssssssso.",
-  "      :osssssss/        osssso+++.",
-  "     /ossssssss/        +ssssooo/-",
-  "   `/ossssso+/:-        -:/+osssso+-",
-  "  `+sso+:-`                 `.-/+oso:",
-  " `++:.                           `-+/",
-  " .`                                 `/ ",
+const logoLines = [
+  ":################################",
+  "-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+  "-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+  "-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+  "-@@@@@@@=------------------------",
+  "-@@@@@@@.",
+  "-@@@@@@@.",
+  "-@@@@@@@.",
+  "-@@@@@@@+------------------------",
+  "-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+  "-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+  "-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+  "-@@@@@@@#************************",
+  "-@@@@@@@:",
+  "-@@@@@@@.",
+  "-@@@@@@@.",
+  "-@@@@@@@:",
+  "-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
 ];
 
-export const archLogo = archLogoLines.map((line) => sgr("34", line)).join("\n");
+export const logoArt = logoLines.map((line) => sgr("34", line)).join("\n");
 
 export const neofetchHeader = sgr("1;36", "benji@portfolio");
 export const neofetchRule = sgr("36", "----------------");

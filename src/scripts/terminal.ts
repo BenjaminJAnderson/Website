@@ -1,6 +1,6 @@
 import { BOOT_SESSION_KEY } from "../data/boot";
 import {
-  archLogo,
+  logoArt,
   neofetchFacts,
   neofetchHeader,
   neofetchPalette,
@@ -24,6 +24,7 @@ import {
 } from "../lib/commands";
 import type { Theme } from "../lib/themes";
 import { startBoot } from "./boot-pacman";
+import { mountNeofetchLogo } from "./neofetch-logo";
 
 const HISTORY_KEY = "engiebenji.terminal-history";
 const HISTORY_LIMIT = 30;
@@ -61,6 +62,7 @@ let historyMode = false;
 let introTimer = 0;
 let introToken = 0;
 let introActive = false;
+const logoHandles = new Set<() => void>();
 
 input.addEventListener("input", () => {
   cancelIntro();
@@ -81,6 +83,11 @@ app.addEventListener("click", handleAppClick);
 
 startBoot({ onReveal: revealTerminal, onEnter: finishBoot });
 applyTheme(getActiveTheme(), false);
+
+const pageLogo = document.querySelector<HTMLElement>("[data-neofetch-logo]");
+if (pageLogo) {
+  logoHandles.add(mountNeofetchLogo(pageLogo));
+}
 
 function loadHistory(): string[] {
   try {
@@ -244,12 +251,18 @@ function renderProjects(): void {
 
 function renderNeofetch(): void {
   const wrapper = document.createElement("div");
-  wrapper.className = "term-neofetch term-neofetch--arch";
+  wrapper.className = "term-neofetch term-neofetch--logo";
+
+  const logoHost = document.createElement("div");
+  logoHost.className = "term-neofetch__logo";
+  logoHost.dataset.neofetchLogo = "";
+  logoHost.setAttribute("aria-hidden", "true");
 
   const logo = document.createElement("pre");
   logo.className = "term-ascii";
-  logo.setAttribute("aria-hidden", "true");
-  appendAnsi(logo, archLogo);
+  logo.dataset.neofetchLogoFallback = "";
+  appendAnsi(logo, logoArt);
+  logoHost.append(logo);
 
   const details = document.createElement("div");
   details.className = "term-neofetch__details";
@@ -281,8 +294,9 @@ function renderNeofetch(): void {
   appendAnsi(palette, neofetchPalette);
 
   details.append(header, rule, facts, palette);
-  wrapper.append(logo, details);
+  wrapper.append(logoHost, details);
   output.append(wrapper);
+  logoHandles.add(mountNeofetchLogo(logoHost));
   scrollOutput();
   setStatus("System information displayed");
 }
@@ -436,7 +450,16 @@ function renderError(message: string, suggestions: SiteCommand[]): void {
   setStatus(message);
 }
 
+function destroyLogos(): void {
+  for (const destroy of logoHandles) {
+    destroy();
+  }
+
+  logoHandles.clear();
+}
+
 function clearTerminal(): void {
+  destroyLogos();
   output.replaceChildren();
   input.value = "";
   historyMode = false;

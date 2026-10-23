@@ -887,6 +887,8 @@ button {
 }
 
 .boot-choices {
+  display: inline-flex;
+  align-items: baseline;
   white-space: nowrap;
 }
 
@@ -977,6 +979,11 @@ button {
 .boot-question button:hover,
 .boot-cancel button:hover {
   color: var(--text);
+}
+
+.boot-question .boot-choices button {
+  min-width: 1ch;
+  padding: 0;
 }
 
 .boot-cursor {

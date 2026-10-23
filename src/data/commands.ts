@@ -170,7 +170,7 @@ export const staticCommands: SiteCommand[] = [
     id: "ascii",
     label: "ASCII characters",
     description: "List or switch the character ramp used by ASCII effects.",
-    group: "utility",
+    group: "layout",
     aliases: ["charset", "glyphs", "characters"],
     keywords: [
       "ascii",

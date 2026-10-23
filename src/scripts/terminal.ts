@@ -42,6 +42,7 @@ import type { Theme } from "../lib/themes";
 import { startBoot } from "./boot-pacman";
 import { applyCursorTrail, destroyCursorTrail } from "./cursor-trail";
 import { mountNeofetchLogo } from "./neofetch-logo";
+import { mountTerminalCursor } from "./terminal-cursor";
 
 const HISTORY_KEY = "engiebenji.terminal-history";
 const PREVIOUS_ROUTE_KEY = "engiebenji.terminal-previous-route";
@@ -130,6 +131,8 @@ document.addEventListener("visibilitychange", () => {
 });
 app.addEventListener("click", handleAppClick);
 window.addEventListener("pagehide", destroyCursorTrail);
+
+const terminalCursor = mountTerminalCursor(input);
 
 startBoot({ onReveal: revealTerminal, onEnter: finishBoot });
 applyTheme(getActiveTheme(), false);
@@ -736,6 +739,7 @@ function clearTerminal(): void {
   destroyLogos();
   output.replaceChildren();
   input.value = "";
+  terminalCursor.sync();
   historyMode = false;
   historyIndex = -1;
   setStatus("Terminal cleared");
@@ -821,6 +825,7 @@ function execute(raw: string): void {
   pushHistory(command);
   appendEcho(command);
   input.value = "";
+  terminalCursor.sync();
   historyMode = false;
   historyIndex = -1;
 
@@ -888,6 +893,7 @@ function handleKeyDown(event: KeyboardEvent): void {
     }
 
     input.value = history[historyIndex] ?? "";
+    terminalCursor.sync();
     return;
   }
 
@@ -901,10 +907,12 @@ function handleKeyDown(event: KeyboardEvent): void {
     if (historyIndex < history.length - 1) {
       historyIndex += 1;
       input.value = history[historyIndex] ?? "";
+      terminalCursor.sync();
     } else {
       historyMode = false;
       historyIndex = -1;
       input.value = "";
+      terminalCursor.sync();
     }
 
     return;
@@ -929,6 +937,7 @@ function handleKeyDown(event: KeyboardEvent): void {
       if (completion) {
         input.value = completion;
         input.setSelectionRange(completion.length, completion.length);
+        terminalCursor.sync();
         historyMode = false;
         historyIndex = -1;
       }
@@ -941,6 +950,7 @@ function handleKeyDown(event: KeyboardEvent): void {
     if (completion) {
       event.preventDefault();
       input.value = completion;
+      terminalCursor.sync();
       historyMode = false;
       historyIndex = -1;
     }
@@ -950,6 +960,7 @@ function handleKeyDown(event: KeyboardEvent): void {
 
   if (event.key === "Escape") {
     input.value = "";
+    terminalCursor.sync();
     historyMode = false;
     historyIndex = -1;
     return;
@@ -1002,6 +1013,7 @@ function finishBoot(freshBoot: boolean): void {
 
   form.hidden = false;
   input.focus();
+  terminalCursor.sync();
 
   if (!cursorTrailStarted) {
     cursorTrailStarted = true;
@@ -1067,6 +1079,8 @@ function setIntroValue(value: string): void {
   if (document.activeElement === input) {
     input.setSelectionRange(value.length, value.length);
   }
+
+  terminalCursor.sync();
 }
 
 function submitIntroCommand(): void {

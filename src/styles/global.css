@@ -793,9 +793,12 @@ button {
   white-space: nowrap;
 }
 
-.boot-answer,
-.boot-cursor {
+.boot-answer-field {
+  position: relative;
+  display: inline-flex;
   flex: none;
+  align-items: baseline;
+  margin-left: 0.6ch;
 }
 
 .boot-question {
@@ -822,9 +825,9 @@ button {
   appearance: none;
   border: 0;
   background: transparent;
-  margin: 0 0 0 0.6ch;
+  margin: 0;
   padding: 0;
-  width: 0;
+  width: 6ch;
   min-width: 0;
   max-width: 6ch;
   flex: none;
@@ -832,6 +835,17 @@ button {
   font: inherit;
   caret-color: transparent;
   outline: none;
+}
+
+.boot-answer-measure {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  white-space: pre;
+  font: inherit;
+  line-height: inherit;
+  pointer-events: none;
 }
 
 .boot-answer:focus {
@@ -869,8 +883,13 @@ button {
 }
 
 .boot-cursor {
-  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: block;
   width: 1ch;
+  pointer-events: none;
+  transform: translateY(-50%);
   animation: boot-blink 1s step-end infinite;
 }
 

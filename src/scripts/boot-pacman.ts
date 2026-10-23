@@ -71,6 +71,11 @@ export function startBoot({ onEnter, onReveal }: BootOptions): void {
   const answerHint = document.querySelector<HTMLElement>(
     "[data-boot-answer-hint]",
   );
+  const answerMeasure = document.querySelector<HTMLElement>(
+    "[data-boot-answer-measure]",
+  );
+  const answerCursor =
+    document.querySelector<HTMLElement>("[data-boot-cursor]");
   const lineMap = new Map(
     lines
       .filter((line) => line.dataset.bootKey)
@@ -227,12 +232,23 @@ export function startBoot({ onEnter, onReveal }: BootOptions): void {
     }
   };
 
-  const updateAnswerWidth = (): void => {
-    if (!answerInput) {
+  const syncAnswerCursor = (): void => {
+    if (!answerInput || !answerMeasure || !answerCursor) {
       return;
     }
 
-    answerInput.style.width = `${answerInput.value.length}ch`;
+    const value = answerInput.value;
+    const selection = answerInput.selectionEnd ?? value.length;
+    answerMeasure.textContent = value.slice(0, selection);
+
+    const measured = answerMeasure.getBoundingClientRect().width;
+    const left = Math.max(0, measured - answerInput.scrollLeft);
+    const maxLeft = Math.max(
+      0,
+      answerInput.clientWidth - answerCursor.offsetWidth,
+    );
+
+    answerCursor.style.left = `${Math.min(maxLeft, left)}px`;
   };
 
   const showAnswerHint = (): void => {
@@ -262,7 +278,7 @@ export function startBoot({ onEnter, onReveal }: BootOptions): void {
     }
 
     answerInput.value = "";
-    updateAnswerWidth();
+    syncAnswerCursor();
     showAnswerHint();
   };
 
@@ -280,8 +296,8 @@ export function startBoot({ onEnter, onReveal }: BootOptions): void {
 
     schedule(() => {
       if (answerInput) {
-        updateAnswerWidth();
         answerInput.focus({ preventScroll: true });
+        syncAnswerCursor();
       } else if (question) {
         question.focus({ preventScroll: true });
       }
@@ -435,12 +451,18 @@ export function startBoot({ onEnter, onReveal }: BootOptions): void {
   no?.addEventListener("click", cancel);
   continueButton?.addEventListener("click", finish);
   answerInput?.addEventListener("input", () => {
-    updateAnswerWidth();
+    syncAnswerCursor();
 
     if (answerHint) {
       answerHint.hidden = true;
     }
   });
+  answerInput?.addEventListener("keyup", syncAnswerCursor);
+  answerInput?.addEventListener("click", syncAnswerCursor);
+  answerInput?.addEventListener("select", syncAnswerCursor);
+  answerInput?.addEventListener("focus", syncAnswerCursor);
+  answerInput?.addEventListener("compositionupdate", syncAnswerCursor);
+  answerInput?.addEventListener("compositionend", syncAnswerCursor);
   answerInput?.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -451,8 +473,15 @@ export function startBoot({ onEnter, onReveal }: BootOptions): void {
     if (event.key === "Escape") {
       event.preventDefault();
       answerInput.value = "";
-      updateAnswerWidth();
+      syncAnswerCursor();
     }
   });
+
+  void document.fonts.ready
+    .then(() => {
+      syncAnswerCursor();
+    })
+    .catch(() => undefined);
+
   document.addEventListener("keydown", handleKey, true);
 }

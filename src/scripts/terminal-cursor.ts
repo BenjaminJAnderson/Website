@@ -1,7 +1,7 @@
 const TYPING_HOLD_MS = 480;
-const RESOLVE_MS = 170;
-const RESOLVE_TICK_MS = 32;
-const RESOLVE_TICKS = 4;
+const RESOLVE_MS = 280;
+const RESOLVE_TICK_MS = 38;
+const RESOLVE_TICKS = 6;
 const MAX_RESOLVE_CHARS = 8;
 const GLYPHS = ["#", "%", "*", "+", "=", ":", "-"];
 
@@ -25,6 +25,7 @@ export function mountTerminalCursor(
   let frame = 0;
   let typingTimer = 0;
   let charWidth = 0;
+  let popAnimation: Animation | null = null;
   let destroyed = false;
 
   const getCharWidth = (): number => {
@@ -76,6 +77,26 @@ export function mountTerminalCursor(
     }, TYPING_HOLD_MS);
   };
 
+  const popCursor = (): void => {
+    if (motionQuery.matches) {
+      return;
+    }
+
+    popAnimation?.cancel();
+    popAnimation = cursor.animate(
+      [
+        { transform: "translateY(-50%) scale(1)" },
+        { transform: "translateY(-50%) scale(0.72)" },
+        { transform: "translateY(-50%) scale(1.18)" },
+        { transform: "translateY(-50%) scale(1)" },
+      ],
+      {
+        duration: 160,
+        easing: "cubic-bezier(.2, .9, .25, 1)",
+      },
+    );
+  };
+
   const randomGlyph = (): string =>
     GLYPHS[Math.floor(Math.random() * GLYPHS.length)] ?? "#";
 
@@ -123,6 +144,7 @@ export function mountTerminalCursor(
 
   const handleInput = (event: Event): void => {
     markTyping();
+    popCursor();
     sync();
 
     if (motionQuery.matches || !(event instanceof InputEvent)) {
@@ -181,6 +203,7 @@ export function mountTerminalCursor(
     sync,
     destroy: () => {
       destroyed = true;
+      popAnimation?.cancel();
       window.cancelAnimationFrame(frame);
       window.clearTimeout(typingTimer);
       input.removeEventListener("input", handleInput);

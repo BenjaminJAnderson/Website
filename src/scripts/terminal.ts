@@ -43,9 +43,11 @@ import { startBoot } from "./boot-pacman";
 import { applyCursorTrail, destroyCursorTrail } from "./cursor-trail";
 import { mountNeofetchLogo } from "./neofetch-logo";
 import { mountTerminalCursor } from "./terminal-cursor";
+import { mountTerminalRipple } from "./terminal-ripple";
 
 const HISTORY_KEY = "engiebenji.terminal-history";
 const PREVIOUS_ROUTE_KEY = "engiebenji.terminal-previous-route";
+const NAVIGATION_RIPPLE_DELAY_MS = 250;
 const HISTORY_LIMIT = 30;
 const INTRO_COMMAND = "help";
 const INTRO_START_DELAY_MS = 300;
@@ -133,6 +135,11 @@ app.addEventListener("click", handleAppClick);
 window.addEventListener("pagehide", destroyCursorTrail);
 
 const terminalCursor = mountTerminalCursor(input);
+const promptCursor = document.querySelector<HTMLElement>(
+  "[data-terminal-cursor]",
+);
+const terminalRipple = mountTerminalRipple();
+window.addEventListener("pagehide", terminalRipple.destroy);
 
 startBoot({ onReveal: revealTerminal, onEnter: finishBoot });
 applyTheme(getActiveTheme(), false);
@@ -343,16 +350,22 @@ function rememberRoute(route: string): void {
   }
 }
 
-function navigateToDirectory(node: TerminalNode): void {
+function navigateToDirectory(node: TerminalNode, delay = 0): void {
   if (node.kind !== "dir" || node.route === currentRoute) {
     return;
   }
 
   rememberRoute(currentRoute);
+
+  if (delay > 0) {
+    window.setTimeout(() => window.location.assign(node.route), delay);
+    return;
+  }
+
   window.location.assign(node.route);
 }
 
-function handleCd(target: string): void {
+function handleCd(target: string, delay = 0): void {
   if (target === "-") {
     const previous = readPreviousRoute();
 
@@ -368,7 +381,7 @@ function handleCd(target: string): void {
       return;
     }
 
-    navigateToDirectory(result.node);
+    navigateToDirectory(result.node, delay);
     return;
   }
 
@@ -389,7 +402,7 @@ function handleCd(target: string): void {
     return;
   }
 
-  navigateToDirectory(result.node);
+  navigateToDirectory(result.node, delay);
 }
 
 function renderProjects(): void {
@@ -810,12 +823,15 @@ function handleAction(action: SiteCommand["action"]): void {
   }
 }
 
-function execute(raw: string): void {
+function execute(raw: string, withRipple = true): void {
   const command = normalizeInput(raw);
 
   if (!command) {
     return;
   }
+
+  const rippled =
+    withRipple && promptCursor ? terminalRipple.trigger(promptCursor) : false;
 
   if (command === "clear") {
     clearTerminal();
@@ -830,7 +846,7 @@ function execute(raw: string): void {
   historyIndex = -1;
 
   if (command === "cd" || command.startsWith("cd ")) {
-    handleCd(command.slice(3).trim());
+    handleCd(command.slice(3).trim(), rippled ? NAVIGATION_RIPPLE_DELAY_MS : 0);
     focusInput();
     return;
   }
@@ -844,7 +860,17 @@ function execute(raw: string): void {
   const resolution = resolveCommand(command, commands, themes);
 
   if (resolution.kind === "success") {
-    handleAction(resolution.command.action);
+    const action = resolution.command.action;
+
+    if (action.type === "navigate" && rippled) {
+      window.setTimeout(
+        () => window.location.assign(action.href),
+        NAVIGATION_RIPPLE_DELAY_MS,
+      );
+    } else {
+      handleAction(action);
+    }
+
     focusInput();
     return;
   }
@@ -1014,6 +1040,7 @@ function finishBoot(freshBoot: boolean): void {
   form.hidden = false;
   input.focus();
   terminalCursor.sync();
+  terminalRipple.prime();
 
   if (!cursorTrailStarted) {
     cursorTrailStarted = true;
@@ -1093,7 +1120,7 @@ function submitIntroCommand(): void {
   window.clearTimeout(introTimer);
   introTimer = 0;
 
-  execute(INTRO_COMMAND);
+  execute(INTRO_COMMAND, false);
 }
 
 function cancelIntro(): void {

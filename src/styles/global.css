@@ -113,9 +113,40 @@ button {
 }
 
 .terminal-app {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   height: 100dvh;
+  animation: terminal-page-enter 260ms ease-out both;
+}
+
+.terminal-ripple {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.terminal-ripple.is-active {
+  opacity: 0.55;
+}
+
+.terminal-ripple.is-fading {
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+
+@keyframes terminal-page-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .terminal-status {
@@ -567,7 +598,7 @@ button {
   align-items: center;
   gap: 0.5rem;
   border-top: 1px solid var(--line);
-  background: var(--bg);
+  background: transparent;
   padding: 0.55rem var(--gutter);
 }
 
@@ -665,7 +696,7 @@ button {
   line-height: 1;
   pointer-events: none;
   transform: translateY(-50%);
-  animation: terminal-glyph-resolve 170ms ease-out forwards;
+  animation: terminal-glyph-resolve 280ms ease-out forwards;
 }
 
 @keyframes terminal-cursor-blink {
@@ -932,6 +963,14 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .boot-cursor {
     animation: none;
+  }
+
+  .terminal-app {
+    animation: none;
+  }
+
+  .terminal-ripple {
+    display: none;
   }
 
   .terminal-prompt__field:focus-within .terminal-prompt__cursor {

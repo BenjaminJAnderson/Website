@@ -1,3 +1,5 @@
+import { terminalIdentity } from "./site";
+
 const ESC = "\u001b[";
 const RESET = `${ESC}0m`;
 
@@ -28,8 +30,8 @@ const logoLines = [
 
 export const logoArt = logoLines.map((line) => sgr("34", line)).join("\n");
 
-export const neofetchHeader = sgr("1;36", "benji@portfolio");
-export const neofetchRule = sgr("36", "----------------");
+export const neofetchHeader = sgr("1;36", terminalIdentity);
+export const neofetchRule = sgr("36", "-".repeat(terminalIdentity.length));
 
 export const neofetchFacts = [
   { label: sgr("1;34", "Name"), value: "Benjamin Anderson" },

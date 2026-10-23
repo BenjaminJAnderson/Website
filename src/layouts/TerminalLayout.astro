@@ -5,7 +5,7 @@ import TerminalBoot from "../components/TerminalBoot.astro";
 import ThemeInit from "../components/ThemeInit.astro";
 import ThemeStyles from "../components/ThemeStyles.astro";
 import { buildProjectCommands, staticCommands } from "../data/commands";
-import { site } from "../data/site";
+import { site, terminalIdentity } from "../data/site";
 import { defaultTheme } from "../data/themes";
 import { getPublishedProjects } from "../lib/projects";
 import { buildTerminalFileSystem } from "../lib/terminal-fs";
@@ -30,7 +30,6 @@ const {
 
 const pageTitle = title === site.name ? title : `${title} · ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
-const handle = site.shortName.toLowerCase();
 
 const projects = await getPublishedProjects();
 const commands = [
@@ -104,9 +103,9 @@ const fileSystemData = JSON.stringify(fileSystem).replace(/</g, "\\u003c");
     >
       <div class="terminal-status">
         <span>
-          {handle}@engiebenji:{path}
+          {terminalIdentity}:{path}
         </span>
-        <span class="terminal-status__right">engiebenji.com</span>
+        <span class="terminal-status__right">{site.host}</span>
       </div>
 
       <main id="main" class="terminal-screen" aria-label="Terminal output">
@@ -131,7 +130,7 @@ const fileSystemData = JSON.stringify(fileSystem).replace(/</g, "\\u003c");
           Terminal command
         </label>
         <span class="terminal-prompt__label">
-          {handle}@engiebenji:{path}$
+          {terminalIdentity}:{path}$
         </span>
         <div class="terminal-prompt__field" data-terminal-field>
           <input

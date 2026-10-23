@@ -11,11 +11,10 @@ import {
 } from "../lib/theme-palette";
 
 const LOGO_SOURCE = "/safari-pinned-tab.svg";
-const LOGO_SOURCE_CELL_WIDTH = 6;
-const LOGO_SOURCE_CELL_HEIGHT = 10;
-const LOGO_FALLBACK_COLUMNS = 33;
+const LOGO_COLUMNS = 33;
+const LOGO_ROWS = 18;
 const LOGO_MIN_CELL_SIZE = 5;
-const LOGO_MAX_CELL_SIZE = 10;
+const LOGO_MAX_CELL_SIZE = 15;
 const LOGO_CELL_ASPECT = 0.62;
 const LOGO_CHARSET = " .:-=+*#%@";
 const LOGO_ALPHA_THRESHOLD = 0.02;
@@ -78,17 +77,9 @@ export function mountNeofetchLogo(host: HTMLElement): () => void {
     maskData = maskContext.getImageData(0, 0, cols, rows).data;
   };
 
-  const paint = ({
-    pen,
-    width,
-    height,
-    w,
-    h,
-    now,
-    still,
-  }: PaintFrame): boolean => {
-    const cols = Math.max(24, Math.ceil(w / LOGO_SOURCE_CELL_WIDTH));
-    const rows = Math.max(18, Math.ceil(h / LOGO_SOURCE_CELL_HEIGHT));
+  const paint = ({ pen, width, height, now, still }: PaintFrame): boolean => {
+    const cols = LOGO_COLUMNS;
+    const rows = LOGO_ROWS;
 
     if (
       !sourceCanvas ||
@@ -173,7 +164,7 @@ export function mountNeofetchLogo(host: HTMLElement): () => void {
           LOGO_MIN_CELL_SIZE,
           Math.min(
             LOGO_MAX_CELL_SIZE,
-            host.clientWidth / (LOGO_FALLBACK_COLUMNS * LOGO_CELL_ASPECT),
+            host.clientWidth / (LOGO_COLUMNS * LOGO_CELL_ASPECT),
           ),
         ),
         cellAspect: LOGO_CELL_ASPECT,

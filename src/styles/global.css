@@ -370,6 +370,12 @@ button {
   visibility: hidden;
 }
 
+@media (min-width: 900px) {
+  .term-neofetch__logo .term-ascii {
+    font-size: 0.89rem;
+  }
+}
+
 .term-neofetch__details {
   min-width: 0;
 }

@@ -31,12 +31,14 @@ export const commandGroupOrder: CommandGroup[] = [
   "navigate",
   "projects",
   "utility",
+  "layout",
 ];
 
 export const commandGroupLabels: Record<CommandGroup, string> = {
-  navigate: "Navigate",
+  navigate: "Navigation",
   projects: "Projects",
   utility: "Utility",
+  layout: "Layout",
 };
 
 export function normalizeInput(input: string): string {

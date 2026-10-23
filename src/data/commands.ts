@@ -1,4 +1,4 @@
-export type CommandGroup = "navigate" | "projects" | "utility";
+export type CommandGroup = "navigate" | "projects" | "utility" | "layout";
 
 export type CommandAction =
   | { type: "navigate"; href: string }
@@ -32,11 +32,42 @@ export interface ProjectCommandInput {
   summary: string;
 }
 
+export interface HelpSection {
+  label: string;
+  commandIds: readonly string[];
+}
+
+export const helpSections: readonly HelpSection[] = [
+  {
+    label: "Navigation",
+    commandIds: ["home", "about", "projects", "contact", "cv"],
+  },
+  {
+    label: "Utility",
+    commandIds: [
+      "help",
+      "ls",
+      "cd",
+      "neofetch",
+      "sections",
+      "whoami",
+      "pwd",
+      "date",
+      "clear",
+      "uninstall",
+    ],
+  },
+  {
+    label: "Layout",
+    commandIds: ["ascii", "theme", "cursor"],
+  },
+];
+
 export const staticCommands: SiteCommand[] = [
   {
     id: "help",
     label: "Help",
-    description: "Show every available command.",
+    description: "List the main commands by category.",
     group: "utility",
     aliases: ["?"],
     keywords: ["commands", "usage", "help"],
@@ -130,7 +161,7 @@ export const staticCommands: SiteCommand[] = [
     id: "theme",
     label: "Theme",
     description: "List or switch the site colour theme.",
-    group: "utility",
+    group: "layout",
     keywords: ["appearance", "palette", "colors", "colorscheme", "omarchy"],
     action: { type: "theme", query: "list" },
   },
@@ -138,7 +169,7 @@ export const staticCommands: SiteCommand[] = [
     id: "cursor",
     label: "Cursor trail",
     description: "List or switch the cursor trail effect.",
-    group: "utility",
+    group: "layout",
     aliases: ["trail"],
     keywords: [
       "cursor",

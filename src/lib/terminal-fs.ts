@@ -68,12 +68,6 @@ export function buildTerminalFileSystem(
         description: "profile and current work",
       },
       {
-        name: "contact",
-        route: "/contact/",
-        kind: "dir",
-        description: "email and links",
-      },
-      {
         name: "cv",
         route: cvPath,
         kind: "file",

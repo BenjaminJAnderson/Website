@@ -51,7 +51,7 @@ import TerminalLayout from "../layouts/TerminalLayout.astro";
     <p class="term-line terminal-dim">
       <a href="/about/">about</a>
       <a href="/projects/">projects</a>
-      <a href="/contact/">contact</a>
+      <a href={`mailto:${site.email}`}>email</a>
       <a href={site.cv}>cv</a>
     </p>
   </noscript>

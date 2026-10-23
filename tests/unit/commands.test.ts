@@ -99,6 +99,15 @@ describe("resolveCommand", () => {
     }
   });
 
+  it("resolves contact to inline contact details", () => {
+    const result = resolveCommand("contact", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({ type: "contact" });
+    }
+  });
+
   it("resolves shell commands to their actions", () => {
     const cd = resolveCommand("cd", commands);
     const ls = resolveCommand("ls", commands);

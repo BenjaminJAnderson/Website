@@ -346,9 +346,99 @@ function renderSections(): void {
   appendLine("available sections:", "terminal-line terminal-dim");
   appendLinkRow("/about/", "about/", "profile and current work");
   appendLinkRow("/projects/", "projects/", "project index");
-  appendLinkRow("/contact/", "contact/", "email and links");
   appendLinkRow(site.cv, "cv", "download the CV");
   setStatus("Sections listed");
+}
+
+interface ContactRow {
+  label: string;
+  value: string;
+  href?: string;
+  copy?: boolean;
+}
+
+async function copyContactEmail(email: string): Promise<void> {
+  try {
+    await navigator.clipboard.writeText(email);
+    setStatus("Email copied to clipboard");
+  } catch {
+    setStatus("Could not copy email address");
+  }
+}
+
+function appendContactRow(entry: ContactRow): void {
+  const row = document.createElement("div");
+  row.className = "terminal-contact-row";
+
+  const labelElement = document.createElement("span");
+  labelElement.className = "terminal-contact-row__label";
+  labelElement.textContent = entry.label;
+
+  if (entry.copy) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "terminal-contact-row__copy";
+    button.textContent = entry.value;
+    button.title = "Copy email address";
+    button.setAttribute("aria-label", `Copy ${entry.value} to clipboard`);
+    button.addEventListener("click", () => {
+      void copyContactEmail(entry.value);
+    });
+    row.append(labelElement, button);
+  } else {
+    const link = document.createElement("a");
+    link.href = entry.href ?? "";
+    link.textContent = entry.value;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    row.append(labelElement, link);
+  }
+
+  output.append(row);
+  scrollOutput();
+}
+
+function renderContact(): void {
+  appendLine("Contact", "terminal-line");
+  appendLine(
+    "Email is the best way to reach me.",
+    "terminal-line terminal-muted",
+  );
+  appendLine("", "terminal-line");
+
+  const rows: ContactRow[] = [
+    {
+      label: "email",
+      value: site.email,
+      copy: true,
+    },
+    {
+      label: "github",
+      value: "github.com/BenjaminJAnderson",
+      href: site.github,
+    },
+    {
+      label: "linkedin",
+      value: "linkedin.com/in/engiebenji",
+      href: site.linkedin,
+    },
+    {
+      label: "twitter",
+      value: "@engiebenji1999",
+      href: site.twitter,
+    },
+    {
+      label: "cv",
+      value: "BenjaminAnderson-CV.pdf",
+      href: site.cv,
+    },
+  ];
+
+  for (const row of rows) {
+    appendContactRow(row);
+  }
+
+  setStatus("Contact details displayed");
 }
 
 function renderDirectory(target = ""): void {
@@ -1006,6 +1096,9 @@ function handleAction(action: SiteCommand["action"]): void {
       return;
     case "neofetch":
       renderNeofetch();
+      return;
+    case "contact":
+      renderContact();
       return;
     case "theme":
       handleTheme(action.query);

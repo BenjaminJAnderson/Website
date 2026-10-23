@@ -43,6 +43,10 @@ import { startBoot } from "./boot-pacman";
 import { applyCursorTrail, destroyCursorTrail } from "./cursor-trail";
 import { mountNeofetchLogo } from "./neofetch-logo";
 import { mountTerminalCursor } from "./terminal-cursor";
+import {
+  mountTerminalEffects,
+  type TerminalEffectsHandle,
+} from "./terminal-effects";
 import { mountTerminalRipple } from "./terminal-ripple";
 
 const HISTORY_KEY = "engiebenji.terminal-history";
@@ -114,6 +118,7 @@ let introToken = 0;
 let introActive = false;
 let cursorTrailPreference = readCursorTrailPreference();
 let cursorTrailStarted = false;
+let terminalEffects: TerminalEffectsHandle | null = null;
 const logoHandles = new Set<() => void>();
 
 input.addEventListener("input", () => {
@@ -133,6 +138,7 @@ document.addEventListener("visibilitychange", () => {
 });
 app.addEventListener("click", handleAppClick);
 window.addEventListener("pagehide", destroyCursorTrail);
+window.addEventListener("pagehide", destroyTerminalEffects);
 
 const terminalCursor = mountTerminalCursor(input);
 const promptCursor = document.querySelector<HTMLElement>(
@@ -823,7 +829,18 @@ function handleAction(action: SiteCommand["action"]): void {
   }
 }
 
-function execute(raw: string, withRipple = true): void {
+function ensureTerminalEffects(): void {
+  if (!terminalEffects) {
+    terminalEffects = mountTerminalEffects(output);
+  }
+}
+
+function destroyTerminalEffects(): void {
+  terminalEffects?.stop();
+  terminalEffects = null;
+}
+
+function execute(raw: string, withRipple = true, reveal = true): void {
   const command = normalizeInput(raw);
 
   if (!command) {
@@ -836,6 +853,10 @@ function execute(raw: string, withRipple = true): void {
   if (command === "clear") {
     clearTerminal();
     return;
+  }
+
+  if (reveal) {
+    ensureTerminalEffects();
   }
 
   pushHistory(command);
@@ -1120,7 +1141,7 @@ function submitIntroCommand(): void {
   window.clearTimeout(introTimer);
   introTimer = 0;
 
-  execute(INTRO_COMMAND, false);
+  execute(INTRO_COMMAND, false, false);
 }
 
 function cancelIntro(): void {

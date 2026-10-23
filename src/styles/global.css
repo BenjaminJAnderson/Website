@@ -504,6 +504,21 @@ button {
   text-align: left;
 }
 
+.terminal-help-row {
+  display: flex;
+  gap: 0.6ch;
+  align-items: baseline;
+  margin: 0.15rem 0;
+}
+
+.terminal-help-bullet {
+  color: var(--text-dim);
+}
+
+.terminal-help-row .term-command {
+  text-align: left;
+}
+
 .term-prose {
   max-width: 100ch;
   margin: 1rem 0 1.5rem;

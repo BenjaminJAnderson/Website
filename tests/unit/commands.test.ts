@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildProjectCommands,
+  helpSections,
   staticCommands,
   type SiteCommand,
 } from "../../src/data/commands";
@@ -375,7 +376,7 @@ describe("filterCommands", () => {
     const results = filterCommands(commands, "");
     const groups = groupCommands(results).map((group) => group.group);
 
-    expect(groups).toEqual(["navigate", "projects", "utility"]);
+    expect(groups).toEqual(["navigate", "projects", "utility", "layout"]);
   });
 
   it("matches project titles and aliases", () => {
@@ -400,6 +401,52 @@ describe("filterCommands", () => {
 
   it("returns no matches for unrelated text", () => {
     expect(filterCommands(commands, "zzzzzz")).toEqual([]);
+  });
+});
+
+describe("help sections", () => {
+  it("matches the requested command layout", () => {
+    expect(helpSections.map((section) => section.label)).toEqual([
+      "Navigation",
+      "Utility",
+      "Layout",
+    ]);
+    expect(helpSections.map((section) => section.commandIds)).toEqual([
+      ["home", "about", "projects", "contact", "cv"],
+      [
+        "help",
+        "ls",
+        "cd",
+        "neofetch",
+        "sections",
+        "whoami",
+        "pwd",
+        "date",
+        "clear",
+        "uninstall",
+      ],
+      ["ascii", "theme", "cursor"],
+    ]);
+  });
+
+  it("omits open and generated project commands", () => {
+    const ids = new Set(helpSections.flatMap((section) => section.commandIds));
+
+    expect(ids.has("open")).toBe(false);
+
+    for (const project of projectCommands) {
+      expect(ids.has(project.id)).toBe(false);
+    }
+  });
+
+  it("lists every static command except open", () => {
+    const ids = new Set(helpSections.flatMap((section) => section.commandIds));
+
+    for (const command of staticCommands) {
+      if (command.id !== "open") {
+        expect(ids.has(command.id)).toBe(true);
+      }
+    }
   });
 });
 

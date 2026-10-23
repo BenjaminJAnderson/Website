@@ -7,7 +7,7 @@ import {
   neofetchRule,
 } from "../data/neofetch";
 import { site } from "../data/site";
-import type { SiteCommand } from "../data/commands";
+import { helpSections, type SiteCommand } from "../data/commands";
 import {
   CURSOR_TRAIL_STORAGE_KEY,
   cursorTrailOptions,
@@ -27,7 +27,6 @@ import { appendAnsi } from "../lib/ansi";
 import {
   completeCommand,
   getCanonicalInput,
-  groupCommands,
   normalizeInput,
   resolveCommand,
 } from "../lib/commands";
@@ -242,6 +241,24 @@ function appendCommandRow(command: SiteCommand): void {
   scrollOutput();
 }
 
+function appendHelpRow(command: SiteCommand): void {
+  const row = document.createElement("div");
+  row.className = "terminal-help-row";
+
+  const bullet = document.createElement("span");
+  bullet.className = "terminal-help-bullet";
+  bullet.textContent = "-";
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "term-command";
+  button.dataset.terminalCommand = getCanonicalInput(command);
+  button.textContent = getCanonicalInput(command);
+
+  row.append(bullet, button);
+  output.append(row);
+}
+
 function appendLinkRow(href: string, label: string, description: string): void {
   const row = document.createElement("div");
   row.className = "terminal-command-row";
@@ -281,16 +298,23 @@ function appendInlineLinks(
 }
 
 function renderHelp(): void {
-  appendLine("available commands:", "terminal-line terminal-dim");
+  for (const section of helpSections) {
+    const sectionCommands = section.commandIds
+      .map((id) => commands.find((command) => command.id === id))
+      .filter((command): command is SiteCommand => command !== undefined);
 
-  for (const group of groupCommands(commands)) {
-    appendLine(`${group.label.toLowerCase()}:`, "terminal-line terminal-group");
+    if (sectionCommands.length === 0) {
+      continue;
+    }
 
-    for (const command of group.commands) {
-      appendCommandRow(command);
+    appendLine(`${section.label}:`, "terminal-line terminal-group");
+
+    for (const command of sectionCommands) {
+      appendHelpRow(command);
     }
   }
 
+  scrollOutput();
   setStatus("Help displayed");
 }
 

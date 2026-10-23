@@ -1,4 +1,8 @@
 ---
+import { defaultTheme } from "../data/themes";
+import ThemeInit from "./ThemeInit.astro";
+import ThemeStyles from "./ThemeStyles.astro";
+
 interface Props {
   to: string;
 }
@@ -12,17 +16,36 @@ const target = new URL(to, Astro.site ?? Astro.url).href;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content={defaultTheme.colors.background} />
     <title>Redirecting…</title>
     <link rel="canonical" href={target} />
     <meta name="robots" content="noindex" />
     <meta http-equiv="refresh" content={`0; url=${to}`} />
+    <ThemeStyles />
+    <ThemeInit />
+    <style is:global>
+      .redirect-body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          14px/1.55 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Consolas,
+          monospace;
+        padding: 1.5rem;
+      }
+
+      .redirect-body a {
+        color: inherit;
+      }
+    </style>
   </head>
-  <body style="margin:0;background:#050505;color:#e6e6e1;font:14px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:1.5rem;">
+  <body class="redirect-body">
     <p>
-      $ redirecting to{" "}
-      <a href={to} style="color:inherit;">
-        {to}
-      </a>
+      $ redirecting to <a href={to}>{to}</a>
     </p>
   </body>
 </html>

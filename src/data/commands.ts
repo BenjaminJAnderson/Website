@@ -9,6 +9,7 @@ export type CommandAction =
   | { type: "date" }
   | { type: "clear" }
   | { type: "neofetch" }
+  | { type: "theme"; query: string }
   | { type: "uninstall" }
   | { type: "list-projects" };
 
@@ -105,6 +106,14 @@ export const staticCommands: SiteCommand[] = [
     group: "utility",
     keywords: ["system", "info", "profile", "about"],
     action: { type: "neofetch" },
+  },
+  {
+    id: "theme",
+    label: "Theme",
+    description: "List or switch the site colour theme.",
+    group: "utility",
+    keywords: ["appearance", "palette", "colors", "colorscheme", "omarchy"],
+    action: { type: "theme", query: "list" },
   },
   {
     id: "whoami",

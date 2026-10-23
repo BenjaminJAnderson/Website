@@ -1,4 +1,6 @@
 import type { CommandGroup, SiteCommand } from "../data/commands";
+import { levenshtein } from "./similarity";
+import { findTheme, suggestThemes, type Theme } from "./themes";
 
 export interface ParsedCommand {
   name: string;
@@ -144,35 +146,6 @@ export function groupCommands(
     .filter((entry) => entry.commands.length > 0);
 }
 
-function levenshtein(a: string, b: string): number {
-  const rows = a.length + 1;
-  const columns = b.length + 1;
-  const matrix: number[][] = Array.from({ length: rows }, () =>
-    Array<number>(columns).fill(0),
-  );
-
-  for (let row = 0; row < rows; row += 1) {
-    matrix[row][0] = row;
-  }
-
-  for (let column = 0; column < columns; column += 1) {
-    matrix[0][column] = column;
-  }
-
-  for (let row = 1; row < rows; row += 1) {
-    for (let column = 1; column < columns; column += 1) {
-      const cost = a[row - 1] === b[column - 1] ? 0 : 1;
-      matrix[row][column] = Math.min(
-        matrix[row - 1][column] + 1,
-        matrix[row][column - 1] + 1,
-        matrix[row - 1][column - 1] + cost,
-      );
-    }
-  }
-
-  return matrix[a.length][b.length];
-}
-
 export function suggestCommands(
   input: string,
   commands: SiteCommand[],
@@ -208,9 +181,33 @@ export function suggestCommands(
     .map((entry) => entry.command);
 }
 
+function withThemeQuery(
+  commands: SiteCommand[],
+  query: string,
+): SiteCommand | undefined {
+  const command = commands.find((item) => item.id === "theme");
+
+  if (!command) {
+    return undefined;
+  }
+
+  return { ...command, action: { type: "theme", query } };
+}
+
+function themeSuggestionCommand(theme: Theme): SiteCommand {
+  return {
+    id: `theme ${theme.id}`,
+    label: theme.name,
+    description: `${theme.name} · ${theme.mode} theme`,
+    group: "utility",
+    action: { type: "theme", query: theme.id },
+  };
+}
+
 export function resolveCommand(
   input: string,
   commands: SiteCommand[],
+  themes: Theme[] = [],
 ): CommandResolution {
   const normalized = normalizeInput(input);
 
@@ -253,6 +250,51 @@ export function resolveCommand(
         projectQuery,
         commands.filter((command) => command.group === "projects"),
       ),
+    };
+  }
+
+  if (parsed.name === "theme") {
+    const query = parsed.args.join(" ");
+    const themeCommand = withThemeQuery(commands, "list");
+
+    if (!themeCommand) {
+      return {
+        kind: "error",
+        message: "Theme command is unavailable.",
+        suggestions: [],
+      };
+    }
+
+    if (!query || query === "list") {
+      return { kind: "success", command: themeCommand };
+    }
+
+    if (query === "current" || query === "reset") {
+      return {
+        kind: "success",
+        command: {
+          ...themeCommand,
+          action: { type: "theme", query },
+        },
+      };
+    }
+
+    const theme = findTheme(query, themes);
+
+    if (theme) {
+      return {
+        kind: "success",
+        command: {
+          ...themeCommand,
+          action: { type: "theme", query: theme.id },
+        },
+      };
+    }
+
+    return {
+      kind: "error",
+      message: `No theme matching “${query}”.`,
+      suggestions: suggestThemes(query, themes).map(themeSuggestionCommand),
     };
   }
 

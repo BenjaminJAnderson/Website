@@ -79,8 +79,8 @@ button {
 }
 
 ::selection {
-  background: var(--text);
-  color: var(--bg);
+  background: var(--selection);
+  color: var(--selection-fg);
 }
 
 .skip-link {

@@ -4,6 +4,7 @@ import {
   staticCommands,
   type SiteCommand,
 } from "../../src/data/commands";
+import { themes } from "../../src/data/themes";
 import {
   filterCommands,
   findExactCommand,
@@ -108,6 +109,79 @@ describe("resolveCommand", () => {
     }
   });
 
+  it("resolves theme to the theme list", () => {
+    const result = resolveCommand("theme", commands, themes);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({
+        type: "theme",
+        query: "list",
+      });
+    }
+  });
+
+  it("resolves theme list, current and reset", () => {
+    const list = resolveCommand("theme list", commands, themes);
+    const current = resolveCommand("theme current", commands, themes);
+    const reset = resolveCommand("theme reset", commands, themes);
+
+    expect(list.kind).toBe("success");
+    expect(current.kind).toBe("success");
+    expect(reset.kind).toBe("success");
+
+    if (list.kind === "success") {
+      expect(list.command.action).toEqual({ type: "theme", query: "list" });
+    }
+
+    if (current.kind === "success") {
+      expect(current.command.action).toEqual({
+        type: "theme",
+        query: "current",
+      });
+    }
+
+    if (reset.kind === "success") {
+      expect(reset.command.action).toEqual({ type: "theme", query: "reset" });
+    }
+  });
+
+  it("resolves a theme by slug or display name", () => {
+    const slug = resolveCommand("theme tokyo-night", commands, themes);
+    const spaced = resolveCommand("theme Tokyo Night", commands, themes);
+
+    expect(slug.kind).toBe("success");
+    expect(spaced.kind).toBe("success");
+
+    if (slug.kind === "success") {
+      expect(slug.command.action).toEqual({
+        type: "theme",
+        query: "tokyo-night",
+      });
+    }
+
+    if (spaced.kind === "success") {
+      expect(spaced.command.action).toEqual({
+        type: "theme",
+        query: "tokyo-night",
+      });
+    }
+  });
+
+  it("suggests themes for an unknown theme", () => {
+    const result = resolveCommand("theme tokio", commands, themes);
+
+    expect(result.kind).toBe("error");
+    if (result.kind === "error") {
+      expect(result.message).toContain("tokio");
+      expect(
+        result.suggestions.some(
+          (command) => command.id === "theme tokyo-night",
+        ),
+      ).toBe(true);
+    }
+  });
+
   it("resolves open with no argument to the project list", () => {
     const result = resolveCommand("open", commands);
 
@@ -181,6 +255,10 @@ describe("filterCommands", () => {
   it("matches aliases such as work and mail", () => {
     expect(filterCommands(commands, "work")[0]?.id).toBe("projects");
     expect(filterCommands(commands, "mail")[0]?.id).toBe("contact");
+  });
+
+  it("matches theme keywords", () => {
+    expect(filterCommands(commands, "appearance")[0]?.id).toBe("theme");
   });
 
   it("returns no matches for unrelated text", () => {

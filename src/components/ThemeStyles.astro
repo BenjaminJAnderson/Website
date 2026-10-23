@@ -1,0 +1,8 @@
+---
+import { DEFAULT_THEME_ID, themes } from "../data/themes";
+import { themeCss } from "../lib/themes";
+
+const css = themeCss(themes, DEFAULT_THEME_ID);
+---
+
+<style is:global set:html={css}></style>

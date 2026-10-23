@@ -8,6 +8,12 @@ import {
 } from "../data/neofetch";
 import { site } from "../data/site";
 import type { SiteCommand } from "../data/commands";
+import {
+  THEME_STORAGE_KEY,
+  defaultTheme,
+  themeById,
+  themes,
+} from "../data/themes";
 import { appendAnsi } from "../lib/ansi";
 import {
   filterCommands,
@@ -16,6 +22,7 @@ import {
   normalizeInput,
   resolveCommand,
 } from "../lib/commands";
+import type { Theme } from "../lib/themes";
 import { startBoot } from "./boot-pacman";
 
 const HISTORY_KEY = "engiebenji.terminal-history";
@@ -73,6 +80,7 @@ document.addEventListener("visibilitychange", () => {
 app.addEventListener("click", handleAppClick);
 
 startBoot({ onReveal: revealTerminal, onEnter: finishBoot });
+applyTheme(getActiveTheme(), false);
 
 function loadHistory(): string[] {
   try {
@@ -295,6 +303,115 @@ function renderProfile(): void {
   setStatus("Profile displayed");
 }
 
+function getActiveTheme(): Theme {
+  const id = document.documentElement.dataset.theme;
+  return (id ? themeById.get(id) : undefined) ?? defaultTheme;
+}
+
+function applyTheme(theme: Theme, persist = true): void {
+  document.documentElement.dataset.theme = theme.id;
+  document.documentElement.style.colorScheme = theme.mode;
+
+  const meta = document.querySelector<HTMLMetaElement>(
+    'meta[name="theme-color"]',
+  );
+
+  if (meta) {
+    meta.content = theme.colors.background;
+  }
+
+  if (!persist) {
+    return;
+  }
+
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme.id);
+  } catch {
+    return;
+  }
+}
+
+function appendThemeRow(theme: Theme): void {
+  const row = document.createElement("div");
+  row.className = "terminal-command-row";
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "term-command";
+  button.dataset.terminalCommand = `theme ${theme.id}`;
+  button.textContent = theme.id;
+
+  const description = document.createElement("span");
+  description.className = "terminal-dim";
+  const current = theme.id === getActiveTheme().id ? " · current" : "";
+  description.textContent = `${theme.name} · ${theme.mode}${current}`;
+
+  row.append(button, description);
+  output.append(row);
+}
+
+function renderThemeList(): void {
+  appendLine("themes:", "terminal-line terminal-dim");
+
+  for (const theme of themes) {
+    appendThemeRow(theme);
+  }
+
+  scrollOutput();
+  setStatus(`${themes.length} themes listed`);
+}
+
+function renderCurrentTheme(): void {
+  const theme = getActiveTheme();
+
+  appendLine(`${theme.name} (${theme.id})`, "terminal-line terminal-heading");
+  appendLine(`mode: ${theme.mode}`, "terminal-line terminal-dim");
+  appendLine(
+    `background: ${theme.colors.background}`,
+    "terminal-line terminal-dim",
+  );
+  appendLine(`accent: ${theme.colors.accent}`, "terminal-line terminal-dim");
+  appendLine("run theme list to see all themes", "terminal-line terminal-dim");
+  setStatus(`Current theme: ${theme.name}`);
+}
+
+function handleTheme(query: string): void {
+  if (query === "list") {
+    renderThemeList();
+    return;
+  }
+
+  if (query === "current") {
+    renderCurrentTheme();
+    return;
+  }
+
+  if (query === "reset") {
+    try {
+      localStorage.removeItem(THEME_STORAGE_KEY);
+    } catch {}
+
+    applyTheme(defaultTheme, false);
+    appendLine(
+      `theme reset to ${defaultTheme.name} (${defaultTheme.id}).`,
+      "terminal-line",
+    );
+    setStatus(`Theme reset to ${defaultTheme.name}`);
+    return;
+  }
+
+  const theme = themeById.get(query);
+
+  if (!theme) {
+    renderError(`No theme matching “${query}”.`, []);
+    return;
+  }
+
+  applyTheme(theme);
+  appendLine(`theme set to ${theme.name} (${theme.id}).`, "terminal-line");
+  setStatus(`Theme: ${theme.name}`);
+}
+
 function renderDate(): void {
   appendLine(
     new Intl.DateTimeFormat(undefined, {
@@ -351,6 +468,9 @@ function handleAction(action: SiteCommand["action"]): void {
     case "neofetch":
       renderNeofetch();
       return;
+    case "theme":
+      handleTheme(action.query);
+      return;
     case "profile":
       renderProfile();
       return;
@@ -398,7 +518,7 @@ function execute(raw: string): void {
   historyMode = false;
   historyIndex = -1;
 
-  const resolution = resolveCommand(command, commands);
+  const resolution = resolveCommand(command, commands, themes);
 
   if (resolution.kind === "success") {
     handleAction(resolution.command.action);

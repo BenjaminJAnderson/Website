@@ -1,0 +1,38 @@
+---
+import { DEFAULT_THEME_ID, THEME_STORAGE_KEY, themes } from "../data/themes";
+
+const themeIds = themes.map((theme) => theme.id);
+---
+
+<script
+  is:inline
+  define:vars={{
+    themeStorageKey: THEME_STORAGE_KEY,
+    defaultThemeId: DEFAULT_THEME_ID,
+    themeIds,
+  }}
+>
+  let selectedTheme = defaultThemeId;
+
+  try {
+    const stored = localStorage.getItem(themeStorageKey);
+
+    if (stored && themeIds.includes(stored)) {
+      selectedTheme = stored;
+    }
+  } catch {}
+
+  document.documentElement.dataset.theme = selectedTheme;
+
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+
+  if (themeMeta) {
+    const background = getComputedStyle(document.documentElement)
+      .getPropertyValue("--bg")
+      .trim();
+
+    if (background) {
+      themeMeta.setAttribute("content", background);
+    }
+  }
+</script>

@@ -34,7 +34,8 @@ and is remembered for the rest of the tab session. Run `uninstall` in the
 terminal to remove `benji-portfolio-git` and return to the boot screen.
 
 Available commands include `help`, `about`, `projects`, `contact`, `cv`,
-`open <project>`, `ls`, `pwd`, `whoami`, `date`, `clear`, `uninstall` and `cd <section>`.
+`open <project>`, `ls`, `pwd`, `whoami`, `date`, `ascii`, `clear`, `uninstall`
+and `cd <section>`.
 Project commands are generated from the content collection.
 
 Project images are linked as plain text rather than displayed inline. ASCII

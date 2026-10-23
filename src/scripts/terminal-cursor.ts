@@ -1,9 +1,10 @@
+import { getAsciiGlyphs } from "./ascii-charset";
+
 const TYPING_HOLD_MS = 480;
 const RESOLVE_MS = 2000;
 const RESOLVE_TICK_MS = 38;
 const RESOLVE_TICKS = 6;
 const MAX_RESOLVE_CHARS = 8;
-const GLYPHS = ["#", "%", "*", "+", "=", ":", "-"];
 
 export interface TerminalCursorHandle {
   sync: () => void;
@@ -97,8 +98,11 @@ export function mountTerminalCursor(
     );
   };
 
-  const randomGlyph = (): string =>
-    GLYPHS[Math.floor(Math.random() * GLYPHS.length)] ?? "#";
+  const randomGlyph = (): string => {
+    const glyphs = getAsciiGlyphs();
+
+    return glyphs[Math.floor(Math.random() * glyphs.length)] ?? "#";
+  };
 
   const spawnResolve = (index: number, value: string): void => {
     const character = value[index];

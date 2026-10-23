@@ -27,6 +27,7 @@ export function applyCursorTrail(
       ink: TRAIL_INK,
       charset: TRAIL_CHARSET,
       cellSize: TRAIL_CELL_SIZE,
+      globalLook: true,
     });
   } catch {
     handle = null;

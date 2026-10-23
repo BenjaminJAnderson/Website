@@ -29,7 +29,7 @@ export function shouldScrambleText(text: string): boolean {
 export function scrambleFrame(
   text: string,
   progress: number,
-  glyphs = SCRAMBLE_GLYPHS,
+  glyphs: string | readonly string[] = SCRAMBLE_GLYPHS,
   random: () => number = Math.random,
 ): string {
   if (progress >= 1) {
@@ -46,7 +46,12 @@ export function scrambleFrame(
     return text;
   }
 
-  const pool = glyphs || SCRAMBLE_GLYPHS;
+  const pool =
+    typeof glyphs === "string"
+      ? Array.from(glyphs || SCRAMBLE_GLYPHS)
+      : glyphs.length > 0
+        ? glyphs
+        : Array.from(SCRAMBLE_GLYPHS);
   const amount = Math.max(0, progress);
   let seen = 0;
 

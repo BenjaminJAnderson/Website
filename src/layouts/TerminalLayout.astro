@@ -131,14 +131,26 @@ const fileSystemData = JSON.stringify(fileSystem).replace(/</g, "\\u003c");
         <span class="terminal-prompt__label">
           {handle}@engiebenji:{path}$
         </span>
-        <input
-          id="terminal-input"
-          data-terminal-input
-          type="text"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-        />
+        <div class="terminal-prompt__field" data-terminal-field>
+          <input
+            id="terminal-input"
+            data-terminal-input
+            type="text"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+          />
+          <span
+            class="terminal-prompt__measure"
+            data-terminal-measure
+            aria-hidden="true"
+          ></span>
+          <span
+            class="terminal-prompt__cursor"
+            data-terminal-cursor
+            aria-hidden="true"
+          ></span>
+        </div>
       </form>
     </div>
 

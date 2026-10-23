@@ -70,9 +70,14 @@ Set `featured: true` to include a project on the homepage.
 
 ## Deployment
 
-The site builds to `dist/` for GitHub Pages. Deploy it through GitHub Actions
-rather than the legacy Jekyll builder. The custom domain is set by
-`public/CNAME`, and HTTPS is enforced in the Pages settings.
+The site builds to `dist/` and deploys through
+`.github/workflows/deploy.yml` on every push to `main`. GitHub Pages must use
+the **GitHub Actions** source rather than the legacy Jekyll builder.
+
+The custom domain is `engiebenji.com`, set in the Pages settings and carried
+into the artifact by `public/CNAME`. HTTPS is enforced. The apex DNS records
+point to GitHub Pages; `www` uses a CNAME to `benjaminjanderson.github.io` and
+redirects to the apex.
 
 Legacy URLs are preserved by `src/pages/[...legacy].astro` and
 `public/tags.html`.

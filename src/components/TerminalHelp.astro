@@ -1,0 +1,35 @@
+---
+import {
+  helpSections,
+  staticCommands,
+  type SiteCommand,
+} from "../data/commands";
+import { getCanonicalInput } from "../lib/commands";
+
+const sections = helpSections
+  .map((section) => ({
+    label: section.label,
+    commands: section.commandIds
+      .map((id) => staticCommands.find((command) => command.id === id))
+      .filter((command): command is SiteCommand => command !== undefined),
+  }))
+  .filter((section) => section.commands.length > 0);
+---
+
+{sections.map((section) => (
+  <div class="terminal-help-section">
+    <div class="terminal-line terminal-group">{section.label}:</div>
+    {section.commands.map((command) => (
+      <div class="terminal-help-row">
+        <span class="terminal-help-bullet">-</span>
+        <button
+          type="button"
+          class="term-command"
+          data-terminal-command={getCanonicalInput(command)}
+        >
+          {getCanonicalInput(command)}
+        </button>
+      </div>
+    ))}
+  </div>
+))}

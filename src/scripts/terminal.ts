@@ -66,10 +66,7 @@ const HISTORY_KEY = "engiebenji.terminal-history";
 const PREVIOUS_ROUTE_KEY = "engiebenji.terminal-previous-route";
 const NAVIGATION_RIPPLE_DELAY_MS = 250;
 const HISTORY_LIMIT = 30;
-const INTRO_COMMAND = "help";
-const INTRO_START_DELAY_MS = 300;
-const INTRO_TYPE_DELAY_MS = 95;
-const INTRO_SUBMIT_DELAY_MS = 320;
+const BOOT_PENDING_ATTRIBUTE = "data-boot-pending";
 const PROMPT_PRESS_MS = 380;
 const PROMPT_SHAKE_MS = 320;
 
@@ -128,9 +125,6 @@ const currentRoute = normalizeRoute(app.dataset.route ?? "/");
 let history = loadHistory();
 let historyIndex = -1;
 let historyMode = false;
-let introTimer = 0;
-let introToken = 0;
-let introActive = false;
 let cursorTrailPreference = readCursorTrailPreference();
 let cursorTrailStarted = false;
 let terminalEffects: TerminalEffectsHandle | null = null;
@@ -141,7 +135,6 @@ const promptMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 const logoHandles = new Set<() => void>();
 
 input.addEventListener("input", () => {
-  cancelIntro();
   historyMode = false;
   historyIndex = -1;
 });
@@ -149,12 +142,6 @@ input.addEventListener("input", () => {
 input.addEventListener("keydown", handleKeyDown);
 form.addEventListener("submit", handleSubmit);
 document.addEventListener("click", handleCommandClick);
-document.addEventListener("pointerdown", cancelIntro, true);
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    cancelIntro();
-  }
-});
 app.addEventListener("click", handleAppClick);
 window.addEventListener("pagehide", destroyCursorTrail);
 window.addEventListener("pagehide", destroyTerminalEffects);
@@ -231,7 +218,7 @@ function appendLine(text: string, className = "terminal-line"): HTMLElement {
   return line;
 }
 
-function appendEcho(command: string): void {
+function appendEcho(command: string): HTMLElement {
   const echo = document.createElement("div");
   echo.className = "terminal-echo";
 
@@ -242,6 +229,8 @@ function appendEcho(command: string): void {
   echo.append(prompt, document.createTextNode(` ${command}`));
   output.append(echo);
   scrollOutput();
+
+  return echo;
 }
 
 function appendCommandRow(command: SiteCommand): void {
@@ -469,7 +458,7 @@ function renderProjects(): void {
   setStatus("Projects listed");
 }
 
-function renderNeofetch(): void {
+function renderNeofetch(): HTMLElement {
   const wrapper = document.createElement("div");
   wrapper.className = "term-neofetch term-neofetch--logo";
 
@@ -519,6 +508,8 @@ function renderNeofetch(): void {
   logoHandles.add(mountNeofetchLogo(logoHost));
   scrollOutput();
   setStatus("System information displayed");
+
+  return wrapper;
 }
 
 function renderProfile(): void {
@@ -949,9 +940,13 @@ function destroyLogos(): void {
   logoHandles.clear();
 }
 
-function resetTerminal(): void {
+function clearOutput(): void {
   destroyLogos();
   output.replaceChildren();
+}
+
+function resetTerminal(): void {
+  clearOutput();
   input.value = "";
   terminalCursor.sync();
   historyMode = false;
@@ -1141,7 +1136,6 @@ function execute(raw: string, withRipple = true, reveal = true): void {
 
 function handleSubmit(event: SubmitEvent): void {
   event.preventDefault();
-  cancelIntro();
   execute(input.value);
 }
 
@@ -1153,8 +1147,6 @@ function getShellCommand(inputValue: string): "cd" | "ls" | undefined {
 }
 
 function handleKeyDown(event: KeyboardEvent): void {
-  cancelIntro();
-
   if (event.key === "ArrowUp") {
     event.preventDefault();
 
@@ -1303,88 +1295,31 @@ function finishBoot(freshBoot: boolean): void {
   }
 
   if (freshBoot) {
-    startIntroCommand();
+    void startHomeIntro();
+    return;
   }
+
+  document.documentElement.removeAttribute(BOOT_PENDING_ATTRIBUTE);
 }
 
-function startIntroCommand(): void {
+async function startHomeIntro(): Promise<void> {
   if (currentPath !== "~") {
+    document.documentElement.removeAttribute(BOOT_PENDING_ATTRIBUTE);
     return;
   }
 
-  cancelIntro();
-  introActive = true;
+  clearOutput();
+  ensureTerminalEffects();
 
-  const token = ++introToken;
-  const reducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
+  const echo = appendEcho("neofetch");
+  const neofetch = renderNeofetch();
+  const effects = terminalEffects;
+  const finished = effects?.reveal([echo, neofetch]) ?? Promise.resolve();
 
-  const submit = (): void => {
-    if (!introActive || token !== introToken) {
-      return;
-    }
+  window.requestAnimationFrame(() => {
+    document.documentElement.removeAttribute(BOOT_PENDING_ATTRIBUTE);
+  });
 
-    submitIntroCommand();
-  };
-
-  if (reducedMotion) {
-    setIntroValue(INTRO_COMMAND);
-    introTimer = window.setTimeout(submit, INTRO_START_DELAY_MS);
-    return;
-  }
-
-  let index = 0;
-
-  const typeNext = (): void => {
-    if (!introActive || token !== introToken) {
-      return;
-    }
-
-    index += 1;
-    setIntroValue(INTRO_COMMAND.slice(0, index));
-
-    if (index < INTRO_COMMAND.length) {
-      introTimer = window.setTimeout(typeNext, INTRO_TYPE_DELAY_MS);
-      return;
-    }
-
-    introTimer = window.setTimeout(submit, INTRO_SUBMIT_DELAY_MS);
-  };
-
-  introTimer = window.setTimeout(typeNext, INTRO_START_DELAY_MS);
-}
-
-function setIntroValue(value: string): void {
-  input.value = value;
-
-  if (document.activeElement === input) {
-    input.setSelectionRange(value.length, value.length);
-  }
-
-  terminalCursor.sync();
-}
-
-function submitIntroCommand(): void {
-  if (!introActive) {
-    return;
-  }
-
-  introActive = false;
-  introToken += 1;
-  window.clearTimeout(introTimer);
-  introTimer = 0;
-
-  execute(INTRO_COMMAND, false, false);
-}
-
-function cancelIntro(): void {
-  if (!introActive) {
-    return;
-  }
-
-  introActive = false;
-  introToken += 1;
-  window.clearTimeout(introTimer);
-  introTimer = 0;
+  await finished;
+  renderHelp();
 }

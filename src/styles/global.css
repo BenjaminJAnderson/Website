@@ -212,6 +212,10 @@ button {
   max-width: 110ch;
 }
 
+html[data-boot-pending] .terminal-app[data-path="~"] .terminal-output {
+  visibility: hidden;
+}
+
 .terminal-output > [data-terminal-appear] {
   animation: terminal-output-appear 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   animation-delay: var(--terminal-appear-delay, 0ms);
@@ -733,6 +737,7 @@ button {
 
 .terminal-prompt input::placeholder {
   color: var(--text-dim);
+  text-indent: 1.1ch;
 }
 
 .terminal-prompt__measure {
@@ -887,6 +892,8 @@ button {
 }
 
 .boot-choices {
+  display: inline-flex;
+  align-items: baseline;
   white-space: nowrap;
 }
 
@@ -977,6 +984,11 @@ button {
 .boot-question button:hover,
 .boot-cancel button:hover {
   color: var(--text);
+}
+
+.boot-question .boot-choices button {
+  min-width: 1ch;
+  padding: 0;
 }
 
 .boot-cursor {

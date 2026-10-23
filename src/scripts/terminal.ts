@@ -16,7 +16,7 @@ import {
 } from "../data/themes";
 import { appendAnsi } from "../lib/ansi";
 import {
-  filterCommands,
+  completeCommand,
   getCanonicalInput,
   groupCommands,
   normalizeInput,
@@ -590,11 +590,11 @@ function handleKeyDown(event: KeyboardEvent): void {
       return;
     }
 
-    const matches = filterCommands(commands, input.value);
+    const completion = completeCommand(input.value, commands, themes);
 
-    if (matches[0]) {
+    if (completion) {
       event.preventDefault();
-      input.value = getCanonicalInput(matches[0]);
+      input.value = completion;
       historyMode = false;
       historyIndex = -1;
     }

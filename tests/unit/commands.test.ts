@@ -6,6 +6,7 @@ import {
 } from "../../src/data/commands";
 import { themes } from "../../src/data/themes";
 import {
+  completeCommand,
   filterCommands,
   findExactCommand,
   getCanonicalInput,
@@ -271,6 +272,38 @@ describe("suggestCommands", () => {
     const suggestions = suggestCommands("projets", commands);
 
     expect(suggestions[0]?.id).toBe("projects");
+  });
+});
+
+describe("completeCommand", () => {
+  it("completes theme slugs and display names", () => {
+    expect(completeCommand("theme vant", commands, themes)).toBe(
+      "theme vantablack",
+    );
+    expect(completeCommand("theme Tokyo N", commands, themes)).toBe(
+      "theme tokyo-night",
+    );
+    expect(completeCommand("theme tokio", commands, themes)).toBe(
+      "theme tokyo-night",
+    );
+  });
+
+  it("keeps theme subcommands and adds a trailing space", () => {
+    expect(completeCommand("theme", commands, themes)).toBe("theme ");
+    expect(completeCommand("theme current", commands, themes)).toBe(
+      "theme current",
+    );
+    expect(completeCommand("theme reset", commands, themes)).toBe(
+      "theme reset",
+    );
+  });
+
+  it("still completes non-theme commands", () => {
+    expect(completeCommand("neo", commands, themes)).toBe("neofetch");
+  });
+
+  it("returns undefined when no theme matches", () => {
+    expect(completeCommand("theme zzzzz", commands, themes)).toBeUndefined();
   });
 });
 

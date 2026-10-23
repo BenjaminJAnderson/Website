@@ -146,6 +146,35 @@ export function groupCommands(
     .filter((entry) => entry.commands.length > 0);
 }
 
+export function completeCommand(
+  input: string,
+  commands: SiteCommand[],
+  themes: Theme[] = [],
+): string | undefined {
+  const parsed = parseCommand(input);
+
+  if (parsed.name === "theme") {
+    const query = parsed.args.join(" ");
+
+    if (!query) {
+      return "theme ";
+    }
+
+    if (query === "list" || query === "current" || query === "reset") {
+      return `theme ${query}`;
+    }
+
+    const theme =
+      findTheme(query, themes) ?? suggestThemes(query, themes, 1)[0];
+
+    return theme ? `theme ${theme.id}` : undefined;
+  }
+
+  const match = filterCommands(commands, input)[0];
+
+  return match ? getCanonicalInput(match) : undefined;
+}
+
 export function suggestCommands(
   input: string,
   commands: SiteCommand[],

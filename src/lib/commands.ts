@@ -1,4 +1,10 @@
 import type { CommandGroup, SiteCommand } from "../data/commands";
+import {
+  cursorTrailOptions,
+  findCursorTrailOption,
+  normalizeCursorTrailQuery,
+  type CursorTrailOption,
+} from "../data/trails";
 import { levenshtein } from "./similarity";
 import { findTheme, suggestThemes, type Theme } from "./themes";
 
@@ -170,6 +176,63 @@ export function completeCommand(
     return theme ? `theme ${theme.id}` : undefined;
   }
 
+  if (parsed.name === "cursor" || parsed.name === "trail") {
+    const query = parsed.args.join(" ");
+
+    if (!query) {
+      return `${parsed.name} `;
+    }
+
+    if (
+      query === "list" ||
+      query === "current" ||
+      query === "off" ||
+      query === "reset"
+    ) {
+      return `${parsed.name} ${query}`;
+    }
+
+    const option = findCursorTrailOption(query);
+
+    if (option) {
+      return `${parsed.name} ${option.id}`;
+    }
+
+    const normalized = normalizeCursorTrailQuery(query);
+    const matches = [
+      ...new Set([
+        ...cursorTrailOptions.map((item) => item.id),
+        ...cursorTrailCommands,
+      ]),
+    ].filter((value) =>
+      normalizeCursorTrailQuery(value).startsWith(normalized),
+    );
+
+    if (matches.length === 0) {
+      return undefined;
+    }
+
+    const first = matches[0];
+
+    if (matches.length === 1 && first) {
+      return `${parsed.name} ${first}`;
+    }
+
+    let prefix = normalizeCursorTrailQuery(first ?? "");
+
+    for (const item of matches.slice(1)) {
+      const value = normalizeCursorTrailQuery(item);
+
+      while (prefix && !value.startsWith(prefix)) {
+        prefix = prefix.slice(0, -1);
+      }
+    }
+
+    return prefix.length > normalized.length
+      ? `${parsed.name} ${prefix}`
+      : undefined;
+  }
+
   const match = filterCommands(commands, input)[0];
 
   return match ? getCanonicalInput(match) : undefined;
@@ -210,6 +273,8 @@ export function suggestCommands(
     .map((entry) => entry.command);
 }
 
+const cursorTrailCommands = ["list", "current", "off", "reset"];
+
 function withThemeQuery(
   commands: SiteCommand[],
   query: string,
@@ -230,6 +295,29 @@ function themeSuggestionCommand(theme: Theme): SiteCommand {
     description: `${theme.name} · ${theme.mode} theme`,
     group: "utility",
     action: { type: "theme", query: theme.id },
+  };
+}
+
+function withCursorTrailQuery(
+  commands: SiteCommand[],
+  query: string,
+): SiteCommand | undefined {
+  const command = commands.find((item) => item.id === "cursor");
+
+  if (!command) {
+    return undefined;
+  }
+
+  return { ...command, action: { type: "cursor-trail", query } };
+}
+
+function cursorTrailSuggestionCommand(option: CursorTrailOption): SiteCommand {
+  return {
+    id: `cursor ${option.id}`,
+    label: option.label,
+    description: option.description,
+    group: "utility",
+    action: { type: "cursor-trail", query: option.id },
   };
 }
 
@@ -324,6 +412,51 @@ export function resolveCommand(
       kind: "error",
       message: `No theme matching “${query}”.`,
       suggestions: suggestThemes(query, themes).map(themeSuggestionCommand),
+    };
+  }
+
+  if (parsed.name === "cursor" || parsed.name === "trail") {
+    const query = parsed.args.join(" ");
+    const cursorCommand = withCursorTrailQuery(commands, "list");
+
+    if (!cursorCommand) {
+      return {
+        kind: "error",
+        message: "Cursor trail command is unavailable.",
+        suggestions: [],
+      };
+    }
+
+    if (!query || query === "list") {
+      return { kind: "success", command: cursorCommand };
+    }
+
+    if (query === "current" || query === "off" || query === "reset") {
+      return {
+        kind: "success",
+        command: {
+          ...cursorCommand,
+          action: { type: "cursor-trail", query },
+        },
+      };
+    }
+
+    const option = findCursorTrailOption(query);
+
+    if (option) {
+      return {
+        kind: "success",
+        command: {
+          ...cursorCommand,
+          action: { type: "cursor-trail", query: option.id },
+        },
+      };
+    }
+
+    return {
+      kind: "error",
+      message: `No cursor trail matching “${query}”.`,
+      suggestions: cursorTrailOptions.map(cursorTrailSuggestionCommand),
     };
   }
 

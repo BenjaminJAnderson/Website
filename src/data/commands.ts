@@ -12,6 +12,7 @@ export type CommandAction =
   | { type: "clear" }
   | { type: "neofetch" }
   | { type: "theme"; query: string }
+  | { type: "cursor-trail"; query: string }
   | { type: "uninstall" }
   | { type: "list-projects" };
 
@@ -132,6 +133,23 @@ export const staticCommands: SiteCommand[] = [
     group: "utility",
     keywords: ["appearance", "palette", "colors", "colorscheme", "omarchy"],
     action: { type: "theme", query: "list" },
+  },
+  {
+    id: "cursor",
+    label: "Cursor trail",
+    description: "List or switch the cursor trail effect.",
+    group: "utility",
+    aliases: ["trail"],
+    keywords: [
+      "cursor",
+      "trail",
+      "wake",
+      "water",
+      "sparkle",
+      "spray",
+      "animation",
+    ],
+    action: { type: "cursor-trail", query: "list" },
   },
   {
     id: "whoami",

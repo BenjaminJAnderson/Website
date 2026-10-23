@@ -11,6 +11,7 @@ const APPEAR_DELAY_PROPERTY = "--terminal-appear-delay";
 const SCRAMBLE_SKIP_SELECTOR =
   ".terminal-echo__prompt, .term-ascii, .term-palette, .sr-only, [data-neofetch-logo]";
 const SCRAMBLE_MAX_NODES = 24;
+const REVEAL_SETTLE_MS = 50;
 
 interface ScrambleJob {
   node: Text;
@@ -19,12 +20,14 @@ interface ScrambleJob {
 }
 
 export interface TerminalEffectsHandle {
+  reveal: (elements: Iterable<HTMLElement>) => Promise<void>;
   stop: () => void;
 }
 
 export function mountTerminalEffects(root: HTMLElement): TerminalEffectsHandle {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const pending: HTMLElement[] = [];
+  const explicitlyQueued = new WeakSet<HTMLElement>();
   let jobs: ScrambleJob[] = [];
   let revealFrame = 0;
   let scrambleFrameId = 0;
@@ -161,6 +164,43 @@ export function mountTerminalEffects(root: HTMLElement): TerminalEffectsHandle {
     }
   };
 
+  const reveal = (elements: Iterable<HTMLElement>): Promise<void> => {
+    if (stopped) {
+      return Promise.resolve();
+    }
+
+    let added = 0;
+
+    for (const element of elements) {
+      if (
+        element.parentElement === root &&
+        !element.hasAttribute(APPEAR_ATTRIBUTE) &&
+        !explicitlyQueued.has(element)
+      ) {
+        explicitlyQueued.add(element);
+        pending.push(element);
+        added += 1;
+      }
+    }
+
+    if (added === 0) {
+      return Promise.resolve();
+    }
+
+    scheduleReveal();
+
+    if (reducedMotion.matches) {
+      return Promise.resolve();
+    }
+
+    const duration =
+      revealDelay(pending.length - 1) + SCRAMBLE_DURATION_MS + REVEAL_SETTLE_MS;
+
+    return new Promise((resolve) => {
+      window.setTimeout(resolve, duration);
+    });
+  };
+
   const observer = new MutationObserver((records) => {
     if (stopped || reducedMotion.matches) {
       return;
@@ -168,7 +208,11 @@ export function mountTerminalEffects(root: HTMLElement): TerminalEffectsHandle {
 
     for (const record of records) {
       for (const node of record.addedNodes) {
-        if (node instanceof HTMLElement && node.parentElement === root) {
+        if (
+          node instanceof HTMLElement &&
+          node.parentElement === root &&
+          !explicitlyQueued.has(node)
+        ) {
           pending.push(node);
         }
       }
@@ -190,6 +234,7 @@ export function mountTerminalEffects(root: HTMLElement): TerminalEffectsHandle {
   reducedMotion.addEventListener("change", handleMotionChange);
 
   return {
+    reveal,
     stop: () => {
       if (stopped) {
         return;

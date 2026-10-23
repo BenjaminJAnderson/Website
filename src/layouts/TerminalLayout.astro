@@ -5,6 +5,7 @@ import TerminalBoot from "../components/TerminalBoot.astro";
 import ThemeInit from "../components/ThemeInit.astro";
 import ThemeStyles from "../components/ThemeStyles.astro";
 import { buildProjectCommands, staticCommands } from "../data/commands";
+import { BOOT_SESSION_KEY } from "../data/boot";
 import { site, terminalIdentity } from "../data/site";
 import { defaultTheme } from "../data/themes";
 import { getPublishedProjects } from "../lib/projects";
@@ -73,6 +74,12 @@ const fileSystemData = JSON.stringify(fileSystem).replace(/</g, "\\u003c");
     <meta name="twitter:description" content={description} />
 
     <meta name="theme-color" content={defaultTheme.colors.background} />
+    <script
+      is:inline
+      set:html={`try { if (sessionStorage.getItem(${JSON.stringify(
+        BOOT_SESSION_KEY,
+      )}) !== "1") { document.documentElement.dataset.bootPending = ""; } } catch { document.documentElement.dataset.bootPending = ""; }`}
+    ></script>
     <ThemeStyles />
     <ThemeInit />
     <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -140,6 +147,7 @@ const fileSystemData = JSON.stringify(fileSystem).replace(/</g, "\\u003c");
             autocomplete="off"
             autocapitalize="off"
             spellcheck="false"
+            placeholder="type a command, or type help"
           />
           <span
             class="terminal-prompt__measure"

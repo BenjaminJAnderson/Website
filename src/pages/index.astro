@@ -7,6 +7,7 @@ import {
   neofetchRule,
 } from "../data/neofetch";
 import { site } from "../data/site";
+import TerminalHelp from "../components/TerminalHelp.astro";
 import { ansiToHtml } from "../lib/ansi";
 import TerminalLayout from "../layouts/TerminalLayout.astro";
 ---
@@ -43,6 +44,8 @@ import TerminalLayout from "../layouts/TerminalLayout.astro";
       ></pre>
     </div>
   </div>
+
+  <TerminalHelp />
 
   <noscript>
     <p class="term-line terminal-dim">

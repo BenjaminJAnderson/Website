@@ -1,7 +1,6 @@
 import { mountChromaSurface, type ChromaSurfaceHandle } from "./chroma-surface";
 
-const RIPPLE_FADE_DELAY_MS = 360;
-const RIPPLE_FADE_MS = 700;
+const RIPPLE_PULSE_MS = 1000;
 const RIPPLE_STRENGTH = 1.4;
 
 export interface TerminalRippleHandle {
@@ -14,7 +13,6 @@ export function mountTerminalRipple(): TerminalRippleHandle {
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   let host: HTMLDivElement | null = null;
   let surface: ChromaSurfaceHandle | null = null;
-  let fadeTimer = 0;
   let pauseTimer = 0;
   let destroyed = false;
   let unsupported = false;
@@ -72,29 +70,23 @@ export function mountTerminalRipple(): TerminalRippleHandle {
       return false;
     }
 
-    window.clearTimeout(fadeTimer);
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
     window.clearTimeout(pauseTimer);
-    host.classList.remove("is-active", "is-fading");
+    host.style.setProperty("--terminal-ripple-x", `${x}px`);
+    host.style.setProperty("--terminal-ripple-y", `${y}px`);
+    host.classList.remove("is-pulsing");
     void host.offsetWidth;
-    host.classList.add("is-active");
+    host.classList.add("is-pulsing");
 
     current.play();
-    current.pulse(
-      {
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2,
-      },
-      RIPPLE_STRENGTH,
-    );
-
-    fadeTimer = window.setTimeout(() => {
-      host?.classList.add("is-fading");
-    }, RIPPLE_FADE_DELAY_MS);
+    current.pulse({ x, y }, RIPPLE_STRENGTH);
 
     pauseTimer = window.setTimeout(() => {
-      host?.classList.remove("is-active", "is-fading");
+      host?.classList.remove("is-pulsing");
       current.pause();
-    }, RIPPLE_FADE_DELAY_MS + RIPPLE_FADE_MS);
+    }, RIPPLE_PULSE_MS);
 
     return true;
   };
@@ -104,7 +96,6 @@ export function mountTerminalRipple(): TerminalRippleHandle {
     trigger,
     destroy: () => {
       destroyed = true;
-      window.clearTimeout(fadeTimer);
       window.clearTimeout(pauseTimer);
       surface?.destroy();
       surface = null;

@@ -1,0 +1,39 @@
+---
+import type { ProjectEntry } from "../lib/project-display";
+import { publicProjectImagePath } from "../lib/project-display";
+import AsciiPreview from "./AsciiPreview.astro";
+
+interface Props {
+  project: ProjectEntry;
+}
+
+const { project } = Astro.props;
+const gallery = project.data.gallery;
+---
+
+{gallery.length > 0 && (
+  <section class="project-gallery" aria-labelledby="project-gallery-title">
+    <h2 class="project-section-title" id="project-gallery-title">
+      <span class="project-section-title__prefix" aria-hidden="true">
+        ##{" "}
+      </span>
+      visual log
+    </h2>
+
+    <div class="project-gallery__grid">
+      {gallery.map((item, index) => (
+        <AsciiPreview
+          image={item.src}
+          slug={project.id}
+          alt={item.alt}
+          columns={48}
+          rows={14}
+          caption={item.caption ?? item.alt}
+          href={publicProjectImagePath(project.id, item.src)}
+          label={`[${String(index + 1).padStart(2, "0")}]`}
+          class="project-gallery__item"
+        />
+      ))}
+    </div>
+  </section>
+)}

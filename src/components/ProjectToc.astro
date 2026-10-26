@@ -1,0 +1,60 @@
+---
+interface ProjectHeading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: ProjectHeading[];
+}
+
+const { headings } = Astro.props;
+
+let topLevel = 0;
+let subLevel = 0;
+
+const items = headings
+  .filter((heading) => heading.depth >= 2 && heading.depth <= 3)
+  .map((heading) => {
+    if (heading.depth === 2) {
+      topLevel += 1;
+      subLevel = 0;
+
+      return {
+        ...heading,
+        index: String(topLevel).padStart(2, "0"),
+        sub: false,
+      };
+    }
+
+    subLevel += 1;
+
+    return {
+      ...heading,
+      index: `${String(topLevel).padStart(2, "0")}.${subLevel}`,
+      sub: true,
+    };
+  });
+---
+
+{items.length > 0 && (
+  <nav class="project-toc" aria-label="Case file index">
+    <p class="project-toc__label">case file index</p>
+    <ol class="project-toc__list">
+      {items.map((item) => (
+        <li
+          class:list={[
+            "project-toc__item",
+            item.sub && "project-toc__item--sub",
+          ]}
+        >
+          <a href={`#${item.slug}`}>
+            <span class="project-toc__index">[{item.index}]</span>
+            <span>{item.text}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}

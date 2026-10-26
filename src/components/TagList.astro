@@ -1,0 +1,22 @@
+---
+interface Props {
+  tags: readonly string[];
+  label?: string;
+  class?: string;
+}
+
+const { tags, label = "Tags", class: className = "" } = Astro.props;
+---
+
+{tags.length > 0 && (
+  <ul class:list={["tag-list", className]} aria-label={label}>
+    {tags.map((tag) => (
+      <li class="tag-list__item">
+        <span class="tag-list__hash" aria-hidden="true">
+          #
+        </span>
+        {tag}
+      </li>
+    ))}
+  </ul>
+)}

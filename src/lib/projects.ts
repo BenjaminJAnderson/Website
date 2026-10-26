@@ -1,13 +1,9 @@
 import { getCollection, type CollectionEntry } from "astro:content";
+import { statusLabels } from "../data/project-status";
 
 export type ProjectEntry = CollectionEntry<"projects">;
 
-export const statusLabels = {
-  shipped: "Shipped",
-  "in-progress": "In progress",
-  prototype: "Prototype",
-  archived: "Archived",
-} as const;
+export { statusLabels };
 
 export async function getPublishedProjects(): Promise<ProjectEntry[]> {
   const projects = await getCollection("projects", ({ data }) =>

@@ -1,0 +1,50 @@
+---
+import type { ImageMetadata } from "astro";
+import { asciiPreview } from "../lib/ascii-image";
+
+interface Props {
+  image: ImageMetadata;
+  slug: string;
+  alt: string;
+  columns?: number;
+  rows?: number;
+  caption?: string;
+  href?: string;
+  label?: string;
+  class?: string;
+}
+
+const {
+  image,
+  slug,
+  alt,
+  columns = 48,
+  rows,
+  caption,
+  href,
+  label,
+  class: className = "",
+} = Astro.props;
+
+const art = await asciiPreview(image, slug, { columns, rows });
+const description = caption ?? alt;
+---
+
+<figure class:list={["ascii-plate", className]}>
+  <pre class="ascii-plate__art" aria-hidden="true">{art}</pre>
+  <figcaption class="ascii-plate__caption">
+    <span class="ascii-plate__text">
+      {label && <span class="ascii-plate__label">{label}</span>}
+      <span>{description}</span>
+    </span>
+    {href && (
+      <a
+        class="ascii-plate__link"
+        href={href}
+        aria-label={`Open original image: ${alt}`}
+      >
+        open original <span aria-hidden="true">↗</span>
+      </a>
+    )}
+  </figcaption>
+</figure>

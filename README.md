@@ -13,8 +13,9 @@ The terminal is both the visual identity and a navigation layer. Every command m
 - A full-screen terminal interface with a command prompt, persisted history, tab completion and suggestions for unknown commands.
 - A boot sequence on the home page: an Asciify-rendered Chroma Spiral field, an Old London `benji` wordmark and a pacman-style package confirmation. Direct links to other sections skip the boot screen, and entering the site is remembered for the rest of the tab session.
 - A command set covering navigation, directory browsing and discovery: `help`, `about`, `projects`, `contact`, `cv`, `open`, `ls`, `cd`, `cat`, `neofetch`, `sections`, `whoami`, `pwd`, `date`, `clear`, `uninstall`, `theme`, `ascii` and `cursor`.
-- Project case studies generated from a Markdown content collection, with status, year, role, technology tags, source links and plain-text image links.
-- A GitHub-backed sync for the ENGIEBENJI case study, with schema validation and a committed fallback cache if the remote file is missing or broken.
+- A two-tier projects index: a compact `ls` table and collapsible terminal case files, grouped by status.
+- Project case studies with a rendered summary, metadata, sticky section index, visual log and previous/next navigation.
+- Build-time ASCII cover and gallery previews generated from the project images, with links to the full-size originals kept alongside them.
 - A rendered CV at `/cv/`, with a printable PDF and a direct download link.
 - 22 Omarchy-derived colour themes, selectable from the command prompt and persisted in local storage.
 - Eight ASCII character ramps and five cursor trail styles, backed by `asciify-engine`.
@@ -26,6 +27,7 @@ The terminal is both the visual identity and a navigation layer. Every command m
 - **TypeScript:** typed data, command parsing, terminal file-system helpers and unit-tested utilities.
 - **Plain CSS:** design tokens and component styles with no CSS framework.
 - **asciify-engine:** ASCII boot field, wordmark, character sets and cursor trails.
+- **Sharp:** build-time conversion of project covers and gallery images into ASCII plates.
 - **Vitest:** unit tests for commands, paths, themes, effects and CV data.
 - **Prettier and Astro check:** formatting and type checking in CI.
 - **GitHub Actions and GitHub Pages:** continuous integration and deployment.
@@ -133,14 +135,14 @@ Website/
 ├── content/projects/          # Canonical Markdown for remotely synced projects
 ├── src/
 │   ├── assets/projects/       # Project images, optimised at build time
-│   ├── components/            # Terminal boot, help, themes and redirects
-│   ├── content/projects/      # Markdown project case studies and synced cache
+│   ├── components/            # Terminal shell, project case files and shared UI
+│   ├── content/projects/      # Markdown project case studies
 │   ├── data/                  # Commands, site profile, CV, themes and ASCII identity
 │   ├── layouts/               # Full-screen terminal shell
-│   ├── lib/                   # Command parser, paths, themes and project helpers
+│   ├── lib/                   # Command parser, paths, themes, ASCII and project helpers
 │   ├── pages/                 # Static routes, CV, 404 and legacy redirects
 │   ├── scripts/               # Terminal, boot and cursor effects
-│   └── styles/                # Design tokens and global styles
+│   └── styles/                # Design tokens, global styles and project layouts
 ├── public/                    # CNAME, CV PDF, fonts, favicons and static images
 ├── tests/unit/                # Vitest unit tests
 ├── docs/redesign/             # Redesign investigation and implementation plan
@@ -161,10 +163,11 @@ Legacy URLs are preserved by `src/pages/[...legacy].astro` and `public/tags.html
 
 ## Roadmap
 
-- [ ] Generate small monochrome ASCII project previews at build time, keeping full-size image links alongside them.
+- [x] Generate small monochrome ASCII project previews at build time, keeping full-size image links alongside them.
+- [ ] Add project search or filtering once the collection grows beyond a single screen.
 - [ ] Explore a single-page terminal scrollback that updates the URL with `history.pushState` while retaining static route fallbacks.
 
-These are exploratory ideas from `docs/redesign/future-ideas.md`, not completed functionality. CRT, scanline, glow and flicker effects are explicitly not planned.
+The unchecked items are exploratory ideas from `docs/redesign/future-ideas.md`, not completed functionality. CRT, scanline, glow and flicker effects are explicitly not planned.
 
 ## Credits and licensing
 

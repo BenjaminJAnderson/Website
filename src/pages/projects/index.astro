@@ -1,8 +1,20 @@
 ---
-import { getPublishedProjects, statusLabels } from "../../lib/projects";
+import { site } from "../../data/site";
+import { getPublishedProjects } from "../../lib/projects";
+import { groupProjectsByStatus } from "../../lib/project-display";
 import TerminalLayout from "../../layouts/TerminalLayout.astro";
+import ProjectCaseFile from "../../components/ProjectCaseFile.astro";
+import ProjectIndexTable from "../../components/ProjectIndexTable.astro";
+import "../../styles/projects.css";
 
 const projects = await getPublishedProjects();
+const groups = groupProjectsByStatus(projects);
+const shipped = projects.filter(
+  (project) => project.data.status === "shipped",
+).length;
+const inProgress = projects.filter(
+  (project) => project.data.status === "in-progress",
+).length;
 ---
 
 <TerminalLayout
@@ -11,29 +23,74 @@ const projects = await getPublishedProjects();
   path="~/projects"
   command="projects"
 >
-  <h1 class="term-heading">Projects</h1>
-  <p class="term-line term-muted">
-    Hardware, firmware and software projects. Select a project or use
-    <button class="term-command" type="button" data-terminal-command="open">
-      open
-    </button>
-    to list them from the prompt.
-  </p>
+  <header class="projects-hero">
+    <p class="projects-hero__path">~/projects</p>
+    <h1 class="projects-hero__title">Projects</h1>
+    <p class="projects-hero__lede">
+      Hardware, firmware and software case files from the bench. Open a case
+      file for the full write-up, or jump in from the prompt.
+    </p>
+    <p class="projects-hero__stats" aria-label="Project summary">
+      <span>
+        <strong>{projects.length}</strong> projects
+      </span>
+      <span>
+        <strong>{shipped}</strong> shipped
+      </span>
+      <span>
+        <strong>{inProgress}</strong> in progress
+      </span>
+    </p>
+  </header>
 
-  <ul class="terminal-project-list">
-    {projects.map((project) => (
-      <li class="terminal-project-row">
-        <a href={`/projects/${project.id}/`}>{project.data.title}</a>
-        <span>{project.data.period ?? project.data.year}</span>
-        <span class="terminal-dim">
-          [{statusLabels[project.data.status].toLowerCase()}]
+  <section class="projects-section" aria-labelledby="project-index-title">
+    <h2
+      class="project-section-title project-section-title--command"
+      id="project-index-title"
+    >
+      <span class="project-section-title__prefix" aria-hidden="true">
+        ${" "}
+      </span>
+      ls projects/
+    </h2>
+    <ProjectIndexTable projects={projects} />
+  </section>
+
+  {groups.map((group) => (
+    <section
+      class="projects-section"
+      aria-labelledby={`project-group-${group.status}`}
+    >
+      <h2 class="project-section-title" id={`project-group-${group.status}`}>
+        <span class="project-section-title__prefix" aria-hidden="true">
+          ##{" "}
         </span>
-        <span class="terminal-dim">{project.data.tech.join(" ")}</span>
-      </li>
-    ))}
-  </ul>
+        {group.label}
+      </h2>
 
-  <p class="term-line term-dim">
-    full case studies are available through the project names above.
-  </p>
+      <div class="project-case-list">
+        {group.projects.map((project) => (
+          <ProjectCaseFile
+            project={project}
+            index={projects.findIndex((item) => item.id === project.id)}
+          />
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <footer class="projects-footer">
+    <span>
+      open &lt;id&gt; from the prompt, or select a case file above. type help
+      for the full command list.
+    </span>
+    <span class="projects-footer__links">
+      <a href="/">home</a>
+      <a href={`mailto:${site.email}`}>email</a>
+    </span>
+  </footer>
 </TerminalLayout>
+
+<script>
+  import "../../scripts/project-hover";
+</script>

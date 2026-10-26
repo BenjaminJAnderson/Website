@@ -1,0 +1,30 @@
+---
+import type { ProjectEntry } from "../lib/project-display";
+
+interface Props {
+  previous?: ProjectEntry;
+  next?: ProjectEntry;
+}
+
+const { previous, next } = Astro.props;
+---
+
+<nav class="project-nav" aria-label="Project navigation">
+  <p class="project-nav__label">case file navigation</p>
+  <div class="project-nav__links">
+    {previous ? (
+      <a href={`/projects/${previous.id}/`}>
+        <span aria-hidden="true">←</span> previous: {previous.data.title}
+      </a>
+    ) : (
+      <span class="project-nav__empty">start of index</span>
+    )}
+    {next ? (
+      <a href={`/projects/${next.id}/`}>
+        next: {next.data.title} <span aria-hidden="true">→</span>
+      </a>
+    ) : (
+      <span class="project-nav__empty">end of index</span>
+    )}
+  </div>
+</nav>

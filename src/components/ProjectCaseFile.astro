@@ -1,0 +1,80 @@
+---
+import type { ProjectEntry } from "../lib/project-display";
+import { projectId, publicProjectImagePath } from "../lib/project-display";
+import AsciiPreview from "./AsciiPreview.astro";
+import StatusBadge from "./StatusBadge.astro";
+import TagList from "./TagList.astro";
+
+interface Props {
+  project: ProjectEntry;
+  index: number;
+  open?: boolean;
+}
+
+const { project, index, open = true } = Astro.props;
+const { data } = project;
+const id = projectId(index);
+const coverHref = publicProjectImagePath(project.id, data.cover);
+---
+
+<details class="project-case" open={open}>
+  <summary class="project-case__summary">
+    <span class="project-case__marker" aria-hidden="true">
+      &gt;
+    </span>
+    <span class="project-case__id">[{id}]</span>
+    <span class="project-case__title" data-project-scramble>
+      {data.title}
+    </span>
+    <span class="project-case__meta">
+      <StatusBadge status={data.status} />
+      <span class="project-case__year">{data.period ?? data.year}</span>
+    </span>
+  </summary>
+
+  <div class="project-case__body">
+    <AsciiPreview
+      image={data.cover}
+      slug={project.id}
+      alt={data.coverAlt}
+      columns={56}
+      rows={16}
+      caption={data.coverAlt}
+      href={coverHref}
+      class="project-case__cover"
+    />
+
+    <div class="project-case__content">
+      <p class="project-case__summary-copy">{data.summary}</p>
+
+      <dl class="term-facts project-case__facts">
+        {data.role && (
+          <>
+            <dt>role</dt>
+            <dd>{data.role}</dd>
+          </>
+        )}
+        <dt>stack</dt>
+        <dd>{data.tech.join(" · ")}</dd>
+      </dl>
+
+      <TagList tags={data.tags} label={`${data.title} tags`} />
+
+      <div class="project-case__actions">
+        <a class="project-case__action" href={`/projects/${project.id}/`}>
+          <span aria-hidden="true">&gt;</span> open case file
+        </a>
+        {data.repo && (
+          <a
+            class="project-case__link"
+            href={data.repo}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            source <span aria-hidden="true">↗</span>
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</details>

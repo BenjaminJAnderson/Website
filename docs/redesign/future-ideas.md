@@ -1,18 +1,25 @@
 # Future Ideas
 
-## ASCII project previews
+## ASCII project previews (implemented)
 
-Project images are currently plain text links. A future exploration could
-generate small monochrome ASCII previews from the cover and gallery images at
-build time and print them in the terminal output.
+The projects index and case-study pages now generate monochrome ASCII cover and
+gallery previews at build time with `sharp`. Full-size image links remain
+alongside every preview. The implementation lives in `src/lib/ascii-image.ts`;
+the pages stay static and no runtime canvas is required.
 
-Requirements to explore:
+The original requirements are still respected:
 
-- Keep full-size image links alongside the previews.
-- Generate previews deterministically at build time rather than in the browser.
-- Keep the preview width within the terminal output on mobile.
-- Do not turn project pages back into modern image galleries.
-- Keep the existing content collection as the source of project metadata.
+- Full-size image links remain alongside the previews.
+- Previews are generated deterministically at build time, not in the browser.
+- Preview widths are constrained for mobile.
+- Project pages are not modern image galleries.
+- The content collection remains the source of project metadata.
+
+## Project search and filtering
+
+The index currently uses a compact `ls` table and status groups. Search and tag
+filters would be worth adding once the collection grows beyond roughly six to
+eight projects, where the single-screen case-file list no longer scans easily.
 
 ## Single-page terminal scrollback
 

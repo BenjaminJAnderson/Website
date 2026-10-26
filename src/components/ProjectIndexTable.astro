@@ -1,0 +1,39 @@
+---
+import type { ProjectEntry } from "../lib/project-display";
+import { projectId } from "../lib/project-display";
+import StatusBadge from "./StatusBadge.astro";
+
+interface Props {
+  projects: ProjectEntry[];
+}
+
+const { projects } = Astro.props;
+---
+
+<table class="project-index">
+  <caption class="sr-only">Project index</caption>
+  <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">year</th>
+      <th scope="col">status</th>
+      <th scope="col">title</th>
+      <th scope="col">stack</th>
+    </tr>
+  </thead>
+  <tbody>
+    {projects.map((project, index) => (
+      <tr>
+        <td data-label="id">{projectId(index)}</td>
+        <td data-label="year">{project.data.period ?? project.data.year}</td>
+        <td data-label="status">
+          <StatusBadge status={project.data.status} />
+        </td>
+        <td data-label="title">
+          <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+        </td>
+        <td data-label="stack">{project.data.tech.join(" · ")}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>

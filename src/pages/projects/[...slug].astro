@@ -1,12 +1,23 @@
 ---
-import { getCollection, render } from "astro:content";
-import { statusLabels } from "../../lib/projects";
+import { render } from "astro:content";
+import { getPublishedProjects } from "../../lib/projects";
+import {
+  getAdjacentProjects,
+  projectId,
+  projectRepoLabel,
+  publicProjectImagePath,
+} from "../../lib/project-display";
 import TerminalLayout from "../../layouts/TerminalLayout.astro";
+import AsciiPreview from "../../components/AsciiPreview.astro";
+import ProjectGallery from "../../components/ProjectGallery.astro";
+import ProjectNav from "../../components/ProjectNav.astro";
+import ProjectToc from "../../components/ProjectToc.astro";
+import StatusBadge from "../../components/StatusBadge.astro";
+import TagList from "../../components/TagList.astro";
+import "../../styles/projects.css";
 
 export async function getStaticPaths() {
-  const projects = await getCollection("projects", ({ data }) =>
-    import.meta.env.PROD ? !data.draft : true,
-  );
+  const projects = await getPublishedProjects();
 
   return projects.map((project) => ({
     params: { slug: project.id },
@@ -16,8 +27,13 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { data } = project;
-const { Content } = await render(project);
+const { Content, headings } = await render(project);
+const projects = await getPublishedProjects();
+const index = projects.findIndex((item) => item.id === project.id);
+const id = projectId(index);
+const { previous, next } = getAdjacentProjects(projects, project.id);
 const period = data.period ?? String(data.year);
+const coverHref = publicProjectImagePath(project.id, data.cover);
 ---
 
 <TerminalLayout
@@ -26,39 +42,91 @@ const period = data.period ?? String(data.year);
   path={`~/projects/${project.id}`}
   command={`open ${project.id}`}
 >
-  <h1 class="term-heading">{data.title}</h1>
-  <p class="term-line">
-    {period} <span class="terminal-dim">·</span>[
-    {statusLabels[data.status].toLowerCase()}]
-  </p>
+  <article class="project-document">
+    <header class="project-hero">
+      <p class="project-hero__path">~/projects/{project.id}</p>
 
-  <dl class="term-facts">
-    {data.role && (
-      <>
-        <dt>role</dt>
-        <dd>{data.role}</dd>
-      </>
-    )}
-    <dt>stack</dt>
-    <dd>{data.tech.join(" · ")}</dd>
-    {data.repo && (
-      <>
-        <dt>source</dt>
-        <dd>
-          <a href={data.repo} target="_blank" rel="noopener noreferrer">
-            {data.repo}
-          </a>
-        </dd>
-      </>
-    )}
-  </dl>
+      <div class="project-hero__heading">
+        <h1 class="project-hero__title">
+          <span class="project-hero__id">[{id}]</span>
+          {data.title}
+        </h1>
+        <p class="project-hero__status">
+          <StatusBadge status={data.status} />
+          <span class="project-hero__period">{period}</span>
+        </p>
+      </div>
 
-  <div class="term-prose">
-    <Content />
-  </div>
+      <p class="project-hero__summary">{data.summary}</p>
+    </header>
 
-  <p class="term-line term-dim">
-    <a href="/projects/">← projects</a>
-    <a href="/">home</a>
-  </p>
+    <AsciiPreview
+      image={data.cover}
+      slug={project.id}
+      alt={data.coverAlt}
+      columns={80}
+      rows={23}
+      caption={data.coverAlt}
+      href={coverHref}
+      class="project-hero__cover"
+    />
+
+    <dl class="term-facts project-meta">
+      {data.role && (
+        <>
+          <dt>role</dt>
+          <dd>{data.role}</dd>
+        </>
+      )}
+      <dt>stack</dt>
+      <dd>{data.tech.join(" · ")}</dd>
+      {data.tags.length > 0 && (
+        <>
+          <dt>tags</dt>
+          <dd>
+            <TagList tags={data.tags} label={`${data.title} tags`} />
+          </dd>
+        </>
+      )}
+      {data.repo && (
+        <>
+          <dt>source</dt>
+          <dd>
+            <a href={data.repo} target="_blank" rel="noopener noreferrer">
+              {projectRepoLabel(data.repo)} <span aria-hidden="true">↗</span>
+            </a>
+          </dd>
+        </>
+      )}
+      {data.demo && (
+        <>
+          <dt>demo</dt>
+          <dd>
+            <a href={data.demo} target="_blank" rel="noopener noreferrer">
+              {projectRepoLabel(data.demo)} <span aria-hidden="true">↗</span>
+            </a>
+          </dd>
+        </>
+      )}
+    </dl>
+
+    <div class="project-document__grid">
+      <ProjectToc headings={headings} />
+
+      <div class="project-document__main">
+        <div class="term-prose project-prose">
+          <Content />
+        </div>
+
+        <ProjectGallery project={project} />
+
+        <ProjectNav previous={previous} next={next} />
+
+        <p class="project-footer-links">
+          <a href="/projects/">← projects</a>
+          <a href="/">home</a>
+        </p>
+      </div>
+    </div>
+  </article>
 </TerminalLayout>

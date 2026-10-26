@@ -1,0 +1,11 @@
+{
+  "projects": [
+    {
+      "id": "engiebenji",
+      "repo": "BenjaminJAnderson/Website",
+      "ref": "main",
+      "path": "content/projects/engiebenji.md",
+      "cache": "src/content/projects/engiebenji.md"
+    }
+  ]
+}

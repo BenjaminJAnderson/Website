@@ -14,6 +14,7 @@ The terminal is both the visual identity and a navigation layer. Every command m
 - A boot sequence on the home page: an Asciify-rendered Chroma Spiral field, an Old London `benji` wordmark and a pacman-style package confirmation. Direct links to other sections skip the boot screen, and entering the site is remembered for the rest of the tab session.
 - A command set covering navigation, directory browsing and discovery: `help`, `about`, `projects`, `contact`, `cv`, `open`, `ls`, `cd`, `cat`, `neofetch`, `sections`, `whoami`, `pwd`, `date`, `clear`, `uninstall`, `theme`, `ascii` and `cursor`.
 - Project case studies generated from a Markdown content collection, with status, year, role, technology tags, source links and plain-text image links.
+- A GitHub-backed sync for the ENGIEBENJI case study, with schema validation and a committed fallback cache if the remote file is missing or broken.
 - A rendered CV at `/cv/`, with a printable PDF and a direct download link.
 - 22 Omarchy-derived colour themes, selectable from the command prompt and persisted in local storage.
 - Eight ASCII character ramps and five cursor trail styles, backed by `asciify-engine`.
@@ -100,6 +101,27 @@ Project commands are generated from the content collection, so a new project bec
 
 The project index and homepage read from the content collection automatically. Set `featured: true` to include a project on the homepage.
 
+For a remotely synced project, add an entry to `scripts/project-sources.json` and keep the canonical file under `content/projects/`; see the next section.
+
+## Remote project content
+
+The ENGIEBENJI project page is fetched from GitHub at build time. Its canonical Markdown file lives at `content/projects/engiebenji.md` in the Website repository, and the sync script writes a validated copy to `src/content/projects/engiebenji.md` for Astro's content collection.
+
+The source manifest is `scripts/project-sources.json`. Each entry names the repository, ref, canonical path and cache path. `scripts/sync-projects.mjs` runs before `dev`, `check` and `build` through npm lifecycle scripts.
+
+The script resolves the current branch, then the manifest ref, and fetches the raw Markdown. It validates the frontmatter, required fields, status, summary length, image paths and body before writing the cache. If the fetch fails, the remote file is missing, or the content is invalid, the last cached copy is used. If the cache is also missing or invalid, the local canonical file is tried. A final invalid state fails the build rather than shipping broken content.
+
+```bash
+npm run sync:projects              # fetch remote content and update the cache
+npm run sync:projects -- --local   # use the canonical file from this checkout
+npm run sync:projects -- --offline # validate the cache without fetching
+SKIP_PROJECT_SYNC=1 npm run dev    # skip syncing for a session
+```
+
+Local edits to the canonical file are detected through `git status` and are used ahead of the remote copy, so `npm run dev` reflects work in progress. Committed changes are fetched from the current branch, with the manifest ref as the fallback. Image paths in the canonical file are relative to the cache location, because the file is copied into the content collection unchanged.
+
+Only ENGIEBENJI is configured for remote sync at present. Add further entries to the manifest once the pattern is proven.
+
 ## CV page
 
 The CV at `/cv/` renders from `src/data/cv.json`. The printable PDF lives at `public/cv/BenjaminAnderson-CV.pdf`; the page links to it as a download. The website build does not require a TeX installation.
@@ -108,10 +130,11 @@ The CV at `/cv/` renders from `src/data/cv.json`. The printable PDF lives at `pu
 
 ```text
 Website/
+├── content/projects/          # Canonical Markdown for remotely synced projects
 ├── src/
 │   ├── assets/projects/       # Project images, optimised at build time
 │   ├── components/            # Terminal boot, help, themes and redirects
-│   ├── content/projects/      # Markdown project case studies
+│   ├── content/projects/      # Markdown project case studies and synced cache
 │   ├── data/                  # Commands, site profile, CV, themes and ASCII identity
 │   ├── layouts/               # Full-screen terminal shell
 │   ├── lib/                   # Command parser, paths, themes and project helpers
@@ -121,7 +144,10 @@ Website/
 ├── public/                    # CNAME, CV PDF, fonts, favicons and static images
 ├── tests/unit/                # Vitest unit tests
 ├── docs/redesign/             # Redesign investigation and implementation plan
-├── scripts/pull-themes.mjs    # Regenerate src/data/themes.json from Omarchy
+├── scripts/
+│   ├── project-sources.json   # Remote project manifest
+│   ├── pull-themes.mjs        # Regenerate src/data/themes.json from Omarchy
+│   └── sync-projects.mjs      # Fetch remote project Markdown with fallback
 └── .github/workflows/         # CI and GitHub Pages deployment
 ```
 

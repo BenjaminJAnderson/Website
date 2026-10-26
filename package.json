@@ -8,9 +8,13 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "predev": "npm run sync:projects",
     "build": "astro build",
+    "prebuild": "npm run sync:projects",
     "preview": "astro preview",
     "check": "astro check",
+    "precheck": "npm run sync:projects",
+    "sync:projects": "node scripts/sync-projects.mjs",
     "format": "prettier --write \"src/**/*.{astro,ts,css}\" \"tests/**/*.ts\" package.json tsconfig.json astro.config.mjs prettier.config.mjs vitest.config.ts",
     "format:check": "prettier --check \"src/**/*.{astro,ts,css}\" \"tests/**/*.ts\" package.json tsconfig.json astro.config.mjs prettier.config.mjs vitest.config.ts",
     "test": "vitest run",
@@ -29,6 +33,7 @@
     "prettier": "3.9.10",
     "prettier-plugin-astro": "1.1.1",
     "typescript": "5.9.3",
-    "vitest": "5.0.5"
+    "vitest": "5.0.5",
+    "yaml": "^2.9.1"
   }
 }

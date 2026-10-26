@@ -622,6 +622,150 @@ html[data-boot-pending] .terminal-app[data-path="~"] .terminal-output {
   color: var(--text);
 }
 
+.cv-document {
+  max-width: 92ch;
+  margin: 0.5rem 0 2rem;
+}
+
+.cv-document__header {
+  margin-bottom: 1.2rem;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 1rem;
+}
+
+.cv-document__name {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.8vw, 1.8rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.cv-document__role {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+}
+
+.cv-document__contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  color: var(--text-dim);
+  list-style: none;
+}
+
+.cv-section {
+  margin: 1.6rem 0;
+}
+
+.cv-section > h2 {
+  margin: 0 0 0.8rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.3rem;
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cv-projects {
+  display: grid;
+  gap: 1rem;
+}
+
+.cv-project {
+  border-left: 1px solid var(--line-strong);
+  padding-left: 0.9rem;
+}
+
+.cv-project h3,
+.cv-entry h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.cv-project h3 a {
+  text-decoration: none;
+}
+
+.cv-project h3 a:hover {
+  text-decoration: underline;
+}
+
+.cv-project p {
+  margin: 0.3rem 0 0;
+  color: var(--text-muted);
+}
+
+.cv-tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  color: var(--text-dim);
+  list-style: none;
+}
+
+.cv-tags li + li::before {
+  content: "·";
+  margin: 0 0.7ch;
+}
+
+.cv-entries {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.cv-entry {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  gap: 0.4rem 1.2rem;
+}
+
+.cv-entry__date {
+  margin: 0;
+  color: var(--text-dim);
+}
+
+.cv-entry__organisation {
+  margin: 0.15rem 0 0.4rem;
+  color: var(--text-muted);
+}
+
+.cv-bullets {
+  margin: 0.3rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cv-bullets li {
+  position: relative;
+  margin: 0 0 0.3rem;
+  padding-left: 1.4ch;
+  color: var(--text-muted);
+}
+
+.cv-bullets li::before {
+  position: absolute;
+  left: 0;
+  color: var(--text-dim);
+  content: "-";
+}
+
+.cv-document__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  margin-top: 1.8rem;
+  border-top: 1px solid var(--line-strong);
+  padding-top: 0.8rem;
+}
+
 .term-prose {
   max-width: 100ch;
   margin: 1rem 0 1.5rem;
@@ -1077,6 +1221,15 @@ html[data-boot-pending] .terminal-app[data-path="~"] .terminal-output {
 
   .terminal-status__right {
     display: none;
+  }
+
+  .cv-document__name {
+    font-size: 1.25rem;
+  }
+
+  .cv-entry {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
   }
 
   .term-neofetch {

@@ -108,6 +108,27 @@ describe("resolveCommand", () => {
     }
   });
 
+  it("resolves cv to the CV page", () => {
+    const result = resolveCommand("cv", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({
+        type: "navigate",
+        href: "/cv/",
+      });
+    }
+  });
+
+  it("resolves cat to the cat action", () => {
+    const result = resolveCommand("cat", commands);
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.command.action).toEqual({ type: "cat" });
+    }
+  });
+
   it("resolves shell commands to their actions", () => {
     const cd = resolveCommand("cd", commands);
     const ls = resolveCommand("ls", commands);
@@ -426,6 +447,7 @@ describe("help sections", () => {
         "help",
         "ls",
         "cd",
+        "cat",
         "neofetch",
         "sections",
         "whoami",

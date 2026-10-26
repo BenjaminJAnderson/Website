@@ -9,7 +9,8 @@ export const site = {
   github: "https://github.com/BenjaminJAnderson",
   linkedin: "https://www.linkedin.com/in/engiebenji/",
   twitter: "https://twitter.com/engiebenji1999",
-  cv: "/cv/BenjaminAnderson-CV.pdf",
+  cv: "/cv/",
+  cvPdf: "/cv/BenjaminAnderson-CV.pdf",
 } as const;
 
 export const terminalIdentity = `${site.user}@${site.host}`;

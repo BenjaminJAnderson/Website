@@ -8,6 +8,7 @@ export type CommandAction =
   | { type: "path" }
   | { type: "change-directory" }
   | { type: "list-directory" }
+  | { type: "cat" }
   | { type: "date" }
   | { type: "clear" }
   | { type: "neofetch" }
@@ -50,6 +51,7 @@ export const helpSections: readonly HelpSection[] = [
       "help",
       "ls",
       "cd",
+      "cat",
       "neofetch",
       "sections",
       "whoami",
@@ -113,11 +115,11 @@ export const staticCommands: SiteCommand[] = [
   {
     id: "cv",
     label: "CV",
-    description: "Download the current CV as a PDF.",
+    description: "View the current CV.",
     group: "navigate",
-    aliases: ["resume", "download cv"],
-    keywords: ["resume", "pdf"],
-    action: { type: "navigate", href: "/cv/BenjaminAnderson-CV.pdf" },
+    aliases: ["resume"],
+    keywords: ["resume", "cv"],
+    action: { type: "navigate", href: "/cv/" },
   },
   {
     id: "home",
@@ -142,6 +144,14 @@ export const staticCommands: SiteCommand[] = [
     group: "utility",
     keywords: ["directory", "files", "navigation"],
     action: { type: "list-directory" },
+  },
+  {
+    id: "cat",
+    label: "Cat",
+    description: "Open a file or section, for example cat projects/cube.",
+    group: "utility",
+    keywords: ["file", "open", "read", "project"],
+    action: { type: "cat" },
   },
   {
     id: "sections",

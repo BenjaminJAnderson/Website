@@ -17,7 +17,7 @@ export type TerminalPathResult =
   | { kind: "found"; node: TerminalNode }
   | { kind: "error"; reason: "not-found" | "not-directory"; path: string };
 
-export type TerminalPathCommand = "cd" | "ls";
+export type TerminalPathCommand = "cd" | "ls" | "cat";
 
 const ROOT_NAME = "~";
 
@@ -215,7 +215,7 @@ export function completePath(
   command: TerminalPathCommand,
 ): string | undefined {
   const trimmed = input.trimStart();
-  const match = /^(cd|ls)(?=\s|$)/i.exec(trimmed);
+  const match = /^(cd|ls|cat)(?=\s|$)/i.exec(trimmed);
 
   if (!match || match[1]?.toLowerCase() !== command) {
     return undefined;

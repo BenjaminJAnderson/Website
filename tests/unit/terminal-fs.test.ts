@@ -159,6 +159,20 @@ describe("completePath", () => {
     expect(completePath("ls cv", fileSystem, "/", "ls")).toBe("ls cv");
   });
 
+  it("completes cat paths across directories and files", () => {
+    expect(completePath("cat", fileSystem, "/", "cat")).toBe("cat ");
+    expect(completePath("cat pro", fileSystem, "/", "cat")).toBe(
+      "cat projects/",
+    );
+    expect(completePath("cat projects/c", fileSystem, "/", "cat")).toBe(
+      "cat projects/cube/",
+    );
+    expect(completePath("cat cv", fileSystem, "/", "cat")).toBe("cat cv");
+    expect(completePath("cat ~/pro", fileSystem, "/", "cat")).toBe(
+      "cat ~/projects/",
+    );
+  });
+
   it("does not complete unmatched directories or the wrong command", () => {
     expect(completePath("cd zzz", fileSystem, "/", "cd")).toBeUndefined();
     expect(completePath("cd c", fileSystem, "/", "cd")).toBeUndefined();

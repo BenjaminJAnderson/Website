@@ -346,7 +346,8 @@ function renderSections(): void {
   appendLine("available sections:", "terminal-line terminal-dim");
   appendLinkRow("/about/", "about/", "profile and current work");
   appendLinkRow("/projects/", "projects/", "project index");
-  appendLinkRow(site.cv, "cv", "download the CV");
+  appendLinkRow(site.cv, "cv", "view the CV");
+  appendLinkRow(site.cvPdf, "cv pdf", "download the printable CV");
   setStatus("Sections listed");
 }
 
@@ -429,7 +430,7 @@ function renderContact(): void {
     },
     {
       label: "cv",
-      value: "BenjaminAnderson-CV.pdf",
+      value: "view CV",
       href: site.cv,
     },
   ];
@@ -438,7 +439,51 @@ function renderContact(): void {
     appendContactRow(row);
   }
 
+  appendLine("", "terminal-line");
+  appendLinkRow("/", "back", "return to home");
   setStatus("Contact details displayed");
+}
+
+function handleCat(target: string): void {
+  const raw = target.trim();
+
+  if (!raw) {
+    appendLine("cat: missing operand", "terminal-line terminal-error");
+    setStatus("cat needs a file or section");
+    return;
+  }
+
+  const withoutSlash = raw.replace(/\/+$/, "");
+  const withoutExtension = withoutSlash.replace(/\.md$/i, "");
+  const normalized = withoutExtension
+    .replace(/^~\//, "")
+    .replace(/^\//, "")
+    .replace(/^\.\//, "")
+    .toLowerCase();
+
+  if (normalized === "contact" || normalized === "contacts") {
+    void clearTerminal(renderContact);
+    return;
+  }
+
+  if (normalized === "cv" || normalized === "resume") {
+    window.location.assign(site.cv);
+    return;
+  }
+
+  const result = resolvePath(fileSystem, currentRoute, withoutExtension);
+
+  if (result.kind === "error") {
+    const reason =
+      result.reason === "not-directory"
+        ? "Not a directory"
+        : "No such file or directory";
+    appendLine(`cat: ${raw}: ${reason}`, "terminal-line terminal-error");
+    setStatus(`cat: ${raw}: ${reason}`);
+    return;
+  }
+
+  window.location.assign(result.node.route);
 }
 
 function renderDirectory(target = ""): void {
@@ -1056,7 +1101,7 @@ function resetTerminal(): void {
   historyIndex = -1;
 }
 
-async function clearTerminal(): Promise<void> {
+async function clearTerminal(onCleared?: () => void): Promise<void> {
   if (clearing) {
     return;
   }
@@ -1069,7 +1114,13 @@ async function clearTerminal(): Promise<void> {
     resetTerminal();
   } finally {
     clearing = false;
-    setStatus("Terminal cleared");
+
+    if (onCleared) {
+      onCleared();
+    } else {
+      setStatus("Terminal cleared");
+    }
+
     focusInput();
   }
 }
@@ -1098,7 +1149,7 @@ function handleAction(action: SiteCommand["action"]): void {
       renderNeofetch();
       return;
     case "contact":
-      renderContact();
+      void clearTerminal(renderContact);
       return;
     case "theme":
       handleTheme(action.query);
@@ -1213,6 +1264,12 @@ function execute(raw: string, withRipple = true, reveal = true): void {
     return;
   }
 
+  if (command === "cat" || command.startsWith("cat ")) {
+    handleCat(command.slice(3).trim());
+    focusInput();
+    return;
+  }
+
   const resolution = resolveCommand(command, commands, themes);
 
   if (resolution.kind === "success") {
@@ -1245,11 +1302,13 @@ function handleSubmit(event: SubmitEvent): void {
   execute(input.value);
 }
 
-function getShellCommand(inputValue: string): "cd" | "ls" | undefined {
-  const match = /^(cd|ls)(?=\s|$)/i.exec(inputValue.trimStart());
+function getShellCommand(inputValue: string): "cd" | "ls" | "cat" | undefined {
+  const match = /^(cd|ls|cat)(?=\s|$)/i.exec(inputValue.trimStart());
   const command = match?.[1]?.toLowerCase();
 
-  return command === "cd" || command === "ls" ? command : undefined;
+  return command === "cd" || command === "ls" || command === "cat"
+    ? command
+    : undefined;
 }
 
 function handleKeyDown(event: KeyboardEvent): void {

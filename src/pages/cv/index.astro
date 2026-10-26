@@ -1,0 +1,149 @@
+---
+import { cv } from "../../data/cv";
+import { site } from "../../data/site";
+import TerminalLayout from "../../layouts/TerminalLayout.astro";
+
+const isExternal = (href: string | undefined): boolean =>
+  Boolean(href && /^https?:/i.test(href));
+---
+
+<TerminalLayout
+  title="CV"
+  description="CV of Benjamin Anderson, electronic engineer."
+  path="~/cv"
+  command="cat cv"
+>
+  <article class="cv-document">
+    <header class="cv-document__header">
+      <h1 class="cv-document__name">{cv.name}</h1>
+      <p class="cv-document__role">{cv.role}</p>
+
+      <ul class="cv-document__contact">
+        {cv.contact.map((item) => (
+          <li>
+            {item.href ? (
+              <a
+                href={item.href}
+                target={isExternal(item.href) ? "_blank" : undefined}
+                rel={isExternal(item.href) ? "noopener noreferrer" : undefined}
+              >
+                {item.value}
+              </a>
+            ) : (
+              <span>{item.value}</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </header>
+
+    <section class="cv-section">
+      <h2>Projects</h2>
+      <div class="cv-projects">
+        {cv.projects.map((project) => (
+          <article class="cv-project">
+            <h3>
+              {project.href ? (
+                <a href={project.href}>{project.title}</a>
+              ) : (
+                project.title
+              )}
+            </h3>
+            <p>{project.description}</p>
+            {project.tags.length > 0 && (
+              <ul class="cv-tags">
+                {project.tags.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="cv-section">
+      <h2>Experience</h2>
+      <div class="cv-entries">
+        {cv.experience.map((entry) => (
+          <article class="cv-entry">
+            <p class="cv-entry__date">{entry.date}</p>
+            <div class="cv-entry__body">
+              <h3>{entry.title}</h3>
+              <p class="cv-entry__organisation">
+                {entry.organisationHref ? (
+                  <a
+                    href={entry.organisationHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {entry.organisation}
+                  </a>
+                ) : (
+                  entry.organisation
+                )}
+              </p>
+              <ul class="cv-bullets">
+                {entry.bullets.map((bullet) => (
+                  <li>{bullet}</li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="cv-section">
+      <h2>Volunteering</h2>
+      <div class="cv-entries">
+        {cv.volunteering.map((entry) => (
+          <article class="cv-entry">
+            <p class="cv-entry__date">{entry.date}</p>
+            <div class="cv-entry__body">
+              <h3>{entry.title}</h3>
+              <p class="cv-entry__organisation">{entry.organisation}</p>
+              <ul class="cv-bullets">
+                {entry.bullets.map((bullet) => (
+                  <li>{bullet}</li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="cv-section">
+      <h2>Education</h2>
+      <div class="cv-entries">
+        {cv.education.map((entry) => (
+          <article class="cv-entry">
+            <p class="cv-entry__date">{entry.date}</p>
+            <div class="cv-entry__body">
+              <h3>{entry.title}</h3>
+              <p class="cv-entry__organisation">{entry.institution}</p>
+              <ul class="cv-bullets">
+                {entry.details.map((detail) => (
+                  <li>{detail}</li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="cv-section">
+      <h2>References</h2>
+      <p>{cv.references}</p>
+    </section>
+
+    <footer class="cv-document__footer">
+      <a href={site.cvPdf} download>
+        download pdf
+      </a>
+      <a href="/">back</a>
+    </footer>
+  </article>
+</TerminalLayout>

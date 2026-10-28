@@ -344,7 +344,6 @@ function renderHelp(): void {
 
 function renderSections(): void {
   appendLine("available sections:", "terminal-line terminal-dim");
-  appendLinkRow("/about/", "about/", "profile and current work");
   appendLinkRow("/projects/", "projects/", "project index");
   appendLinkRow(site.cv, "cv", "view the CV");
   appendLinkRow(site.cvPdf, "cv pdf", "download the printable CV");
@@ -671,7 +670,6 @@ function renderProfile(): void {
     { label: "github", href: site.github },
     { label: "linkedin", href: site.linkedin },
     { label: "email", href: `mailto:${site.email}` },
-    { label: "about", href: "/about/" },
   ]);
   setStatus("Profile displayed");
 }

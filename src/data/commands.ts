@@ -43,7 +43,7 @@ export interface HelpSection {
 export const helpSections: readonly HelpSection[] = [
   {
     label: "Navigation",
-    commandIds: ["home", "about", "projects", "contact", "cv"],
+    commandIds: ["home", "projects", "contact", "cv"],
   },
   {
     label: "Utility",
@@ -76,15 +76,6 @@ export const staticCommands: SiteCommand[] = [
     aliases: ["?"],
     keywords: ["commands", "usage", "help"],
     action: { type: "help" },
-  },
-  {
-    id: "about",
-    label: "About",
-    description: "Profile, tools and current work.",
-    group: "navigate",
-    aliases: ["go about"],
-    keywords: ["profile", "bio", "who"],
-    action: { type: "navigate", href: "/about/" },
   },
   {
     id: "projects",

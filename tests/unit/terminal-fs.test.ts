@@ -41,7 +41,6 @@ function found(node: ReturnType<typeof resolvePath>): TerminalNode {
 describe("buildTerminalFileSystem", () => {
   it("builds the root and project directories", () => {
     expect(listDirectory(fileSystem).map((node) => node.name)).toEqual([
-      "about",
       "cv",
       "projects",
     ]);
@@ -89,8 +88,8 @@ describe("resolvePath", () => {
       "/projects/cube/",
     );
     expect(
-      found(resolvePath(fileSystem, "/projects/cube/", "../../about")).route,
-    ).toBe("/about/");
+      found(resolvePath(fileSystem, "/projects/cube/", "../../cv")).route,
+    ).toBe("/cv/BenjaminAnderson-CV.pdf");
     expect(found(resolvePath(fileSystem, "/", "/projects/cube")).route).toBe(
       "/projects/cube/",
     );
@@ -132,7 +131,6 @@ describe("completePath", () => {
   it("completes directories from the root and projects", () => {
     expect(completePath("cd", fileSystem, "/", "cd")).toBe("cd ");
     expect(completePath("cd pro", fileSystem, "/", "cd")).toBe("cd projects/");
-    expect(completePath("cd a", fileSystem, "/", "cd")).toBe("cd about/");
     expect(completePath("cd c", fileSystem, "/projects/", "cd")).toBe(
       "cd cube/",
     );
@@ -148,8 +146,8 @@ describe("completePath", () => {
     expect(completePath("cd ~/pro", fileSystem, "/", "cd")).toBe(
       "cd ~/projects/",
     );
-    expect(completePath("cd ../a", fileSystem, "/projects/", "cd")).toBe(
-      "cd ../about/",
+    expect(completePath("cd ../p", fileSystem, "/projects/", "cd")).toBe(
+      "cd ../projects/",
     );
   });
 

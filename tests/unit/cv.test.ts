@@ -10,6 +10,9 @@ describe("cv data", () => {
       "Orthodox",
     ]);
     expect(cv.projects[0]?.href).toBe("/projects/cube/");
+    expect(cv.contact.find((item) => item.label === "email")?.value).toBe(
+      "contact@engiebenji.com",
+    );
     expect(cv.experience[0]?.bullets.length).toBeGreaterThan(0);
     expect(cv.education.length).toBeGreaterThan(0);
     expect(cv.references).toBe("Available on request.");
@@ -20,6 +23,7 @@ describe("cv data", () => {
 
     expect(output).not.toContain("+44");
     expect(output).not.toContain("07799");
+    expect(output).not.toContain("thebenjaminjanderson@gmail.com");
     expect(output).not.toContain("jason.hanson");
     expect(output).not.toContain("x.chu@sheffield.ac.uk");
     expect(output).not.toContain("luzhang1");

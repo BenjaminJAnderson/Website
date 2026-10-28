@@ -1,6 +1,6 @@
 ---
 import type { ProjectEntry } from "../lib/project-display";
-import { projectId, publicProjectImagePath } from "../lib/project-display";
+import { projectId } from "../lib/project-display";
 import AsciiPreview from "./AsciiPreview.astro";
 import StatusBadge from "./StatusBadge.astro";
 import TagList from "./TagList.astro";
@@ -14,7 +14,6 @@ interface Props {
 const { project, index, open = true } = Astro.props;
 const { data } = project;
 const id = projectId(index);
-const coverHref = publicProjectImagePath(project.id, data.cover);
 ---
 
 <details class="project-case" open={open}>
@@ -40,7 +39,6 @@ const coverHref = publicProjectImagePath(project.id, data.cover);
       columns={56}
       rows={16}
       caption={data.coverAlt}
-      href={coverHref}
       class="project-case__cover"
     />
 

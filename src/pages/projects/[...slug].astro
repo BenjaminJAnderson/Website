@@ -5,7 +5,6 @@ import {
   getAdjacentProjects,
   projectId,
   projectRepoLabel,
-  publicProjectImagePath,
 } from "../../lib/project-display";
 import TerminalLayout from "../../layouts/TerminalLayout.astro";
 import AsciiPreview from "../../components/AsciiPreview.astro";
@@ -33,7 +32,6 @@ const index = projects.findIndex((item) => item.id === project.id);
 const id = projectId(index);
 const { previous, next } = getAdjacentProjects(projects, project.id);
 const period = data.period ?? String(data.year);
-const coverHref = publicProjectImagePath(project.id, data.cover);
 ---
 
 <TerminalLayout
@@ -67,7 +65,6 @@ const coverHref = publicProjectImagePath(project.id, data.cover);
       columns={80}
       rows={23}
       caption={data.coverAlt}
-      href={coverHref}
       class="project-hero__cover"
     />
 
@@ -129,4 +126,32 @@ const coverHref = publicProjectImagePath(project.id, data.cover);
       </div>
     </div>
   </article>
+
+  <dialog
+    class="ascii-plate__viewer"
+    data-prose-image-viewer
+    aria-label="Image viewer"
+  >
+    <figure class="ascii-plate__viewer-figure">
+      <img
+        class="ascii-plate__viewer-image"
+        data-prose-image-viewer-image
+        alt=""
+        decoding="async"
+      />
+      <figcaption class="ascii-plate__viewer-caption">
+        <span
+          class="ascii-plate__viewer-text"
+          data-prose-image-viewer-caption
+        ></span>
+        <button
+          class="ascii-plate__viewer-close"
+          type="button"
+          data-prose-image-viewer-close
+        >
+          close <span aria-hidden="true">✕</span>
+        </button>
+      </figcaption>
+    </figure>
+  </dialog>
 </TerminalLayout>

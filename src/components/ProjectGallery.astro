@@ -1,6 +1,5 @@
 ---
 import type { ProjectEntry } from "../lib/project-display";
-import { publicProjectImagePath } from "../lib/project-display";
 import AsciiPreview from "./AsciiPreview.astro";
 
 interface Props {
@@ -29,7 +28,6 @@ const gallery = project.data.gallery;
           columns={48}
           rows={14}
           caption={item.caption ?? item.alt}
-          href={publicProjectImagePath(project.id, item.src)}
           label={`[${String(index + 1).padStart(2, "0")}]`}
           class="project-gallery__item"
         />

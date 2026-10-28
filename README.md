@@ -103,6 +103,27 @@ Project commands are generated from the content collection, so a new project bec
 
 The project index and homepage read from the content collection automatically. Set `featured: true` to include a project on the homepage.
 
+For a remotely synced project, add an entry to `scripts/project-sources.json` and keep the canonical file under `content/projects/`; see the next section.
+
+## Remote project content
+
+The ENGIEBENJI project page is fetched from GitHub at build time. Its canonical Markdown file lives at `content/projects/engiebenji.md` in the Website repository, and the sync script writes a validated copy to `src/content/projects/engiebenji.md` for Astro's content collection.
+
+The source manifest is `scripts/project-sources.json`. Each entry names the repository, ref, canonical path and cache path. `scripts/sync-projects.mjs` runs before `dev`, `check` and `build` through npm lifecycle scripts.
+
+The script resolves the current branch, then the manifest ref, and fetches the raw Markdown. It validates the frontmatter, required fields, status, summary length, image paths and body before writing the cache. If the fetch fails, the remote file is missing, or the content is invalid, the last cached copy is used. If the cache is also missing or invalid, the local canonical file is tried. A final invalid state fails the build rather than shipping broken content.
+
+```bash
+npm run sync:projects              # fetch remote content and update the cache
+npm run sync:projects -- --local   # use the canonical file from this checkout
+npm run sync:projects -- --offline # validate the cache without fetching
+SKIP_PROJECT_SYNC=1 npm run dev    # skip syncing for a session
+```
+
+Local edits to the canonical file are detected through `git status` and are used ahead of the remote copy, so `npm run dev` reflects work in progress. Committed changes are fetched from the current branch, with the manifest ref as the fallback. Image paths in the canonical file are relative to the cache location, because the file is copied into the content collection unchanged.
+
+Only ENGIEBENJI is configured for remote sync at present. Add further entries to the manifest once the pattern is proven.
+
 ## CV page
 
 The CV at `/cv/` renders from `src/data/cv.json`. The printable PDF lives at `public/cv/BenjaminAnderson-CV.pdf`; the page links to it as a download. The website build does not require a TeX installation.
@@ -111,6 +132,7 @@ The CV at `/cv/` renders from `src/data/cv.json`. The printable PDF lives at `pu
 
 ```text
 Website/
+├── content/projects/          # Canonical Markdown for remotely synced projects
 ├── src/
 │   ├── assets/projects/       # Project images, optimised at build time
 │   ├── components/            # Terminal shell, project case files and shared UI
@@ -124,7 +146,10 @@ Website/
 ├── public/                    # CNAME, CV PDF, fonts, favicons and static images
 ├── tests/unit/                # Vitest unit tests
 ├── docs/redesign/             # Redesign investigation and implementation plan
-├── scripts/pull-themes.mjs    # Regenerate src/data/themes.json from Omarchy
+├── scripts/
+│   ├── project-sources.json   # Remote project manifest
+│   ├── pull-themes.mjs        # Regenerate src/data/themes.json from Omarchy
+│   └── sync-projects.mjs      # Fetch remote project Markdown with fallback
 └── .github/workflows/         # CI and GitHub Pages deployment
 ```
 

@@ -1,12 +1,12 @@
 ---
 title: "ENGIEBENJI"
-summary: "The making of this site: a static engineering notebook built with Markdown and GitHub Pages."
+summary: "An Astro terminal portfolio that keeps its own case study in sync with GitHub, with a cached fallback when the remote file is unavailable."
 status: "in-progress"
 year: 2022
 period: "2022 —"
 role: "Design, build and writing"
-tech: ["Jekyll", "Markdown", "GitHub Pages", "Astro"]
-tags: ["website", "writing", "static-site"]
+tech: ["Astro", "TypeScript", "GitHub Actions", "GitHub Pages"]
+tags: ["website", "writing", "static-site", "automation"]
 cover: "../../assets/projects/engiebenji/cover.webp"
 coverAlt: "Illustration of a laptop and documents representing the website build."
 gallery: []
@@ -17,112 +17,65 @@ draft: false
 ---
 
 ## Overview
-Creating my personal blog, [EngieBenji.com](https://engiebenji.com/), has been an exciting journey. Here's a behind-the-scenes look at how I built the site using Jekyll and GitHub Pages.
 
-## Why Jekyll?
+ENGIEBENJI is the site you are reading. It is a static Astro build presented as a
+full-screen terminal, with project pages, an in-browser CV and a small command
+prompt that treats the website like a shell. The site is deployed to GitHub Pages
+at [engiebenji.com](https://engiebenji.com/).
 
-I chose Jekyll for its simplicity and efficiency. As a static site generator, it allows me to create fast, secure, and easily maintainable websites. It’s perfect for blogs and personal projects because it converts plain text into static websites and blogs. Plus, it integrates seamlessly with GitHub Pages.
+The project began in 2022 as a Jekyll blog and was rebuilt in Astro to give the
+terminal a proper component model, typed content collections and a static build
+that stays compatible with GitHub Pages.
 
-## Setting Up with GitHub Pages
+## From Jekyll to Astro
 
-GitHub Pages is a free service provided by GitHub that allows you to host your website directly from a GitHub repository. Here’s a brief overview of the steps I took:
+The original site used Jekyll because it was simple, free to host and built
+directly from Markdown. That worked well for a handful of posts, but the terminal
+interface needed more structure than Liquid templates and ad-hoc JavaScript could
+comfortably provide.
 
-1. **Creating the Repository**: I started by creating a new repository on GitHub named `engiebenji.github.io`. This naming convention is important as GitHub Pages uses it to serve the site.
+The Astro rebuild keeps the static output and brings the content into a typed
+collection. Each project is a Markdown file with frontmatter for its title,
+summary, status, year, role, technology tags, cover and gallery. The project
+index, homepage and terminal commands all read from that collection, so adding a
+project does not require editing a navigation list or a command switch.
 
-2. **Installing Jekyll**: On my local machine, I installed Jekyll by following the official [Jekyll installation guide](https://jekyllrb.com/docs/installation/). Once installed, I used the `jekyll new` command to create a new Jekyll site.
+## A terminal, but still a website
 
-    ```bash
-    gem install bundler jekyll
-    jekyll new engiebenji
-    cd engiebenji
-    ```
+The terminal is the visual identity and a navigation layer, not a replacement
+for the web. Every command resolves to a real URL: `projects` opens
+`/projects/`, `open cube` opens `/projects/cube/` and `cat cv` opens the rendered
+CV. Ordinary links, the command prompt, search engine crawlers and the no-script
+fallbacks all reach the same static pages.
 
-3. **Customizing the Site**: I customized the default template by editing the `_config.yml` file and creating my own layouts, includes, and posts. I focused on creating a clean, professional design that reflects my personal brand and showcases my engineering projects and ideas.
+The prompt supports history, tab completion and suggestions for unknown
+commands. The boot screen runs once per tab session and can be replayed with
+`uninstall`. Layout commands switch between 22 themes, several ASCII character
+ramps and a set of cursor trails.
 
-4. **Pushing to GitHub**: After making my changes, I pushed the local Jekyll site to the GitHub repository.
+## Keeping this case study on GitHub
 
-    ```bash
-    git init
-    git add .
-    git commit -m "Initial commit"
-    git remote add origin https://github.com/engiebenji/engiebenji.github.io.git
-    git push -u origin main
-    ```
+This page is the first project to use the site's remote content sync. The
+canonical Markdown file lives at `content/projects/engiebenji.md` in the
+[Website repository](https://github.com/BenjaminJAnderson/Website) and is fetched
+at build time. The sync script validates the frontmatter and body, then writes
+the content collection copy at `src/content/projects/engiebenji.md`.
 
-5. **Enabling GitHub Pages**: In the repository settings on GitHub, I enabled GitHub Pages and selected the `main` branch as the source. GitHub automatically built and deployed the site.
+If GitHub is unreachable, the remote file has been removed, or its frontmatter
+no longer validates, the build keeps the last cached copy instead of failing.
+That cache is committed, so a fresh checkout still has a usable fallback. The
+goal is a GitHub-first workflow without turning a network outage or a bad edit
+into a broken deployment.
 
-## Benefits of GitHub Pages over Website Generators
+## Deployment
 
-While services like Squarespace and Wix offer user-friendly interfaces and customization options, GitHub Pages paired with Jekyll provides several distinct advantages:
+The site builds to `dist/` through GitHub Actions and deploys to GitHub Pages on
+every push to `main`. The custom domain is `engiebenji.com`; HTTPS is enforced.
+Legacy Jekyll URLs redirect to their Astro equivalents, and the sitemap is
+generated at build time.
 
-1. **Cost**: GitHub Pages is completely free, making it an excellent choice for personal projects and blogs without any hosting fees.
+## What's next
 
-2. **Version Control**: With GitHub’s version control system, every change made to the site is tracked. This makes it easy to roll back changes, collaborate with others, and maintain a history of your site’s development.
-
-3. **Performance**: GitHub Pages delivers static sites, which are faster to load compared to dynamically generated pages from platforms like Squarespace and Wix. This improves user experience and SEO.
-
-4. **Flexibility**: Jekyll allows for extensive customization and does not limit you to predefined templates and structures. You have full control over your site’s design and functionality.
-
-5. **Learning Opportunity**: Building a site with Jekyll and GitHub Pages is a great way to improve your web development skills, offering a hands-on experience with HTML, CSS, and Markdown.
-
-## Theming with Jekyll
-
-One of the great aspects of Jekyll is the ability to use themes, which provide a base design that you can customize to fit your needs. Here's how you can use and customize a Jekyll theme:
-
-1. **Choosing a Theme**: Browse the [Jekyll Themes](https://jekyllthemes.io/) site to find a theme that fits your style. Popular themes are also available on GitHub.
-
-2. **Installing the Theme**: Once you’ve chosen a theme, follow the installation instructions provided by the theme’s documentation. Typically, you can install a theme by adding it to your `Gemfile` and updating the `_config.yml` file.
-
-    ```ruby
-    # Gemfile
-    gem "jekyll-theme-name"
-    ```
-
-    ```yaml
-    # _config.yml
-    theme: jekyll-theme-name
-    ```
-
-3. **Customizing the Theme**: After installing the theme, you can customize it by overriding the default files. Create corresponding files in your project’s directory to override the theme’s layouts, includes, and styles.
-
-    For example, to customize the theme’s main layout, copy the layout file from the theme’s repository to your `_layouts` directory and edit it to suit your taste.
-
-    ```bash
-    cp $(bundle show jekyll-theme-name)/_layouts/default.html _layouts/
-    ```
-
-4. **Editing Styles**: Modify the CSS or SCSS files to change the look and feel of your site. Place your custom styles in the `assets` directory and link them in your layouts.
-
-5. **Content Updates**: Continue to add your content in the `_posts` directory, and push the changes to GitHub. Jekyll will regenerate your site with the customized theme.
-
-## Getting a Custom Domain
-
-Using a custom domain for your GitHub Pages site adds a professional touch. Here’s how you can set it up:
-
-1. **Purchase a Domain**: Purchase a domain name from a domain registrar such as [Namecheap](https://www.namecheap.com/), [GoDaddy](https://www.godaddy.com/), or any other registrar of your choice.
-
-2. **Configure DNS Settings**: In your domain registrar’s settings, configure the DNS records to point to GitHub Pages. You will need to create `A` records pointing to GitHub’s IP addresses and a `CNAME` record pointing to your GitHub Pages URL.
-
-    ```
-    A 192.30.252.153
-    A 192.30.252.154
-    CNAME yourusername.github.io
-    ```
-
-3. **Add CNAME File**: In your GitHub Pages repository, create a file named `CNAME` in the root directory and add your custom domain name to this file.
-
-    ```
-    www.yourcustomdomain.com
-    ```
-
-4. **Verify the Setup**: It may take some time for the DNS changes to propagate. Once they do, your site should be accessible via your custom domain.
-
-## Maintaining the Blog
-
-Maintaining the blog is straightforward. I write my posts in Markdown, place them in the `_posts` directory, and push the changes to GitHub. Jekyll and GitHub Pages handle the rest, regenerating the site and publishing the new content seamlessly.
-
-## Conclusion
-
-Using Jekyll and GitHub Pages has made creating and maintaining EngieBenji.com an enjoyable experience. It's a powerful combination that provides a lot of flexibility without the overhead of managing a server or dealing with complex configurations. Adding a custom domain and theming capabilities further enhances the professional look of the site.
-
-I hope you enjoyed this peek into the making of my website!
+The remote sync currently covers this page only. Once the fallback behaviour has
+been proven in normal use, the same manifest can point the other project pages at
+their own repositories.

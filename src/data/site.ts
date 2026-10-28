@@ -5,7 +5,7 @@ export const site = {
   role: "Electronics engineer",
   description:
     "Portfolio of Benjamin Anderson, an electronics engineer building hardware, firmware and tools.",
-  email: "thebenjaminjanderson@gmail.com",
+  email: "contact@engiebenji.com",
   github: "https://github.com/BenjaminJAnderson",
   linkedin: "https://www.linkedin.com/in/engiebenji/",
   twitter: "https://twitter.com/engiebenji1999",

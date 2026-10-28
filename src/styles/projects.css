@@ -267,6 +267,18 @@
   white-space: pre;
 }
 
+.ascii-plate__open {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  cursor: zoom-in;
+}
+
+.ascii-plate__open:hover .ascii-plate__art,
+.ascii-plate__open:focus-visible .ascii-plate__art {
+  color: var(--text);
+}
+
 .project-hero__cover {
   margin: 0 0 1.2rem;
 }
@@ -311,6 +323,92 @@
 .ascii-plate__link:hover,
 .ascii-plate__link:focus-visible {
   color: var(--text);
+}
+
+.ascii-plate__viewer {
+  width: fit-content;
+  max-width: min(94vw, 1400px);
+  max-height: 90dvh;
+  margin: auto;
+  border: 1px solid var(--line-strong);
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.ascii-plate__viewer::backdrop {
+  background: rgb(0 0 0 / 0.76);
+}
+
+.ascii-plate__viewer[open] {
+  animation: ascii-plate-viewer-in 160ms ease-out;
+}
+
+.ascii-plate__viewer[open]::backdrop {
+  animation: ascii-plate-backdrop-in 160ms ease-out;
+}
+
+.ascii-plate__viewer-figure {
+  display: flex;
+  flex-direction: column;
+  max-height: 90dvh;
+  margin: 0;
+}
+
+.ascii-plate__viewer-image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(94vw, 1400px);
+  max-height: calc(90dvh - 2.8rem);
+  object-fit: contain;
+}
+
+.ascii-plate__viewer-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  align-items: baseline;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding: 0.5rem 0.7rem;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+}
+
+.ascii-plate__viewer-text {
+  min-width: 0;
+}
+
+.ascii-plate__viewer-close {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-muted);
+  padding: 0.15rem 0.45rem;
+  font: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.ascii-plate__viewer-close:hover,
+.ascii-plate__viewer-close:focus-visible {
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+
+@keyframes ascii-plate-viewer-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes ascii-plate-backdrop-in {
+  from {
+    opacity: 0;
+  }
 }
 
 .status-badge {
@@ -444,6 +542,10 @@
 
 .project-prose :is(h2, h3) {
   scroll-margin-top: 1rem;
+}
+
+.project-prose a[href^="/project-images/"] {
+  cursor: zoom-in;
 }
 
 .project-gallery {
@@ -594,5 +696,10 @@
   .project-case__marker,
   .project-gallery__item .ascii-plate__art {
     transition: none;
+  }
+
+  .ascii-plate__viewer[open],
+  .ascii-plate__viewer[open]::backdrop {
+    animation: none;
   }
 }

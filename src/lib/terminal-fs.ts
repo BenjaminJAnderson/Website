@@ -62,12 +62,6 @@ export function buildTerminalFileSystem(
     kind: "dir",
     children: [
       {
-        name: "about",
-        route: "/about/",
-        kind: "dir",
-        description: "profile and current work",
-      },
-      {
         name: "cv",
         route: cvPath,
         kind: "file",

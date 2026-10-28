@@ -12,10 +12,10 @@ The terminal is both the visual identity and a navigation layer. Every command m
 
 - A full-screen terminal interface with a command prompt, persisted history, tab completion and suggestions for unknown commands.
 - A boot sequence on the home page: an Asciify-rendered Chroma Spiral field, an Old London `benji` wordmark and a pacman-style package confirmation. Direct links to other sections skip the boot screen, and entering the site is remembered for the rest of the tab session.
-- A command set covering navigation, directory browsing and discovery: `help`, `about`, `projects`, `contact`, `cv`, `open`, `ls`, `cd`, `cat`, `neofetch`, `sections`, `whoami`, `pwd`, `date`, `clear`, `uninstall`, `theme`, `ascii` and `cursor`.
+- A command set covering navigation, directory browsing and discovery: `help`, `projects`, `contact`, `cv`, `open`, `ls`, `cd`, `cat`, `neofetch`, `sections`, `whoami`, `pwd`, `date`, `clear`, `uninstall`, `theme`, `ascii` and `cursor`.
 - A two-tier projects index: a compact `ls` table and collapsible terminal case files, grouped by status.
 - Project case studies with a rendered summary, metadata, sticky section index, visual log and previous/next navigation.
-- Build-time ASCII cover and gallery previews generated from the project images, with links to the full-size originals kept alongside them.
+- Build-time ASCII cover and gallery previews generated from the project images, with a lightbox for the full-size originals.
 - A rendered CV at `/cv/`, with a printable PDF and a direct download link.
 - 22 Omarchy-derived colour themes, selectable from the command prompt and persisted in local storage.
 - Eight ASCII character ramps and five cursor trail styles, backed by `asciify-engine`.
@@ -71,7 +71,6 @@ The prompt accepts the following commands. Paths are resolved against a small in
 
 ```text
 help          list commands by category
-about         open the profile page
 projects      open the project index
 contact       show email, GitHub, LinkedIn and Twitter details
 cv            open the rendered CV

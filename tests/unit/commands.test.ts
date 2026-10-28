@@ -48,7 +48,10 @@ describe("parseCommand", () => {
   });
 
   it("maps cd and go to the target command", () => {
-    expect(parseCommand("cd about")).toEqual({ name: "about", args: [] });
+    expect(parseCommand("cd projects")).toEqual({
+      name: "projects",
+      args: [],
+    });
     expect(parseCommand("go projects")).toEqual({
       name: "projects",
       args: [],
@@ -70,13 +73,13 @@ describe("findExactCommand", () => {
 
 describe("resolveCommand", () => {
   it("resolves a direct command", () => {
-    const result = resolveCommand("about", commands);
+    const result = resolveCommand("projects", commands);
 
     expect(result.kind).toBe("success");
     if (result.kind === "success") {
       expect(result.command.action).toEqual({
         type: "navigate",
-        href: "/about/",
+        href: "/projects/",
       });
     }
   });
@@ -442,7 +445,7 @@ describe("help sections", () => {
       "Layout",
     ]);
     expect(helpSections.map((section) => section.commandIds)).toEqual([
-      ["home", "about", "projects", "contact", "cv"],
+      ["home", "projects", "contact", "cv"],
       [
         "help",
         "ls",
@@ -567,11 +570,11 @@ describe("getCanonicalInput", () => {
   });
 
   it("returns the command id for static commands", () => {
-    const about = commands.find((command) => command.id === "about");
+    const projects = commands.find((command) => command.id === "projects");
 
-    expect(about).toBeDefined();
-    if (about) {
-      expect(getCanonicalInput(about)).toBe("about");
+    expect(projects).toBeDefined();
+    if (projects) {
+      expect(getCanonicalInput(projects)).toBe("projects");
     }
   });
 });

@@ -8,6 +8,7 @@ describe("cv data", () => {
     expect(cv.projects.map((project) => project.title)).toEqual([
       "Cube",
       "Orthodox",
+      "Avalanche",
     ]);
     expect(cv.projects[0]?.href).toBe("/projects/cube/");
     expect(cv.contact.find((item) => item.label === "email")?.value).toBe(
